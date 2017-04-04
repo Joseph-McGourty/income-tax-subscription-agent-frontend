@@ -17,9 +17,9 @@ base.change                                                     = Change
 base.yes                                                        = Yes
 base.no                                                         = No
 
-## Front page
-frontpage.title                                                 = Sign up to report your income and expenses quarterly
-frontpage.heading                                               = Sign up to report your income and expenses quarterly
+# Agent front page
+frontpage.title                                                 = Sign up your clients to report their income and expenses quarterly
+frontpage.heading                                               = Sign up your clients to report their income and expenses quarterly
 frontpage.line_1                                                = By signing up to HM Revenue and Customs secure service, you''re helping to test a new way of working out your tax. You''ll do this by:
 frontpage.bullet_1                                              = using your accounting software to record your income and expenses
 frontpage.bullet_2                                              = sending details to us regularly from May 2017
@@ -37,6 +37,7 @@ frontpage.bullet_7                                              = complete your 
 frontpage.bullet_8                                              = send your summary report for the 2017 to 2018 tax year by 31 January 2019
 frontpage.line_6                                                = You can:
 frontpage.bullet_9                                              = use your business tax account from August 2017 to see your reports and what you might owe
+
 
 ## Preferences call back page
 preferences_callback.title                                      = Do you want to continue?
@@ -280,13 +281,24 @@ income-other.bullet5                                            = capital gains
 income-other.yes                                                = Yes
 income-other.no                                                 = No
 
-## Agent - client details page ##
-client-details.title                                            = Enter client details
-client-details.heading                                          = Enter client details
-client-details.line_1                                           = This is to help us confirm who your client is, so we know what questions to ask you.
-client-details.field_1                                          = First name
-client-details.field_2                                          = Last name
-client-details.field_3                                          = National Insurance number
-client-details.field_4                                          = Date of birth
-client-details.formhint.1                                       = For example QQ123456C
-client-details.formhint.2                                       = For example, 31 3 1980
+
+
+#### AGENT Journey Messages ####
+#### ---------------------- ####
+
+## Not Enrolled to Agent Services
+agent.not_enrolled_agent_services.title                         = You''re not subscribed to Agent services
+agent.not_enrolled_agent_services.heading                       = You''re not subscribed to Agent services
+agent.not_enrolled_agent_services.para1                         = You will need to subscribe to agent services before you continue to subscribe your clients for quarterly reporting.
+agent.not_enrolled_agent_services.subscribe                     = Subscribe to Agent services
+
+## Client Details ##
+agent.client-details.title                                            = Enter client details
+agent.client-details.heading                                          = Enter client details
+agent.client-details.line_1                                           = This is to help us confirm who your client is, so we know what questions to ask you.
+agent.client-details.field_1                                          = First name
+agent.client-details.field_2                                          = Last name
+agent.client-details.field_3                                          = National Insurance number
+agent.client-details.field_4                                          = Date of birth
+agent.client-details.formhint.1                                       = For example QQ123456C
+agent.client-details.formhint.2                                       = For example, 31 3 1980

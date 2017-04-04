@@ -20,7 +20,7 @@ import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 
 class RoutesSpec extends PlaySpec with OneAppPerTest {
 
-  val contextRoute: String = "/report-quarterly/income-and-expenses/sign-up"
+  val contextRoute: String = "/report-quarterly/income-and-expenses/sign-up/client"
 
   // Timeout routes
   "The URL for the timeout.timeout action" should {

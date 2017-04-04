@@ -32,7 +32,6 @@ object MessageLookup {
     val change = "Change"
     val where_can_i_get_this_information = "Where can I get this information"
     val signUp = "Sign up"
-    val dateOfBirth = "Date of birth"
   }
 
   object FrontPage {
@@ -363,7 +362,14 @@ object MessageLookup {
     val no = "No"
   }
 
-  object Agent {
+  object AgentMessages {
+
+    object NotEnrolledAgentServices {
+      val title = "You're not subscribed to Agent services"
+      val heading = title
+      val para1 = "You will need to subscribe to agent services before you continue to subscribe your clients for quarterly reporting."
+      val button = "Subscribe to Agent services"
+    }
 
     object ClientDetails {
       val title = "Enter client details"
@@ -378,5 +384,4 @@ object MessageLookup {
     }
 
   }
-
 }
