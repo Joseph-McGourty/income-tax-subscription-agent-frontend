@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package views.agent
+package views
 
-import assets.MessageLookup.{Base => common}
-import assets.MessageLookup.AgentMessages.{ClientDetails => messages}
+import assets.MessageLookup.{Base => common, ClientDetails => messages}
 import forms.agent.ClientDetailsForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import views.ViewSpecTrait
 
 class ClientDetailsViewSpec extends ViewSpecTrait {
 

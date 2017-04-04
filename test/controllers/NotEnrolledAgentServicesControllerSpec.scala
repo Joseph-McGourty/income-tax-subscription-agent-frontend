@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.agent
+package controllers
 
-import assets.MessageLookup.AgentMessages.{NotEnrolledAgentServices => messages}
+import assets.MessageLookup.{NotEnrolledAgentServices => messages}
 import auth._
-import controllers.ControllerBaseSpec
+import controllers.agent.NotEnrolledAgentServicesController
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.Helpers._
+import play.api.test.Helpers.{contentAsString, contentType, _}
 
 class NotEnrolledAgentServicesControllerSpec extends ControllerBaseSpec {
 

@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package views.agent
+package views
 
-import assets.MessageLookup.AgentMessages.{NotEnrolledAgentServices => messages}
-import assets.MessageLookup.{Base => commonMessages}
+import assets.MessageLookup.{Base => commonMessages, NotEnrolledAgentServices => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import views.ViewSpecTrait
 
 class NotEnrolledAgentServicesViewSpec extends ViewSpecTrait {
 

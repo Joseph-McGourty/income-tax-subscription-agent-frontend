@@ -32,10 +32,11 @@ object MessageLookup {
     val change = "Change"
     val where_can_i_get_this_information = "Where can I get this information"
     val signUp = "Sign up"
+    val dateOfBirth = "Date of birth"
   }
 
   object FrontPage {
-    val title = "Sign up to report your income and expenses quarterly"
+    val title = "Sign up your clients to report their income and expenses quarterly"
     val heading = title
     val subHeading_1 = "Sign up using Government Gateway"
     val subHeading_2 = "What happens after you've signed up"
@@ -362,26 +363,24 @@ object MessageLookup {
     val no = "No"
   }
 
-  object AgentMessages {
 
-    object NotEnrolledAgentServices {
-      val title = "You're not subscribed to Agent services"
-      val heading = title
-      val para1 = "You will need to subscribe to agent services before you continue to subscribe your clients for quarterly reporting."
-      val button = "Subscribe to Agent services"
-    }
-
-    object ClientDetails {
-      val title = "Enter client details"
-      val heading = "Enter client details"
-      val line1 = "This is to help us confirm who your client is, so we know what questions to ask you."
-      val field1 = "First name"
-      val field2 = "Last name"
-      val field3 = "National Insurance number"
-      val field4 = "Date of birth"
-      val formhint1 = "For example QQ123456C"
-      val formhint2 = "For example, 31 3 1980"
-    }
-
+  object NotEnrolledAgentServices {
+    val title = "You're not subscribed to Agent services"
+    val heading = title
+    val para1 = "You will need to subscribe to agent services before you continue to subscribe your clients for quarterly reporting."
+    val button = "Subscribe to Agent services"
   }
+
+  object ClientDetails {
+    val title = "Enter client details"
+    val heading = "Enter client details"
+    val line1 = "This is to help us confirm who your client is, so we know what questions to ask you."
+    val field1 = "First name"
+    val field2 = "Last name"
+    val field3 = "National Insurance number"
+    val field4 = "Date of birth"
+    val formhint1 = "For example QQ123456C"
+    val formhint2 = "For example, 31 3 1980"
+  }
+
 }

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.agent
+package controllers
 
 import auth._
-import controllers.ControllerBaseSpec
+import controllers.agent.ClientDetailsController
 import forms.agent.ClientDetailsForm
 import models.{ClientDetailsModel, DateModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.Helpers._
+import play.api.test.Helpers.{await, _}
 import services.mocks.MockKeystoreService
 
 class ClientDetailsControllerSpec extends ControllerBaseSpec with MockKeystoreService {
