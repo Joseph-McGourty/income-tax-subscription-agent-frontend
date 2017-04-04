@@ -1,18 +1,18 @@
 [![Apache-2.0 license](http://img.shields.io/badge/license-Apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
-[![Build Status](https://travis-ci.org/hmrc/income-tax-subscription-frontend.svg)](https://travis-ci.org/hmrc/income-tax-subscription-frontend) [ ![Download](https://api.bintray.com/packages/hmrc/releases/income-tax-subscription-frontend/images/download.svg) ](https://bintray.com/hmrc/releases/income-tax-subscription-frontend/_latestVersion)
+[![Build Status](https://travis-ci.org/hmrc/income-tax-subscription-agent-frontend.svg)](https://travis-ci.org/hmrc/income-tax-subscription-agent-frontend) [ ![Download](https://api.bintray.com/packages/hmrc/releases/income-tax-subscription-agent-frontend/images/download.svg) ](https://bintray.com/hmrc/releases/income-tax-subscription-agent-frontend/_latestVersion)
 
-#### Sign Up to Report your Income and Expenses Quarterly (MTD ITSA)
+#### Sign your Client up to Report their Income and Expenses Quarterly (MTD ITSA)
 # Income Tax Subscription Frontend
 
-This is a Scala/Play frontend web UI that provides screens for an existing SA Individual to voluntarily subscribe to report their...
+This is a Scala/Play frontend web UI that provides screens for an Agent to subscribe their Client to MTD ITSA which allows them to report their...
 
   - Single Sole-Trader (self-employed) business income;
   - Property income; or
   - Single Sole-Trader (self-employed) business & property income
-  
+
 ...on a quarterly bases and move away from the yearly Self-Assessment Tax Return.
 
-### Running the frontend subscription service locally
+### Running the subscription services locally
 
 You will need [sbt](http://www.scala-sbt.org/)
 
@@ -26,31 +26,31 @@ You will need [sbt](http://www.scala-sbt.org/)
 
 3) **Clone the frontend service:**
 
-  - SSH 
-  
-    `git clone git@github.com:hmrc/income-tax-subscription-frontend.git`
-  
-  - HTTPS 
-  
-    `git clone https://github.com/hmrc/income-tax-subscription-frontend.git`
-  
-  
+  - SSH
+
+    `git clone git@github.com:hmrc/income-tax-subscription-agent-frontend.git`
+
+  - HTTPS
+
+    `git clone https://github.com/hmrc/income-tax-subscription-agent-frontend.git`
+
+
 4) **Start the frontend service:**
 
-   `sbt "run 9561" -Dapplication.router=testOnlyDoNotUseInAppConf.Routes`
-   
-  
+   `sbt "run 9563" -Dapplication.router=testOnlyDoNotUseInAppConf.Routes`
+
+
 5) **Clone the protected service:**
 
-  - SSH 
-  
+  - SSH
+
      `git clone git@github.com:hmrc/income-tax-subscription.git`
-  
-  - HTTPS 
-  
+
+  - HTTPS
+
      `git clone https://github.com/hmrc/income-tax-subscription.git`
-  
-   
+
+
 6) **Start the protected service:**
 
    `sbt "run 9560" -Dapplication.router=testOnlyDoNotUseInAppConf.Routes`
