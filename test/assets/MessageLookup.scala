@@ -35,7 +35,7 @@ object MessageLookup {
   }
 
   object FrontPage {
-    val title = "Sign up to report your income and expenses quarterly"
+    val title = "Sign up your clients to report their income and expenses quarterly"
     val heading = title
     val subHeading_1 = "Sign up using Government Gateway"
     val subHeading_2 = "What happens after you've signed up"
