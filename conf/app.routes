@@ -66,3 +66,5 @@ GET         /error/main-income                controllers.MainIncomeErrorControl
 GET         /error/other-income               controllers.OtherIncomeErrorController.showOtherIncomeError
 POST        /error/other-income               controllers.OtherIncomeErrorController.submitOtherIncomeError
 
+# Home controller
+GET         /not-enrolled-agent-services      controllers.agent.NotEnrolledAgentServicesController.show
