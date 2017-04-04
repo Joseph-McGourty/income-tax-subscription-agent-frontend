@@ -68,3 +68,7 @@ POST        /error/other-income               controllers.OtherIncomeErrorContro
 
 # Home controller
 GET         /not-enrolled-agent-services      controllers.agent.NotEnrolledAgentServicesController.show
+
+# Client Matching
+GET         /client-details                   controllers.agent.ClientDetailsController.showClientDetails(editMode: Boolean ?= false)
+POST        /client-details                   controllers.agent.ClientDetailsController.submitClientDetails(editMode: Boolean ?= false)
