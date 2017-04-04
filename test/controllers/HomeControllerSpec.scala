@@ -24,7 +24,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.mocks.MockThrottlingService
-import assets.MessageLookup.{AgentFrontPage, FrontPage}
+import assets.MessageLookup.FrontPage
 
 
 class HomeControllerSpec extends ControllerBaseSpec
@@ -62,7 +62,7 @@ class HomeControllerSpec extends ControllerBaseSpec
       }
 
       "Should have the page title" in {
-        Jsoup.parse(contentAsString(result)).title mustBe AgentFrontPage.title
+        Jsoup.parse(contentAsString(result)).title mustBe FrontPage.title
       }
     }
 

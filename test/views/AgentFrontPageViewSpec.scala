@@ -16,7 +16,7 @@
 
 package views
 
-import assets.MessageLookup.{Base => common, AgentFrontPage => messages}
+import assets.MessageLookup.{Base => common, FrontPage => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 

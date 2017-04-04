@@ -35,7 +35,7 @@ object MessageLookup {
   }
 
   object FrontPage {
-    val title = "Sign up to report your income and expenses quarterly"
+    val title = "Sign up your clients to report their income and expenses quarterly"
     val heading = title
     val subHeading_1 = "Sign up using Government Gateway"
     val subHeading_2 = "What happens after you've signed up"
@@ -54,11 +54,6 @@ object MessageLookup {
     val line_4 = "You'll need to enter the user ID and password you got when you signed up to the Self Assessment online service."
     val line_5 = "You'll need to:"
     val line_6 = "You can:"
-  }
-
-  object AgentFrontPage {
-    val title = "Sign up your clients to report their income and expenses quarterly"
-    val heading = title
   }
 
   object PreferencesCallBack {
