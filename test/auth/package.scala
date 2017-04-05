@@ -32,8 +32,8 @@ package object auth {
 
   lazy val mockConfig: AppConfig = MockConfig
   val nino = "AB124512C"
-  lazy val authorisedUserAccounts = domain.Accounts(paye = Some(domain.PayeAccount(link = "/paye/abc", nino = Nino(nino))))
-  lazy val noAuthorisedUserAccounts = domain.Accounts(paye = None)
+  lazy val authorisedUserAccounts = domain.Accounts()
+  lazy val noAuthorisedUserAccounts = domain.Accounts()
 
   object ggSession {
     val userId = "/auth/oid/1234567890"

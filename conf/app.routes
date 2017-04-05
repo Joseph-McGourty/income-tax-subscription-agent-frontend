@@ -41,9 +41,6 @@ POST        /income-other                     controllers.OtherIncomeController.
 # Already enrolled
 GET         /error/subscription-status        controllers.AlreadyEnrolledController.enrolled
 
-# No NINO Routes
-GET         /error/no-nino                    controllers.NoNinoController.showNoNino
-POST        /error/no-nino                    controllers.NoNinoController.submitNoNino
 
 # Throttle limit reached routes
 GET         /error/maintenance                controllers.throttling.ThrottlingController.show

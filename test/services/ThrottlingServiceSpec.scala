@@ -57,7 +57,8 @@ class ThrottlingServiceSpec extends UnitTestTrait
     )
   }
 
-  "ThrottlingService" should {
+  //TODO re-enable the tests if and when throttling is defined
+  "ThrottlingService" ignore {
 
     implicit lazy val request = authenticatedFakeRequest()
     implicit lazy val hc = HeaderCarrier()
