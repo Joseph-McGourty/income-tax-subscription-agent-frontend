@@ -32,8 +32,8 @@ trait MockEnrolmentConnector extends UnitTestTrait with MockHttp {
   object TestEnrolmentConnector extends EnrolmentConnector(appConfig, mockHttpGet, app.injector.instanceOf[Logging]) {
     override def getEnrolments(uri: String)(implicit hc: HeaderCarrier): Future[Option[Seq[Enrolment]]] =
       hc.userId.fold(Future.successful(None: Option[Seq[Enrolment]]))(userId => userId.value match {
-        case auth.mockEnrolled => Future.successful(Some(Seq(Enrolment(Constants.agentServiceName, Seq(), "Activated"))))
-        case _ => Future.successful(None)
+        case auth.`mockNotASEnrolled` => Future.successful(None)
+        case _ => Future.successful(Some(Seq(Enrolment(Constants.agentServiceName, Seq(), "Activated"))))
       })
   }
 

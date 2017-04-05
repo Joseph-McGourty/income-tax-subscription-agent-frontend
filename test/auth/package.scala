@@ -51,7 +51,7 @@ package object auth {
   val mockUpliftUserIdCL50 = UserIdBuilder("mockUpliftUserIdCL50")
   val mockWeakUserId = UserIdBuilder("mockWeakUserId")
   val mockTimeout = UserIdBuilder("mockTimeout")
-  val mockEnrolled = UserIdBuilder("mockEnrolled")
+  val mockNotASEnrolled = UserIdBuilder("mockNotASEnrolled")
 
   object ggUser {
 
