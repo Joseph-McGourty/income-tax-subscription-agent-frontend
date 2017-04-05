@@ -61,7 +61,7 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   // Frontend Config
   override lazy val baseUrl: String = loadConfig("base.url")
-  protected val contextRoute = "income-tax-subscription-frontend"
+  protected val contextRoute = "income-tax-subscription-agent-frontend"
 
   //Authentication/Authorisation Config
   override lazy val ggSignInUrl = loadConfig("government-gateway.sign-in.url")

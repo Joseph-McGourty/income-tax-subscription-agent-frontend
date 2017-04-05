@@ -21,17 +21,17 @@
 
 @(getAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("agent.not_enrolled_agent_services.title"), bodyClasses = None) {
+@main_template(title = Messages("not_enrolled_agent_services.title"), bodyClasses = None) {
 
-    <h1 class="heading-large">@Messages("agent.not_enrolled_agent_services.heading")</h1>
+    <h1 class="heading-large">@Messages("not_enrolled_agent_services.heading")</h1>
 
     <div class="form-group">
-        <p>@Messages("agent.not_enrolled_agent_services.para1")</p>
+        <p>@Messages("not_enrolled_agent_services.para1")</p>
     </div>
 
     <div class="form-group">
         @form(action = getAction) {
-            @continueButton(Messages("agent.not_enrolled_agent_services.subscribe"))
+            @continueButton(Messages("not_enrolled_agent_services.subscribe"))
         }
     </div>
 

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.agent
+package controllers
 
 import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
-import controllers.BaseController
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, Call, AnyContent}
+import play.api.mvc.{Action, AnyContent, Call}
 
 import scala.concurrent.Future
 
@@ -32,7 +31,7 @@ class NotEnrolledAgentServicesController @Inject()(val baseConfig: BaseControlle
 
   val show: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(views.html.agent.not_enrolled_agent_services(getAction = Call("GET", applicationConfig.agentServicesUrl))))
+      Future.successful(Ok(views.html.not_enrolled_agent_services(getAction = Call("GET", applicationConfig.agentServicesUrl))))
   }
 
 }

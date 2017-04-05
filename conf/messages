@@ -233,6 +233,16 @@ error.other-income.invalid                                      = You must selec
 
 error.terms.empty                                               = You must confirm T&C''s to continue
 
+error.client_details.first_name.empty                           = You must enter your first name
+error.client_details.last_name.empty                            = You must enter your last name
+error.client_details.first_name.invalid                         = Your first name contains invalid characters
+error.client_details.last_name.invalid                          = Your last name contains invalid characters
+error.client_details.first_name.maxLength                       = The first name is too long
+error.client_details.last_name.maxLength                        = The last name is too long
+
+error.nino.invalid                                              = You must enter a valid National Insurance number
+error.nino.empty                                                = You must enter a National Insurance number
+
 ## Eligible page ##
 eligible.title                                                  = You can send digital updates
 eligible.heading                                                = You can send digital updates
@@ -282,12 +292,20 @@ income-other.yes                                                = Yes
 income-other.no                                                 = No
 
 
-
-#### AGENT Journey Messages ####
-#### ---------------------- ####
-
 ## Not Enrolled to Agent Services
-agent.not_enrolled_agent_services.title                         = You''re not subscribed to Agent services
-agent.not_enrolled_agent_services.heading                       = You''re not subscribed to Agent services
-agent.not_enrolled_agent_services.para1                         = You will need to subscribe to agent services before you continue to subscribe your clients for quarterly reporting.
-agent.not_enrolled_agent_services.subscribe                     = Subscribe to Agent services
+not_enrolled_agent_services.title                               = You''re not subscribed to Agent services
+not_enrolled_agent_services.heading                             = You''re not subscribed to Agent services
+not_enrolled_agent_services.para1                               = You will need to subscribe to agent services before you continue to subscribe your clients for quarterly reporting.
+not_enrolled_agent_services.subscribe                           = Subscribe to Agent services
+
+## Client Details ##
+client-details.title                                            = Enter your client''s details
+client-details.heading                                          = Enter your client''s details
+client-details.line_1                                           = We will attempt to match these details against information we currently hold.
+client-details.field_1                                          = First name
+client-details.field_2                                          = Last name
+client-details.field_3                                          = National Insurance number
+client-details.field_4                                          = Date of birth
+client_details.formhint.1.line_1                                = This is on your client''s National Insurance card, payslip or P60.
+client_details.formhint.1.line_2                                = For example, ''QQ 12 34 56 C''.
+client-details.formhint.2                                       = For example, 10 12 1990
