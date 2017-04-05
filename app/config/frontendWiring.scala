@@ -46,7 +46,7 @@ class FrontendAuthConnector @Inject()(val app: Application) extends AuthConnecto
 @Singleton
 class SessionCache @Inject()(val app: Application,
                              val http: WSHttp) extends uk.gov.hmrc.http.cache.client.SessionCache with AppName with ServicesConfig {
-  lazy val defaultSource: String = getConfString("session-cache.income-tax-subscription-frontend.cache", "income-tax-subscription-frontend")
+  lazy val defaultSource: String = getConfString("session-cache.income-tax-subscription-agent-frontend.cache", "income-tax-subscription-agent-frontend")
 
   lazy val baseUri = baseUrl("session-cache")
   lazy val domain = getConfString("session-cache.domain", throw new Exception(s"Could not find config 'session-cache.domain'"))

@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package views.agent
+package views
 
-import assets.MessageLookup.AgentMessages.{NotEnrolledAgentServices => messages}
-import assets.MessageLookup.{Base => commonMessages}
+import assets.MessageLookup.{Base => commonMessages, NotEnrolledAgentServices => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import views.ViewSpecTrait
 
 class NotEnrolledAgentServicesViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  lazy val page = views.html.agent.not_enrolled_agent_services(action)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = views.html.not_enrolled_agent_services(action)(FakeRequest(), applicationMessages, appConfig)
 
   "The Agent not Enrolled to Agent Services view" should {
     val testPage = TestView(
