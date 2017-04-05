@@ -53,6 +53,13 @@ object ClientDetailsForm {
     )(ClientDetailsModel.apply)(ClientDetailsModel.unapply)
   )
 
-  val clientDetailsForm = PreprocessedForm(clientDetailsValidationForm)
+  import forms.prevalidation.TrimOption._
+  import forms.prevalidation.CaseOption._
+
+  val clientDetailsForm = PreprocessedForm(
+    validation = clientDetailsValidationForm,
+    trimRules = Map(clientNino -> bothAndCompress),
+    caseRules = Map(clientNino -> upper)
+  )
 
 }
