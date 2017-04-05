@@ -38,8 +38,6 @@ trait AppConfig {
   val subscriptionUrl: String
   val throttleControlUrl: String
   val authUrl: String
-  val preferencesService: String
-  val preferencesUrl: String
   val baseUrl: String
   val enableThrottling: Boolean
   val ggUrl: String
@@ -97,10 +95,6 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   protected lazy val protectedMicroServiceUrl = baseUrl("subscription-service")
   override lazy val subscriptionUrl = s"$protectedMicroServiceUrl/income-tax-subscription/subscription"
   override lazy val throttleControlUrl = s"$protectedMicroServiceUrl/income-tax-subscription/throttle"
-
-  // Digital Preferences
-  override lazy val preferencesService = baseUrl("preferences-frontend")
-  override lazy val preferencesUrl = loadConfig("preferences.url")
 
   // Enable or disable calling the throttling control in the middle service from the HomeController
   override lazy val enableThrottling = loadConfig("feature-switch.enable-throttling").toBoolean

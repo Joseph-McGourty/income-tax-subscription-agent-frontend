@@ -90,7 +90,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
         status(result) must be(Status.SEE_OTHER)
 
-        redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+        redirectLocation(result).get mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
 
         verifyMockCheckAccess(1)
       }
@@ -104,7 +104,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
         status(result) must be(Status.SEE_OTHER)
 
-        redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+        redirectLocation(result).get mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
 
         verifyMockCheckAccess(0)
       }

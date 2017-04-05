@@ -8,12 +8,6 @@ GET         /index                            controllers.HomeController.index
 # SignOut Controller
 GET         /logout                           controllers.SignOutController.signOut
 
-# Preferences routes
-GET         /preferences                      controllers.preferences.PreferencesController.checkPreferences
-GET         /callback                         controllers.preferences.PreferencesController.callback
-GET         /paperless-error                  controllers.preferences.PreferencesController.showGoBackToPreferences
-POST        /paperless-error                  controllers.preferences.PreferencesController.submitGoBackToPreferences
-
 # Income Source Routes
 GET         /income                           controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)
 POST        /income                           controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
@@ -39,10 +33,6 @@ GET         /thankyou                         controllers.FeedbackController.tha
 # Terms Routes
 GET         /terms                            controllers.TermsController.showTerms(editMode: Boolean ?= false)
 POST        /terms                            controllers.TermsController.submitTerms(editMode: Boolean ?= false)
-
-# Not Eligible Routes - CURRENTLY NOT USED (but kept if required at a later date)
-GET         /not-eligible                     controllers.NotEligibleController.showNotEligible
-POST        /not-eligible                     controllers.NotEligibleController.submitNotEligible
 
 # Other Income Sources Routes
 GET         /income-other                     controllers.OtherIncomeController.showOtherIncome
