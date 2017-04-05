@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package controllers.agent
+package controllers
 
 import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
-import controllers.BaseController
 import forms._
-import forms.agent.ClientDetailsForm
 import models.ClientDetailsModel
-import models.enums._
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import services.KeystoreService
-import uk.gov.hmrc.play.http.InternalServerException
-import utils.Implicits._
 
 import scala.concurrent.Future
 
@@ -41,9 +36,9 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
                                          ) extends BaseController {
 
   def view(clientDetailsForm: Form[ClientDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
-    views.html.agent.client_details(
+    views.html.client_details(
       clientDetailsForm,
-      controllers.agent.routes.ClientDetailsController.submitClientDetails(editMode = isEditMode),
+      controllers.routes.ClientDetailsController.submitClientDetails(editMode = isEditMode),
       backUrl,
       isEditMode
     )

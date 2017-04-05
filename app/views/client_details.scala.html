@@ -15,21 +15,21 @@
  *@
 
 @import models._
-@import forms.agent.ClientDetailsForm._
+@import forms.ClientDetailsForm._
 @import helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import config.AppConfig
 
 @(clientDetailsForm: Form[ClientDetailsModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@views.html.templates.main_template(title = Messages("agent.client-details.title"), bodyClasses = None) {
+@views.html.templates.main_template(title = Messages("client-details.title"), bodyClasses = None) {
     @back_link(backUrl)
 
     @summaryErrorHelper(clientDetailsForm)
 
-    <h1 class="heading-xlarge">@Messages("agent.client-details.heading")</h1>
+    <h1 class="heading-large">@Messages("client-details.heading")</h1>
 
-    <p>@Messages("agent.client-details.line_1")</p>
+    <p>@Messages("client-details.line_1")</p>
 
     @form(action = postAction) {
 
@@ -37,7 +37,7 @@
             <div class="form-field-group">
             @inputHelper(
                 field = clientDetailsForm(clientFirstName),
-                label = Messages("agent.client-details.field_1"),
+                label = Messages("client-details.field_1"),
                 labelClass = "form-label-bold",
                 maxLength = nameMaxLength,
                 parentForm = clientDetailsForm
@@ -46,7 +46,7 @@
             <div class="form-field-group">
             @inputHelper(
                 field = clientDetailsForm(clientLastName),
-                label = Messages("agent.client-details.field_2"),
+                label = Messages("client-details.field_2"),
                 labelClass = "form-label-bold",
                 maxLength = nameMaxLength,
                 parentForm = clientDetailsForm
@@ -55,18 +55,18 @@
             <div class="form-field-group">
             @inputHelper(
                 field = clientDetailsForm(clientNino),
-                label = Messages("agent.client-details.field_3"),
+                label = Messages("client-details.field_3"),
                 labelClass = "form-label-bold",
-                formHint = Messages("agent.client-details.formhint.1"),
+                formHint = Seq(Messages("client_details.formhint.1.line_1"), Messages("client_details.formhint.1.line_2")),
                 parentForm = clientDetailsForm
             )
             </div>
 
             @dateHelper(
                 field = clientDetailsForm(clientDateOfBirth),
-                label = Messages("agent.client-details.field_4"),
+                label = Messages("client-details.field_4"),
                 parentForm = clientDetailsForm,
-                hintText = Messages("agent.client-details.formhint.2")
+                hintText = Messages("client-details.formhint.2")
             )
         </div>
 

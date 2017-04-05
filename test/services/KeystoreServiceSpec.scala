@@ -29,7 +29,7 @@ class KeystoreServiceSpec extends UnitTestTrait
   "Keystore service" should {
     "be DIed with the correct session cache object" in {
       val cache = app.injector.instanceOf[SessionCache]
-      cache.defaultSource shouldBe cache.getConfString("session-cache.income-tax-subscription-frontend.cache", "income-tax-subscription-frontend")
+      cache.defaultSource shouldBe cache.getConfString("session-cache.income-tax-subscription-agent-frontend.cache", "income-tax-subscription-agent-frontend")
       cache.baseUri shouldBe cache.baseUrl("session-cache")
       cache.domain shouldBe cache.getConfString("session-cache.domain", throw new Exception(s"Could not find config 'session-cache.domain'"))
     }

@@ -16,6 +16,9 @@
 
 package assets
 
+import forms.validation.Constraints.{invalidFormat, maxLength, nonEmpty}
+import play.api.data.validation.Constraint
+
 object MessageLookup {
 
   object Base {
@@ -301,6 +304,20 @@ object MessageLookup {
       val empty = "You must confirm T&C's to continue"
     }
 
+    object ClientDetails {
+      val firstNameEmpty = "You must enter your first name"
+      val lastNameEmpty = "You must enter your last name"
+      val firstNameInvalid = "Your first name contains invalid characters"
+      val lastNameInvalid = "Your last name contains invalid characters"
+      val firstNameMaxLength = "The first name is too long"
+      val lastNameMaxLength = "The last name is too long"
+    }
+
+    object Nino {
+      val empty = "You must enter a National Insurance number"
+      val invalid = "You must enter a valid National Insurance number"
+    }
+
   }
 
   object Eligible {
@@ -372,15 +389,16 @@ object MessageLookup {
   }
 
   object ClientDetails {
-    val title = "Enter client details"
-    val heading = "Enter client details"
-    val line1 = "This is to help us confirm who your client is, so we know what questions to ask you."
+    val title = "Enter your client's details"
+    val heading = "Enter your client's details"
+    val line1 = "We will attempt to match these details against information we currently hold."
     val field1 = "First name"
     val field2 = "Last name"
     val field3 = "National Insurance number"
     val field4 = "Date of birth"
-    val formhint1 = "For example QQ123456C"
-    val formhint2 = "For example, 31 3 1980"
+    val formhint1_line1 = "This is on your client's National Insurance card, payslip or P60."
+    val formhint1_line2 = "For example, 'QQ 12 34 56 C'."
+    val formhint2 = "For example, 10 12 1990"
   }
 
 }

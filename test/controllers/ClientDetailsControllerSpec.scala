@@ -17,8 +17,7 @@
 package controllers
 
 import auth._
-import controllers.agent.ClientDetailsController
-import forms.agent.ClientDetailsForm
+import forms.ClientDetailsForm
 import models.{ClientDetailsModel, DateModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}

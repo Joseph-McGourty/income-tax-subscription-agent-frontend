@@ -17,7 +17,7 @@
 package views
 
 import assets.MessageLookup.{Base => common, ClientDetails => messages}
-import forms.agent.ClientDetailsForm
+import forms.ClientDetailsForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
@@ -26,7 +26,7 @@ class ClientDetailsViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean) = views.html.agent.client_details(
+  def page(isEditMode: Boolean) = views.html.client_details(
     clientDetailsForm = ClientDetailsForm.clientDetailsForm.form,
     postAction = action,
     backUrl = backUrl,
@@ -52,19 +52,16 @@ class ClientDetailsViewSpec extends ViewSpecTrait {
 
     form.mustHaveTextField(
       name = ClientDetailsForm.clientFirstName,
-      label = messages.field1,
-      showLabel = true)
+      label = messages.field1)
 
     form.mustHaveTextField(
       name = ClientDetailsForm.clientLastName,
-      label = messages.field2,
-      showLabel = true)
+      label = messages.field2)
 
     form.mustHaveTextField(
       name = ClientDetailsForm.clientNino,
       label = messages.field3,
-      hint = messages.formhint1,
-      showLabel = true)
+      hint = messages.formhint1_line1 + " " + messages.formhint1_line2)
 
     form.mustHaveDateField(
       id = "clientDateOfBirth",

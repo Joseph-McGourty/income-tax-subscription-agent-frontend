@@ -18,7 +18,6 @@ package controllers
 
 import assets.MessageLookup.{NotEnrolledAgentServices => messages}
 import auth._
-import controllers.agent.NotEnrolledAgentServicesController
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
