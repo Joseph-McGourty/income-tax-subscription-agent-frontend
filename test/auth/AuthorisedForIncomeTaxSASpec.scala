@@ -92,7 +92,7 @@ class AuthorisedForIncomeTaxSASpec extends MockAuthTestController {
     }
 
     "redirect to the Not AS Enrolled Page" in {
-      redirectLocation(result) shouldBe Some(mockConfig.notASEnrolledUrl)
+      redirectLocation(result) shouldBe Some(controllers.routes.NotEnrolledAgentServicesController.show().url)
     }
   }
 

@@ -34,7 +34,6 @@ trait AppConfig {
   val notAuthorisedRedirectUrl: String
   val ggSignInUrl: String
   val ggSignInContinueUrl: String
-  val notASEnrolledUrl: String
   val subscriptionUrl: String
   val throttleControlUrl: String
   val authUrl: String
@@ -67,7 +66,6 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   override lazy val ggSignInUrl = loadConfig("government-gateway.sign-in.url")
   override lazy val ggSignInContinueUrl = loadConfig("government-gateway.continue.url")
   override lazy val notAuthorisedRedirectUrl = loadConfig("not-authorised-callback.url")
-  override lazy val notASEnrolledUrl = loadConfig("not-as-enrolled.url")
   override lazy val authUrl = baseUrl("auth")
 
   // sign out

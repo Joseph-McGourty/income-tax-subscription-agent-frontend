@@ -31,7 +31,6 @@ trait MockConfig extends AppConfig {
   override val betaFeedbackUrl: String = "/feedback"
   override val contactFormServiceIdentifier: String = "/contact"
   override val contactFrontendPartialBaseUrl: String = "/contact/partial"
-  override val notASEnrolledUrl: String = "/not-as-enrolled"
   override val subscriptionUrl: String = "/income-tax-subscription/subscription"
   override val baseUrl: String = ""
   override val authUrl: String = ""

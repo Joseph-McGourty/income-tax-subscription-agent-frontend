@@ -40,22 +40,13 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
   )
 
   "ConfirmationController" should {
-    "If the user is enrolled then get the ID from keystore" in {
+    "Get the ID from keystore" in {
       setupMockKeystore(fetchSubscriptionId = "testId")
-      val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockNotASEnrolled))
+      val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest())
       status(result) shouldBe OK
 
       await(result)
       verifyKeystore(fetchSubscriptionId = 1)
-    }
-
-    "If the user is not enrolled then return not found" in {
-      setupMockKeystore(fetchSubscriptionId = "testId")
-      val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest())
-      status(result) shouldBe NOT_FOUND
-
-      await(result)
-      verifyKeystore(fetchSubscriptionId = 0)
     }
   }
 

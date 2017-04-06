@@ -38,9 +38,6 @@ POST        /terms                            controllers.TermsController.submit
 GET         /income-other                     controllers.OtherIncomeController.showOtherIncome
 POST        /income-other                     controllers.OtherIncomeController.submitOtherIncome
 
-# Already enrolled
-GET         /error/subscription-status        controllers.AlreadyEnrolledController.enrolled
-
 
 # Throttle limit reached routes
 GET         /error/maintenance                controllers.throttling.ThrottlingController.show
