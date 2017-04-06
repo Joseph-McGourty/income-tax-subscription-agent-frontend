@@ -31,7 +31,7 @@ import scala.concurrent.Future
 @Singleton
 class EnrolmentConnector @Inject()(appConfig: AppConfig,
                                    val http: HttpGet,
-                                   logging: Logging) {
+                                   logging: Logging) extends RawResponseReads {
 
   def getIncomeTaxSAEnrolment(uri: String)(implicit hc: HeaderCarrier): Future[Option[Enrolment]] = {
     val getUrl = s"${appConfig.authUrl}$uri/enrolments"

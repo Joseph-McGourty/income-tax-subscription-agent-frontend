@@ -25,15 +25,16 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.KeystoreService
+import services.{ClientMatchingService, KeystoreService}
 
 import scala.concurrent.Future
 
 @Singleton
 class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
                                         val messagesApi: MessagesApi,
-                                        val keystoreService: KeystoreService
-                                         ) extends BaseController {
+                                        val keystoreService: KeystoreService,
+                                        val clientMatchingService: ClientMatchingService
+                                       ) extends BaseController {
 
   def view(clientDetailsForm: Form[ClientDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.client_details(
@@ -55,12 +56,17 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
       ClientDetailsForm.clientDetailsForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
         clientDetails => {
-          keystoreService.saveClientDetails(clientDetails) map (_ =>
-            if (isEditMode)
-              NotImplemented
-            else
-              NotImplemented
-            )
+          keystoreService.saveClientDetails(clientDetails) flatMap { _ =>
+            //            if (isEditMode)
+            //              NotImplemented
+            //            else
+            //              NotImplemented
+            //            )
+            clientMatchingService.matchClient(clientDetails) map {
+              case true => NotImplemented
+              case false => NotImplemented
+            }
+          }
         }
       )
   }
