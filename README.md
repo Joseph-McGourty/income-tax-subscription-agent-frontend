@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/hmrc/income-tax-subscription-agent-frontend.svg)](https://travis-ci.org/hmrc/income-tax-subscription-agent-frontend) [ ![Download](https://api.bintray.com/packages/hmrc/releases/income-tax-subscription-agent-frontend/images/download.svg) ](https://bintray.com/hmrc/releases/income-tax-subscription-agent-frontend/_latestVersion)
 
 #### Sign your Client up to Report their Income and Expenses Quarterly (MTD ITSA)
-# Income Tax Subscription Frontend
+# Income Tax Subscription Agent Frontend
 
 This is a Scala/Play frontend web UI that provides screens for an Agent to subscribe their Client to MTD ITSA which allows them to report their...
 
@@ -61,7 +61,7 @@ You will need [sbt](http://www.scala-sbt.org/)
 
 8) **Go to the homepage:**
 
-   http://localhost:9561/report-quarterly/income-and-expenses/sign-up
+   http://localhost:9563/report-quarterly/income-and-expenses/sign-up/client
 
 ### License
 
