@@ -38,8 +38,31 @@ class AgentFrontPageViewSpec extends ViewSpecTrait {
       showSignOutInBanner = false
     )
 
+    testPage.mustHaveParaSeq(
+      messages.para_1,
+      messages.para_2,
+      messages.para_3,
+      messages.para_4,
+      messages.para_5,
+      messages.para_6
+    )
 
-    val form = testPage.getForm("Agent Front Page Error form")(actionCall = action)
+    testPage.mustHaveBulletSeq(
+      messages.bullet_1,
+      messages.bullet_2,
+      messages.bullet_3,
+      messages.bullet_4,
+      messages.bullet_5,
+      messages.bullet_6,
+      messages.bullet_7,
+      messages.bullet_8
+    )
+
+    testPage.mustHaveH2(messages.subHeading_1)
+
+    testPage.mustHaveH2(messages.subHeading_2)
+
+    val form = testPage.getForm("Agent 'Front/Start Page view")(actionCall = action)
 
     form.mustHaveSubmitButton(common.signUp)
 
