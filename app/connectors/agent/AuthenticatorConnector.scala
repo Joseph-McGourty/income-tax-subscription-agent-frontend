@@ -43,7 +43,7 @@ class AuthenticatorConnector @Inject()(appConfig: AppConfig,
     val request: ClientMatchRequestModel = clientDetailsModel
 
     lazy val logFailure = (status: Int, response: HttpResponse) => {
-      logging.warn(s"AuthenticatorConnector.matchClient unexpected failure: status=$status, body=" + response.body)
+      logging.warn(s"AuthenticatorConnector.matchClient unexpected response from authenticator: status=$status, body=" + response.body)
       new InternalServerException(s"AuthenticatorConnector.matchClient unexpected response from authenticator: status=$status body=${response.body}")
     }
 

@@ -22,19 +22,23 @@ import models.{ClientDetailsModel, DateModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, _}
-import services.mocks.MockKeystoreService
+import services.mocks.{MockClientMatchingService, MockKeystoreService}
 
-class ClientDetailsControllerSpec extends ControllerBaseSpec with MockKeystoreService {
+class ClientDetailsControllerSpec extends ControllerBaseSpec
+  with MockKeystoreService
+  with MockClientMatchingService {
 
   override val controllerName: String = "ClientDetailsController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "showClientDetails" -> TestClientDetailsController.showClientDetails(isEditMode = false),
     "submitClientDetails" -> TestClientDetailsController.submitClientDetails(isEditMode = false)
   )
+
   object TestClientDetailsController extends ClientDetailsController(
     MockBaseControllerConfig,
     messagesApi,
-    MockKeystoreService
+    MockKeystoreService,
+    MockClientMatchingService
   )
 
   "Calling the showClientDetails action of the ClientDetailsController with an authorised user" should {
@@ -66,6 +70,7 @@ class ClientDetailsControllerSpec extends ControllerBaseSpec with MockKeystoreSe
 
     "When it is not in edit mode" should {
       "return a redirect status (NOT_IMPLEMENTED)" in {
+        setupMatchClient(matchClientMatched)
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callSubmit(isEditMode = false)
@@ -77,6 +82,7 @@ class ClientDetailsControllerSpec extends ControllerBaseSpec with MockKeystoreSe
       }
 
       s"redirect to 'NONE" in {
+        setupMatchClient(matchClientMatched)
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callSubmit(isEditMode = false)
@@ -90,6 +96,7 @@ class ClientDetailsControllerSpec extends ControllerBaseSpec with MockKeystoreSe
 
     "When it is in edit mode" should {
       "return a redirect status (NOT_IMPLEMENTED)" in {
+        setupMatchClient(matchClientMatched)
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callSubmit(isEditMode = true)
@@ -101,6 +108,7 @@ class ClientDetailsControllerSpec extends ControllerBaseSpec with MockKeystoreSe
       }
 
       s"redirect to NONE" in {
+        setupMatchClient(matchClientMatched)
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callSubmit(isEditMode = true)
