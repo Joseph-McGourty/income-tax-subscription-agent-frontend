@@ -44,15 +44,6 @@ class AuthorisedForIncomeTaxSASpec extends MockAuthTestController {
     }
   }
 
-  "Calling authenticated async action with a logged in user with Confidence Level 200 and NO PAYE account" should {
-
-    lazy val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockUpliftUserIdCL200NoAccounts))
-
-    "result in a status SEE_OTHER (303) redirect" in {
-      status(result) shouldBe Status.SEE_OTHER
-    }
-  }
-
   "Calling authenticated async action with a logged in user with Confidence Level 100" should {
 
     lazy val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockUpliftUserIdCL100))
@@ -93,15 +84,15 @@ class AuthorisedForIncomeTaxSASpec extends MockAuthTestController {
     }
   }
 
-  "Calling authenticated action with an enrolled user" should {
-    lazy val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled))
+  "Calling authenticated action with a user who is not enrolled to agent service" should {
+    lazy val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockNotASEnrolled))
 
     "result in a redirect status" in {
       status(result) shouldBe Status.SEE_OTHER
     }
 
-    "redirect to the Already Enrolled Page" in {
-      redirectLocation(result) shouldBe Some(mockConfig.alreadyEnrolledUrl)
+    "redirect to the Not AS Enrolled Page" in {
+      redirectLocation(result) shouldBe Some(controllers.routes.NotEnrolledAgentServicesController.show().url)
     }
   }
 

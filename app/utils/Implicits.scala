@@ -27,6 +27,8 @@ trait Implicits {
 
   implicit def FutureUtl[T](err: Throwable): Future[T] = Future.failed(err)
 
+  implicit def FutureOptionUtl[T, S <: T](fData: S): Future[Option[T]] = Future.successful(Some(fData))
+
   implicit def EitherUtilLeft[T, R <: T, L](left: L): Either[L, R] = Left(left)
 
   implicit def EitherUtilRight[T, R <: T, L](right: R): Either[L, R] = Right(right)

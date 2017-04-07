@@ -23,10 +23,6 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
   "IncomeTaxSAUser" should {
     lazy val user = IncomeTaxSAUser(ggUser.userCL200Context)
 
-    "have the expected NINO 'AB124512C'" in {
-      user.nino shouldBe Some(nino)
-    }
-
     "have the previously logged in time of logged in user" in {
       user.previouslyLoggedInAt shouldBe ggUser.previouslyLoggedInAt
     }

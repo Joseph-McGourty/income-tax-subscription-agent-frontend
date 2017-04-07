@@ -16,7 +16,7 @@
 
 package services
 
-import auth.{authenticatedFakeRequest, mockAuthorisedUserIdCL200, mockEnrolled}
+import auth.{authenticatedFakeRequest, mockAuthorisedUserIdCL200, mockNotASEnrolled}
 import connectors.models.Enrolment.{Enrolled, NotEnrolled}
 import org.scalatest.Matchers._
 import play.api.mvc.Results
@@ -48,14 +48,14 @@ class EnrolmentServiceSpec extends UnitTestTrait
   implicit def hcUtil(implicit request: FakeRequest[_]): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
 
   "EnrolmentService" should {
-    "return is enrolled for an enrolled user" in {
-      implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled)
-      await(TestEnrolmentService.checkEnrolment(isEnrolled)(hcUtil(request)))
+    "return is enrolled for an user with AS enrolment" in {
+      implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockAuthorisedUserIdCL200)
+      await(TestEnrolmentService.checkAgentServiceEnrolment(isEnrolled)(hcUtil(request)))
     }
 
-    "return not enrolled for a user without enrolment" in {
-      implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockAuthorisedUserIdCL200)
-      await(TestEnrolmentService.checkEnrolment(isNotEnrolled)(hcUtil(request)))
+    "return not enrolled for a user without AS enrolment" in {
+      implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockNotASEnrolled)
+      await(TestEnrolmentService.checkAgentServiceEnrolment(isNotEnrolled)(hcUtil(request)))
     }
   }
 
