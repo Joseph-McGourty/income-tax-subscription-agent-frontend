@@ -35,7 +35,6 @@ trait AuthorisedForIncomeTaxSA extends Actions with ErrorPageRenderer {
   val enrolmentService: EnrolmentService
   val applicationConfig: AppConfig
   val postSignInRedirectUrl: String
-  lazy val alreadyEnrolledUrl: String = applicationConfig.alreadyEnrolledUrl
 
   private type PlayRequest = Request[AnyContent] => Result
   private type UserRequest = IncomeTaxSAUser => PlayRequest
@@ -67,19 +66,9 @@ trait AuthorisedForIncomeTaxSA extends Actions with ErrorPageRenderer {
       asyncCore {
         authContext: IncomeTaxSAUser =>
           implicit request =>
-            enrolmentService.checkEnrolment {
-              case NotEnrolled => action(authContext)(request)
-              case _ => Future.successful(Redirect(alreadyEnrolledUrl))
-            }
-      }
-
-    def asyncForEnrolled(action: AsyncUserRequest): Action[AnyContent] =
-      asyncCore {
-        authContext: IncomeTaxSAUser =>
-          implicit request =>
-            enrolmentService.checkEnrolment {
+            enrolmentService.checkAgentServiceEnrolment {
               case Enrolled => action(authContext)(request)
-              case _ => Future.successful(showNotFound)
+              case _ => Future.successful(Redirect(controllers.routes.NotEnrolledAgentServicesController.show()))
             }
       }
 

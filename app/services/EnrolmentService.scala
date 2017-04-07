@@ -19,6 +19,7 @@ package services
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
+import common.Constants
 import connectors.EnrolmentConnector
 import connectors.models.Enrolment.Enrolled
 import play.api.mvc.Result
@@ -33,12 +34,12 @@ class EnrolmentService @Inject()(val authConnector: AuthConnector,
                                  val enrolmentConnector: EnrolmentConnector,
                                  logging: Logging) {
 
-  def checkEnrolment(f: Enrolled => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
+  def checkAgentServiceEnrolment(f: Enrolled => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
     logging.debug(s"Checking enrolment")
     for {
       authority <- authConnector.currentAuthority
-      enrolment <- enrolmentConnector.getIncomeTaxSAEnrolment(authority.fold("")(_.uri))
-      result <- f(enrolment.isEnrolled)
+      enrolments <- enrolmentConnector.getEnrolments(authority.fold("")(_.uri))
+      result <- f(enrolments.isEnrolled(Constants.agentServiceName))
     } yield result
   }
 }

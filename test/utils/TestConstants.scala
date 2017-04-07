@@ -16,6 +16,7 @@
 
 package utils
 
+import common.Constants
 import models.DateModel
 import uk.gov.hmrc.domain.Generator
 
@@ -24,5 +25,6 @@ object TestConstants {
   lazy val testMTDID = "XE0001234567890"
   lazy val startDate = DateModel("05", "04", "2017")
   lazy val endDate = DateModel("04", "04", "2018")
-  lazy val ggServiceName = "HMRC-MTD-IT"
+  lazy val ggServiceName = Constants.ggServiceName
+  lazy val agentServiceName = Constants.agentServiceName
 }

@@ -35,7 +35,7 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
                                        val logging: Logging
                                       ) extends BaseController {
 
-  val showConfirmation: Action[AnyContent] = Authorised.asyncForEnrolled { implicit user =>
+  val showConfirmation: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchSubscriptionId.map {
         case Some(id) =>

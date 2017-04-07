@@ -49,16 +49,16 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
         case true =>
           throttlingService.checkAccess.flatMap {
             case Some(CanAccess) =>
-              gotoPreferences
+              gotoFirst
             case Some(_) =>
               Redirect(controllers.throttling.routes.ThrottlingController.show().url)
             case x =>
               logging.debug(s"Unexpected response from throttling service, internal server exception")
               new InternalServerException("HomeController.index: unexpected error calling the throttling service")
           }
-        case false => gotoPreferences
+        case false => gotoFirst
       }
   }
 
-  lazy val gotoPreferences = Redirect(controllers.preferences.routes.PreferencesController.checkPreferences())
+  lazy val gotoFirst = Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
 }

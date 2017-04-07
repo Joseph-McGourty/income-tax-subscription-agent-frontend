@@ -20,9 +20,9 @@ import javax.inject.{Inject, Singleton}
 
 import audit.Logging
 import auth.IncomeTaxSAUser
-import connectors.models.throttling.UserAccess
+import connectors.models.throttling.{CanAccess, UserAccess}
 import connectors.throttling.ThrottlingControlConnector
-import uk.gov.hmrc.play.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.Implicits._
 
 import scala.concurrent.Future
@@ -32,13 +32,9 @@ class ThrottlingService @Inject()(throttlingControlConnector: ThrottlingControlC
                                   logging: Logging
                                  ) {
 
-  def checkAccess(implicit user: IncomeTaxSAUser, hc: HeaderCarrier): Future[Option[UserAccess]] = {
-    user.nino match {
-      case Some(nino) => throttlingControlConnector.checkAccess(nino)
-      case None =>
-        logging.warn("ThrottlingService.checkAccess: unexpected error, no nino found")
-        new InternalServerException("ThrottlingService.checkAccess: unexpected error, no nino found")
-    }
-  }
+  //TODO use another stable identifier for throttling agents when we need the service since we cannot use nino
+  def checkAccess(implicit user: IncomeTaxSAUser, hc: HeaderCarrier): Future[Option[UserAccess]] =
+    CanAccess
+
 
 }

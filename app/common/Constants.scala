@@ -19,5 +19,5 @@ package common
 object Constants {
 
   val ggServiceName = "HMRC-MTD-IT"
-
+  val agentServiceName = "HMRC-AS-AGENT"
 }
