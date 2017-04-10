@@ -103,8 +103,8 @@ business.accounting_method.accruals                             = Traditional ac
 
 ## Business Name
 business.name.title                                             = Business name
-business.name.heading                                           = What''s the name of your business?
-business.name.line_1                                            = This is the business name you used to register for Self Assessment. If your business doesn''t have a name, enter your own name.
+business.name.heading                                           = What''s the name of your client''s business?
+business.name.line_1                                            = This is the business name they used to register for Self Assessment. If their business doesn''t have a name, enter your client''s name.
 
 ## Terms and Conditions Messages
 terms.title                                                     = Terms of participation
