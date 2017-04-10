@@ -48,12 +48,6 @@ class BusinessAccountingPeriodPriorViewSpec extends ViewSpecTrait {
 
     testPage.mustHaveBackLinkTo(backUrl)
 
-    val accordion = testPage.getAccordion("Business Accounting Period accordion", messages.accordion)
-
-    accordion.mustHaveParaSeq(
-      messages.accordion_line1,
-      messages.accordion_line2
-    )
 
     val form = testPage.getForm("Business Accounting Period form")(actionCall = action)
 
