@@ -63,7 +63,6 @@ trait MockKeystoreService extends MockTrait {
                                          fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchAccountingPeriodPrior: MFO[AccountingPeriodPriorModel] = DoNotConfigure,
-                                         fetchRegisterNextAccountingPeriod: MFO[RegisterNextAccountingPeriodModel] = DoNotConfigure,
                                          fetchClientDetails: MFO[ClientDetailsModel] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
@@ -77,7 +76,6 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
     mockFetchFromKeyStore[AccountingPeriodPriorModel](AccountingPeriodPrior, fetchAccountingPeriodPrior)
-    mockFetchFromKeyStore[RegisterNextAccountingPeriodModel](RegisterNextAccountingPeriod, fetchRegisterNextAccountingPeriod)
     mockFetchFromKeyStore[ClientDetailsModel](ClientDetails, fetchClientDetails)
 
     setupMockKeystoreSaveFunctions()
@@ -105,8 +103,6 @@ trait MockKeystoreService extends MockTrait {
                                       saveSubscriptionId: Option[Int] = None,
                                       fetchAccountingPeriodPrior: Option[Int] = None,
                                       saveAccountingPeriodPrior: Option[Int] = None,
-                                      fetchRegisterNextAccountingPeriod: Option[Int] = None,
-                                      saveRegisterNextAccountingPeriod: Option[Int] = None,
                                       fetchClientDetails: Option[Int] = None,
                                       saveClientDetails: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
@@ -130,8 +126,6 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(MtditId, saveSubscriptionId)
     verifyKeystoreFetch(AccountingPeriodPrior, fetchAccountingPeriodPrior)
     verifyKeystoreSave(AccountingPeriodPrior, saveAccountingPeriodPrior)
-    verifyKeystoreFetch(RegisterNextAccountingPeriod, fetchRegisterNextAccountingPeriod)
-    verifyKeystoreSave(RegisterNextAccountingPeriod, saveRegisterNextAccountingPeriod)
     verifyKeystoreFetch(ClientDetails, fetchClientDetails)
     verifyKeystoreSave(ClientDetails, saveClientDetails)
 

@@ -69,10 +69,8 @@ business.current_financial_period_prior.no                      = No
 # Current Financial Period Prior page
 business.register_next_accounting_period.title                   = You can''t send quarterly reports yet
 business.register_next_accounting_period.heading                 = You can''t send quarterly reports yet
-business.register_next_accounting_period.line_1                  = You can only use this service if your current accounting period started after 5 April 2017.
-business.register_next_accounting_period.line_2                  = You can sign up now, but you won''t be able to send any reports until your next accounting period begins.
-business.register_next_accounting_period.yes                     = Continue to sign up
-business.register_next_accounting_period.no                      = Sign out
+business.register_next_accounting_period.line_1                  = You can sign up now, but you won''t be able to send any reports for your client until their next accounting period begins.
+business.register_next_accounting_period.button                  = Continue to sign up
 
 ## Business Accounting Period page
 accounting_period.title                                         = Business accounting period

@@ -16,7 +16,7 @@
 
 package forms.validation.testutils
 
-import forms.{AccountingPeriodPriorForm, RegisterNextAccountingPeriodForm}
+import forms.AccountingPeriodPriorForm
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil.constraint
 import play.api.data.validation.{Constraint, Invalid}
@@ -46,8 +46,6 @@ object DataMap {
   def busName(name: String): DataMap = Map(businessName -> name)
 
   def accountingPeriodPrior(currentPeriodIsPrior: String): DataMap = Map(AccountingPeriodPriorForm.accountingPeriodPrior -> currentPeriodIsPrior)
-
-  def registerNextAccountingPeriod(isRegisteringForNextPeriod: String): DataMap = Map(RegisterNextAccountingPeriodForm.registerNextAccountingPeriod -> isRegisteringForNextPeriod)
 
   def accountingMethod(iType: String): DataMap = Map(AccountingMethodForm.accountingMethod -> iType)
 
