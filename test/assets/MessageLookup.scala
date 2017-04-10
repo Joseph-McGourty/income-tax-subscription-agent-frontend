@@ -355,10 +355,10 @@ object MessageLookup {
   }
 
   object OtherIncome {
-    val title = "Do you have any other sources of income?"
-    val heading = "Do you have any other sources of income?"
+    val title = "Does your client have any other sources of income?"
+    val heading = "Does your client have any other sources of income?"
     val para1 = "This could include:"
-    val bullet1 = "employment that isn't your sole trader business"
+    val bullet1 = "employment that isn't their sole trader business"
     val bullet2 = "UK pensions or annuities"
     val bullet3 = "taxable state benefits"
     val bullet4 = "employment or investments from outside the UK"

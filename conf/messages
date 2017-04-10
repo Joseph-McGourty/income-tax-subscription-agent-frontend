@@ -267,10 +267,10 @@ other-income-error.heading                                      = You can only s
 other-income-error.para1                                        = As this service is currently a trial, you can only send quarterly reports on income from your client''s sole trader business, renting out a UK property or both.
 
 ## Other sources of income page ##
-income-other.title                                              = Do you have any other sources of income?
-income-other.heading                                            = Do you have any other sources of income?
+income-other.title                                              = Does your client have any other sources of income?
+income-other.heading                                            = Does your client have any other sources of income?
 income-other.para1                                              = This could include:
-income-other.bullet1                                            = employment that isn''t your sole trader business
+income-other.bullet1                                            = employment that isn''t their sole trader business
 income-other.bullet2                                            = UK pensions or annuities
 income-other.bullet3                                            = taxable state benefits
 income-other.bullet4                                            = employment or investments from outside the UK
