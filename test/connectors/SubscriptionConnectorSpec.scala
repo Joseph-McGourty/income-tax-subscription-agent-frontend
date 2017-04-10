@@ -16,13 +16,13 @@
 
 package connectors
 
-import connectors.mocks.MockProtectedMicroserviceConnector
+import connectors.mocks.MockSubscriptionConnector
 import connectors.models.subscription.FESuccessResponse
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
 import utils.TestConstants
 
-class ProtectedMicroserviceConnectorSpec extends MockProtectedMicroserviceConnector {
+class SubscriptionConnectorSpec extends MockSubscriptionConnector {
 
   val nino: String = TestConstants.testNino
   val id: String = TestConstants.testMTDID
@@ -30,10 +30,10 @@ class ProtectedMicroserviceConnectorSpec extends MockProtectedMicroserviceConnec
   "MiddleServiceConnector.subscribe" should {
 
     "Post to the correct url" in {
-      TestProtectedMicroserviceConnector.subscriptionUrl(TestConstants.testNino) should endWith(s"/income-tax-subscription/subscription/${TestConstants.testNino}")
+      TestSubscriptionConnector.subscriptionUrl(TestConstants.testNino) should endWith(s"/income-tax-subscription/subscription/${TestConstants.testNino}")
     }
 
-    def call = await(TestProtectedMicroserviceConnector.subscribe(request = testRequest))
+    def call = await(TestSubscriptionConnector.subscribe(request = testRequest))
 
     "return the succcess response as an object" in {
       setupSubscribe(subScribeSuccess)

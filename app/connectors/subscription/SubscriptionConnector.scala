@@ -28,8 +28,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class ProtectedMicroserviceConnector @Inject()(val appConfig: AppConfig,
-                                               val http: HttpPost) {
+class SubscriptionConnector @Inject()(val appConfig: AppConfig,
+                                      val http: HttpPost) {
 
   lazy val subscriptionUrl = (nino: String) => s"${appConfig.subscriptionUrl}/$nino"
 

@@ -18,24 +18,24 @@ package connectors.mocks
 
 import config.AppConfig
 import connectors.models.subscription.{Both, FEFailureResponse, FERequest, FESuccessResponse}
-import connectors.subscription.ProtectedMicroserviceConnector
+import connectors.subscription.SubscriptionConnector
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.play.http.HttpPost
 import utils.JsonUtils._
 import utils.TestConstants
 
-trait MockProtectedMicroserviceConnector extends MockHttp {
+trait MockSubscriptionConnector extends MockHttp {
 
   lazy val httpPost: HttpPost = mockHttpPost
 
-  object TestProtectedMicroserviceConnector extends ProtectedMicroserviceConnector(
+  object TestSubscriptionConnector extends SubscriptionConnector(
     app.injector.instanceOf[AppConfig],
     httpPost
   )
 
   def setupMockSubscribe()(status: Int, response: JsValue): Unit =
-    setupMockHttpPost(url = TestProtectedMicroserviceConnector.subscriptionUrl(""))(status, response)
+    setupMockHttpPost(url = TestSubscriptionConnector.subscriptionUrl(""))(status, response)
 
   val setupSubscribe = (setupMockSubscribe() _).tupled
 
