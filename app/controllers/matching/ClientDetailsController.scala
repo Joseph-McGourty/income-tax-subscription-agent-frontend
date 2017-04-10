@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.matching
 
 import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
+import controllers.BaseController
 import forms._
 import models.ClientDetailsModel
 import play.api.data.Form
@@ -39,7 +40,7 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
   def view(clientDetailsForm: Form[ClientDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.client_details(
       clientDetailsForm,
-      controllers.routes.ClientDetailsController.submitClientDetails(editMode = isEditMode),
+      controllers.matching.routes.ClientDetailsController.submitClientDetails(editMode = isEditMode),
       backUrl,
       isEditMode
     )
@@ -57,14 +58,9 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
         clientDetails => {
           keystoreService.saveClientDetails(clientDetails) flatMap { _ =>
-            //            if (isEditMode)
-            //              NotImplemented
-            //            else
-            //              NotImplemented
-            //            )
             clientMatchingService.matchClient(clientDetails) map {
-              case true => NotImplemented
-              case false => NotImplemented
+              case true => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
+              case false => Redirect(controllers.matching.routes.ClientDetailsErrorController.show())
             }
           }
         }

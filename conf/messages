@@ -16,6 +16,7 @@ base.error_heading                                              = There''s a pro
 base.change                                                     = Change
 base.yes                                                        = Yes
 base.no                                                         = No
+base.go_back                                                    = Go back
 
 # Agent front page
 frontpage.title                                                 = Sign up your clients to report their income and expenses quarterly
@@ -39,12 +40,10 @@ frontpage.line_6                                                = You can:
 frontpage.bullet_9                                              = use your business tax account from August 2017 to see your reports and what you might owe
 
 
-## Preferences call back page
-preferences_callback.title                                      = Do you want to continue?
-preferences_callback.heading                                    = To sign up, you must allow HMRC to send you electronic communications
-preferences_callback.legend                                     = To sign up for quarterly reporting, you must allow HMRC to send you electronic communications
-preferences_callback.yes                                        = Continue to sign up
-preferences_callback.no                                         = Sign out
+# Client details page
+client-details-error.title                                      = Client match error
+client-details-error.heading                                    = We couldn''t confirm your client
+client-details-error.line_1                                     = The details you''ve entered are not on our system.
 
 ## Income source page
 income_source.title                                             = Where does your income come from?

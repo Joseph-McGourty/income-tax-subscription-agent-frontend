@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.matching
 
 import auth._
+import controllers.ControllerBaseSpec
 import forms.ClientDetailsForm
 import models.{ClientDetailsModel, DateModel}
 import play.api.http.Status
@@ -68,57 +69,112 @@ class ClientDetailsControllerSpec extends ControllerBaseSpec
             dateOfBirth = DateModel("01", "01", "1980")))
       )
 
-    "When it is not in edit mode" should {
-      "return a redirect status (NOT_IMPLEMENTED)" in {
+    "When a match has been found and it is not in edit mode" should {
+      "return a redirect status (SEE_OTHER)" in {
         setupMatchClient(matchClientMatched)
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callSubmit(isEditMode = false)
 
-        status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+        status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
         verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
       }
 
-      s"redirect to 'NONE" in {
+      s"redirect to '${controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
         setupMatchClient(matchClientMatched)
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callSubmit(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe None
+        redirectLocation(goodRequest) mustBe Some(controllers.routes.IncomeSourceController.showIncomeSource().url)
 
         await(goodRequest)
         verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
       }
     }
 
-    "When it is in edit mode" should {
-      "return a redirect status (NOT_IMPLEMENTED)" in {
-        setupMatchClient(matchClientMatched)
+    "When no match was been found and it is not in edit mode" should {
+      "return a redirect status (SEE_OTHER)" in {
+        setupMatchClient(matchClientNoMatch)
         setupMockKeystoreSaveFunctions()
 
-        val goodRequest = callSubmit(isEditMode = true)
+        val goodRequest = callSubmit(isEditMode = false)
 
-        status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+        status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
         verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
       }
 
-      s"redirect to NONE" in {
-        setupMatchClient(matchClientMatched)
+      s"redirect to '${controllers.matching.routes.ClientDetailsErrorController.show().url}" in {
+        setupMatchClient(matchClientNoMatch)
         setupMockKeystoreSaveFunctions()
 
-        val goodRequest = callSubmit(isEditMode = true)
+        val goodRequest = callSubmit(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe None
+        redirectLocation(goodRequest) mustBe Some(controllers.matching.routes.ClientDetailsErrorController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
       }
     }
+
+    "When a match has been found and it is in edit mode" should {
+      "return a redirect status (SEE_OTHER)" in {
+        setupMatchClient(matchClientMatched)
+        setupMockKeystoreSaveFunctions()
+
+        val goodRequest = callSubmit(isEditMode = true)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
+
+        await(goodRequest)
+        verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
+      }
+
+      s"redirect to '${controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
+        setupMatchClient(matchClientMatched)
+        setupMockKeystoreSaveFunctions()
+
+        val goodRequest = callSubmit(isEditMode = true)
+
+        redirectLocation(goodRequest) mustBe Some(controllers.routes.IncomeSourceController.showIncomeSource().url)
+
+        await(goodRequest)
+        verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
+      }
+    }
+
+    "When no match was been found and it is in edit mode" should {
+      "return a redirect status (SEE_OTHER)" in {
+        setupMatchClient(matchClientNoMatch)
+        setupMockKeystoreSaveFunctions()
+
+        val goodRequest = callSubmit(isEditMode = true)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
+
+        await(goodRequest)
+        verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
+      }
+
+      s"redirect to '${controllers.matching.routes.ClientDetailsErrorController.show().url}" in {
+        setupMatchClient(matchClientNoMatch)
+        setupMockKeystoreSaveFunctions()
+
+        val goodRequest = callSubmit(isEditMode = true)
+
+        redirectLocation(goodRequest) mustBe Some(controllers.matching.routes.ClientDetailsErrorController.show().url)
+
+        await(goodRequest)
+        verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
+      }
+    }
+
+
+
   }
 
   "The back url" should {

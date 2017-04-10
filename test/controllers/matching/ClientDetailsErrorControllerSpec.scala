@@ -14,29 +14,33 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.matching
 
-import assets.MessageLookup.{NotEnrolledAgentServices => messages}
+import assets.MessageLookup.{ClientDetailsError => messages}
 import auth._
+import controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentAsString, contentType, _}
 
-class NotEnrolledAgentServicesControllerSpec extends ControllerBaseSpec {
+class ClientDetailsErrorControllerSpec extends ControllerBaseSpec {
 
   // Required for trait but no authorisation tests are required
-  override val controllerName: String = "NotEnrolledAgentServices"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
+  override val controllerName: String = "ClientDetailsErrorController"
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
+    "show" -> TestClientDetailsErrorController.show,
+    "submit" -> TestClientDetailsErrorController.submit
+  )
 
-  object TestNotEnrolledAgentServicesController extends NotEnrolledAgentServicesController(
+  object TestClientDetailsErrorController extends ClientDetailsErrorController(
     MockBaseControllerConfig,
     messagesApi
   )
 
-  "Calling the 'show' action of the NotEnrolledAgentServicesController" should {
+  "Calling the 'show' action of the ClientDetailsErrorController" should {
 
-    lazy val result = TestNotEnrolledAgentServicesController.show(authenticatedFakeRequest())
+    lazy val result = TestClientDetailsErrorController.show(authenticatedFakeRequest())
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
@@ -48,7 +52,7 @@ class NotEnrolledAgentServicesControllerSpec extends ControllerBaseSpec {
       charset(result) must be(Some("utf-8"))
     }
 
-    "render the 'Not subscribed to Agent Services page'" in {
+    "render the 'Client Details Error page'" in {
       document.title mustBe messages.title
     }
 
@@ -57,4 +61,21 @@ class NotEnrolledAgentServicesControllerSpec extends ControllerBaseSpec {
     }
 
   }
+
+  "Calling the 'submit' action of the ClientDetailsErrorController" should {
+
+    lazy val result = TestClientDetailsErrorController.submit(authenticatedFakeRequest())
+
+    "return 303" in {
+      status(result) must be(Status.SEE_OTHER)
+    }
+
+    "Redirect to the 'Client details' page" in {
+      redirectLocation(result).get mustBe controllers.matching.routes.ClientDetailsController.showClientDetails().url
+    }
+
+  }
+
+  authorisationTests()
+
 }
