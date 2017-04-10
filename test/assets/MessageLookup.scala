@@ -139,12 +139,7 @@ object MessageLookup {
 
   object AccountingMethod {
     val title = "Accounting method"
-    val heading: String = "What method do you use for your accounting?"
-    val accordion = "Show me an example"
-    val accordion_line_1 = "Your accounting period is 6 April 2016 to 5 April 2017. You invoiced someone in March 2017 but didn't receive the money until May 2017."
-    val accordion_line_2 = "If you would record this income in:"
-    val accordion_bullet_1 = "May 2017, then the method you use is 'cash basis' accounting"
-    val accordion_bullet_2 = "March 2017, then the method you use is 'traditional accounting'"
+    val heading: String = "What accounting method does your client use?"
     val cash = "Cash basis"
     val accruals = "Traditional accounting"
   }

@@ -47,17 +47,6 @@ class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
 
     testPage.mustHaveBackLinkTo(backUrl)
 
-    val accordion = testPage.getAccordion("Business Accounting Method accordion", messages.accordion)
-
-    accordion.mustHaveParaSeq(
-      messages.accordion_line_1,
-      messages.accordion_line_2
-    )
-
-    accordion.mustHaveBulletSeq(
-      messages.accordion_bullet_1,
-      messages.accordion_bullet_2
-    )
 
     val form = testPage.getForm("Business Accounting Method form")(actionCall = action)
 
