@@ -39,7 +39,7 @@ object MessageLookup {
   }
 
   object FrontPage {
-    val title = "Sign up to report your clients income and expenses quarterly"
+    val title = "Sign up to report your clients' income and expenses quarterly"
     val heading = title
     val subHeading_1 = "Sign up using Government Gateway"
     val subHeading_2 = "Before you start"
@@ -55,7 +55,7 @@ object MessageLookup {
     val para_2 = "You can sign up your client if their current accounting period starts after 5 April 2017 and they're one of the following:"
     val para_3 = "If they have income other than those listed above, you won't be able to report it using this service yet."
     val para_4 = "You'll need to enter the user ID and password you got when you created your Agent Services account."
-    val para_5 = "You'll need your clients:"
+    val para_5 = "You'll need your client's:"
     val para_6 = "To see your client's tax details, they must authorise you as their agent. You can still sign up and send reports, but you won't be able to access their information until you've been authorised."
   }
 

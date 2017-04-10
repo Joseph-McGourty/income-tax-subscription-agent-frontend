@@ -18,8 +18,8 @@ base.yes                                                        = Yes
 base.no                                                         = No
 
 # Agent front page
-frontpage.title                                                 = Sign up to report your clients income and expenses quarterly
-frontpage.heading                                               = Sign up to report your clients income and expenses quarterly
+frontpage.title                                                 = Sign up to report your clients'' income and expenses quarterly
+frontpage.heading                                               = Sign up to report your clients'' income and expenses quarterly
 frontpage.para_1                                                = By signing up to HM Revenue and Customs secure service, you''re helping to test a new way of working out your tax. You''ll do this by:
 frontpage.bullet_1                                              = using your accounting software to record your clients income and expenses
 frontpage.bullet_2                                              = sending details to us regularly from July 2017
@@ -31,7 +31,7 @@ frontpage.para_3                                                = If they have i
 frontpage.sub_heading_1                                         = Sign up using Government Gateway
 frontpage.para_4                                                = You''ll need to enter the user ID and password you got when you created your Agent Services account.
 frontpage.sub_heading_2                                         = Before you start
-frontpage.para_5                                                = You''ll need your clients:
+frontpage.para_5                                                = You''ll need your client''s:
 frontpage.bullet_6                                              = full name
 frontpage.bullet_7                                              = date of birth
 frontpage.bullet_8                                              = National Insurance Number
