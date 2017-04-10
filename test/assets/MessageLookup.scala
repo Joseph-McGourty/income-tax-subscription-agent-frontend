@@ -51,12 +51,12 @@ object MessageLookup {
     val bullet_6 = "full name"
     val bullet_7 = "date of birth"
     val bullet_8 = "National Insurance Number"
-    val para_1 = "By signing up to HM Revenue and Customs secure service, you’re helping to test a new way of working out your tax. You’ll do this by:"
-    val para_2 = "You can sign up your client if their current accounting period starts after 5 April 2017 and they’re one of the following:"
-    val para_3 = "If they have income other than those listed above, you won’t be able to report it using this service yet."
-    val para_4 = "You’ll need to enter the user ID and password you got when you created your Agent Services account."
+    val para_1 = "By signing up to HM Revenue and Customs secure service, you're helping to test a new way of working out your tax. You'll do this by:"
+    val para_2 = "You can sign up your client if their current accounting period starts after 5 April 2017 and they're one of the following:"
+    val para_3 = "If they have income other than those listed above, you won't be able to report it using this service yet."
+    val para_4 = "You'll need to enter the user ID and password you got when you created your Agent Services account."
     val para_5 = "You'll need your clients:"
-    val para_6 = "To see your client’s tax details, they must authorise you as their agent. You can still sign up and send reports, but you won’t be able to access their information until you’ve been authorised."
+    val para_6 = "To see your client's tax details, they must authorise you as their agent. You can still sign up and send reports, but you won't be able to access their information until you've been authorised."
   }
 
   object PreferencesCallBack {
@@ -217,7 +217,8 @@ object MessageLookup {
       val heading = "What happens next"
       val para2 = "You must report to HMRC once every quarter from the start of your accounting period."
       val para3 = "HMRC will calculate an estimate of your Income Tax after you send a report. You can see these estimates from your accounting software after your first report, or through your business tax account from August 2017."
-      val para4 = "Activate your business tax account, you can use this to see a summary of your business taxes."
+      val linkText = "business tax account"
+      val para4 = s"Activate your $linkText, you can use this to see a summary of your business taxes."
     }
 
   }
@@ -381,10 +382,11 @@ object MessageLookup {
 
 
   object NotEnrolledAgentServices {
-    val title = "You're not subscribed to Agent services"
+    val title = "You can't sign up your clients yet"
     val heading = title
-    val para1 = "You will need to subscribe to agent services before you continue to subscribe your clients for quarterly reporting."
-    val button = "Subscribe to Agent services"
+    val linkText = "create an Agent Services account"
+    val para1 = s"To sign up for quarterly reporting, you must $linkText"
+    val button = "Sign out"
   }
 
   object ClientDetails {
