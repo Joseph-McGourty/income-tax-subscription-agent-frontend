@@ -18,7 +18,7 @@ package services
 
 import javax.inject.{Inject, Singleton}
 
-import connectors.agent.AuthenticatorConnector
+import connectors.matching.AuthenticatorConnector
 import models.ClientDetailsModel
 import uk.gov.hmrc.play.http.HeaderCarrier
 

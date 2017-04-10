@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package connectors.agent
+package connectors.matching
 
 import javax.inject.{Inject, Singleton}
 

@@ -17,7 +17,7 @@
 package connectors.mocks
 
 import audit.Logging
-import connectors.agent.AuthenticatorConnector
+import connectors.matching.AuthenticatorConnector
 import connectors.models.matching.ClientMatchRequestModel
 import models.ClientDetailsModel
 import play.api.http.Status.{OK, UNAUTHORIZED, NOT_FOUND}
