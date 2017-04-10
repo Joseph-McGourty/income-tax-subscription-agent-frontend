@@ -47,11 +47,11 @@ preferences_callback.yes                                        = Continue to si
 preferences_callback.no                                         = Sign out
 
 ## Income source page
-income_source.title                                             = Where does your income come from?
-income_source.heading                                           = Where does your income come from?
-income_source.business                                          = Your sole trader business
+income_source.title                                             = Select your client''s income type
+income_source.heading                                           = Select your client''s income type
+income_source.business                                          = Sole trader business
 income_source.property                                          = Renting out a UK property
-income_source.both                                              = Your sole trader business and renting out a UK property
+income_source.both                                              = Their sole trader business and renting out a UK property
 income_source.other                                             = Other
 
 # Property income page
