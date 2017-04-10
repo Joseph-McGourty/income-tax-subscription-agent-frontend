@@ -339,9 +339,9 @@ object MessageLookup {
   }
 
   object MainIncomeError {
-    val title = "You can't sign up for quarterly reporting yet"
-    val heading = "You can't sign up for quarterly reporting yet"
-    val para1 = "At the moment, you can only sign up if you're one of the following:"
+    val title = "You can't sign up your client yet"
+    val heading = "You can't sign up your client yet"
+    val para1 = "At the moment, you can only sign up if your client is one of the following:"
     val para2 = "You'll be able to send quarterly reports for other income later in the year."
     val bullet1 = "a sole trader with income from one business"
     val bullet2 = "someone who rents out a UK property"
