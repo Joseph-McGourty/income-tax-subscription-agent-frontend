@@ -156,7 +156,7 @@ object MessageLookup {
     val heading: String = title
     val heading_hidden = "before signing up"
     val h2 = "You've told us"
-    val income_source = "Where does your income come from?"
+    val income_source = "Your client's income type"
 
     object IncomeSource {
       val business = "Sole trader business"
@@ -165,11 +165,11 @@ object MessageLookup {
     }
 
     val accounting_period_prior = "Did your current accounting period start before 1 April 2017?"
-    val accounting_period = s"Your accounting period dates"
+    val accounting_period = s"Your client's accounting period dates"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
-    val business_name = "What's the name of your business?"
-    val income_type = "What method do you use for your accounting?"
-    val other_income = "Do you have any other sources of income?"
+    val business_name = "What's the name of your client's business?"
+    val income_type = "What accounting method does your client use?"
+    val other_income = "Does your client have any other sources of income?"
 
     object AccountingMethod {
       val cash = "Cash basis"
