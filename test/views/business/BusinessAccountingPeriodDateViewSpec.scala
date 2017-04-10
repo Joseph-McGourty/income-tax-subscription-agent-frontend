@@ -61,11 +61,6 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
 
         testPage.mustHaveBackLinkTo(backUrl)
 
-        viewType match {
-          case CurrentAccountingPeriodView => testPage.mustHavePara(messages.line_1_current)
-          case _ => testPage.mustHavePara(messages.line_1_next)
-        }
-
         val form = testPage.getForm(s"$prefix Business Accounting Period Date form")(actionCall = action)
 
         form.mustHaveDateField(
