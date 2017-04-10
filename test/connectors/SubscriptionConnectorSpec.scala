@@ -17,7 +17,7 @@
 package connectors
 
 import connectors.mocks.MockSubscriptionConnector
-import connectors.models.subscription.FESuccessResponse
+import connectors.models.subscription.{FEResponse, FESuccessResponse}
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
 import utils.TestConstants
@@ -27,7 +27,7 @@ class SubscriptionConnectorSpec extends MockSubscriptionConnector {
   val nino: String = TestConstants.testNino
   val id: String = TestConstants.testMTDID
 
-  "MiddleServiceConnector.subscribe" should {
+  "SubscriptionConnector.subscribe" should {
 
     "Post to the correct url" in {
       TestSubscriptionConnector.subscriptionUrl(TestConstants.testNino) should endWith(s"/income-tax-subscription/subscription/${TestConstants.testNino}")
@@ -54,6 +54,31 @@ class SubscriptionConnectorSpec extends MockSubscriptionConnector {
       setupSubscribe(subScribeInternalServerError)
       val actual = call
       actual shouldBe None
+    }
+  }
+
+
+  "SubscriptionConnector.getSubscription" should {
+
+    "GET to the correct url" in {
+      TestSubscriptionConnector.subscriptionUrl(TestConstants.testNino) should endWith(s"/income-tax-subscription/subscription/${TestConstants.testNino}")
+    }
+
+    def result: Option[FEResponse] = await(TestSubscriptionConnector.getSubscription(TestConstants.testNino))
+
+    "return the succcess response as an object" in {
+      setupGetSubscription(subScribeSuccess)
+      result shouldBe Some(FESuccessResponse(id))
+    }
+
+    "return None if the middle service indicated a bad request" in {
+      setupGetSubscription(subScribeBadRequest)
+      result shouldBe None
+    }
+
+    "return None if the middle service indicated internal server error" in {
+      setupGetSubscription(subScribeInternalServerError)
+      result shouldBe None
     }
   }
 
