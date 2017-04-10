@@ -349,10 +349,9 @@ object MessageLookup {
   }
 
   object OtherIncomeError {
-    val title = "You can only send quarterly reports on part of your income"
+    val title = "You can only send quarterly reports on part of your client's income"
     val heading: String = title
-    val para1 = "As this service is currently a trial, you can only send quarterly reports on income from your sole trader business, renting out a UK property or both."
-    val para2 = "You'll be able to send quarterly reports including your other income later in the year."
+    val para1 = "As this service is currently a trial, you can only send quarterly reports on income from your client's sole trader business, renting out a UK property or both."
   }
 
   object OtherIncome {
