@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+//$COVERAGE-OFF$Disabling scoverage on this test only connector as it is only required by our acceptance test
+
 package testonly.connectors
 
 import javax.inject.{Inject, Singleton}
@@ -70,8 +72,6 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
 
   lazy val dynamicStubUrl = appConfig.matchingStubsURL + "/dynamic-cid"
 
-  lazy val temp = "http://localhost:9353/matching/find?nino=AA111111A"
-
   def newUser(userData: UserData)(implicit hc: HeaderCarrier): Future[Boolean] = {
     http.POST[Request, HttpResponse](dynamicStubUrl, Request(userData)).flatMap {
       response =>
@@ -87,3 +87,4 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
   }
 
 }
+// $COVERAGE-ON$

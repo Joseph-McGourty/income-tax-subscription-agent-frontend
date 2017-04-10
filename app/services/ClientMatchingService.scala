@@ -27,7 +27,10 @@ import scala.concurrent.Future
 @Singleton
 class ClientMatchingService @Inject()(authenticatorConnector: AuthenticatorConnector) {
 
+  def amendHCForTest(implicit hc: HeaderCarrier): HeaderCarrier =
+    hc.withExtraHeaders("True-Client-IP" -> "1234567")
+
   @inline def matchClient(clientDetailsModel: ClientDetailsModel)(implicit hc: HeaderCarrier): Future[Boolean] =
-    authenticatorConnector.matchClient(clientDetailsModel)(hc.withExtraHeaders("True-Client-IP" -> "1234567"))
+    authenticatorConnector.matchClient(clientDetailsModel)(amendHCForTest)
 
 }
