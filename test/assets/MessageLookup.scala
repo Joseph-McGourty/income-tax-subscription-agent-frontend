@@ -189,9 +189,9 @@ object MessageLookup {
   }
 
   object AlreadyEnrolled {
-    val title = "You've already signed up"
-    val heading = "You've already signed up"
-    val para1 = "Your Government Gateway ID is already in use."
+    val title = "Your client has already signed up"
+    val heading = "Your client has already signed up"
+    val para1 = "The details you've entered are already in use."
   }
 
   object Confirmation {
