@@ -14,28 +14,22 @@
  * limitations under the License.
  */
 
-//$COVERAGE-OFF$Disabling scoverage on this test only class as it is only required by our acceptance test
-
-package testonly
+package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import config.FrontendAppConfig
-import play.api.Application
+import play.api.mvc.Action
+import testonly.connectors.{MatchingStubConnector, UserData}
+import uk.gov.hmrc.play.frontend.controller.FrontendController
+
 
 @Singleton
-class TestOnlyAppConfig @Inject()(app: Application) extends FrontendAppConfig(app) {
+class MatchingStubController @Inject()(matchingStubConnector: MatchingStubConnector) extends FrontendController {
 
-  lazy val ggStubsURL: String = baseUrl("gg-stubs")
-
-  lazy val preferencesURL: String = baseUrl("preferences")
-
-  lazy val entityResolverURL: String = baseUrl("entity-resolver")
-
-  lazy val protectedMicroServiceTestOnlyUrl = s"$protectedMicroServiceUrl/income-tax-subscription/test-only"
-
-  lazy val matchingStubsURL: String = baseUrl("matching-stubs")
+  def stubClient = Action.async { implicit request =>
+    matchingStubConnector.newUser(UserData()) map {
+      _ => Ok("User stubbed")
+    }
+  }
 
 }
-
-// $COVERAGE-ON$

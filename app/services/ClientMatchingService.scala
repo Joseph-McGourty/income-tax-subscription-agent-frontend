@@ -14,28 +14,23 @@
  * limitations under the License.
  */
 
-//$COVERAGE-OFF$Disabling scoverage on this test only connector as it is only required by our acceptance test
-
-package testonly.connectors
+package services
 
 import javax.inject.{Inject, Singleton}
 
-import connectors.RawResponseReads
-import testonly.TestOnlyAppConfig
-import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
+import connectors.matching.AuthenticatorConnector
+import models.ClientDetailsModel
+import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 
 @Singleton
-class AuthenticatorConnector @Inject()(appConfig: TestOnlyAppConfig,
-                                       http: WSHttp) extends RawResponseReads {
+class ClientMatchingService @Inject()(authenticatorConnector: AuthenticatorConnector) {
 
-  lazy val refreshURI = s"${appConfig.authenticatorUrl}/authenticator/refresh-profile"
+  def amendHCForTest(implicit hc: HeaderCarrier): HeaderCarrier =
+    hc.withExtraHeaders("True-Client-IP" -> "1234567")
 
-  def refreshProfile()(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    http.POSTEmpty[HttpResponse](refreshURI)
+  @inline def matchClient(clientDetailsModel: ClientDetailsModel)(implicit hc: HeaderCarrier): Future[Boolean] =
+    authenticatorConnector.matchClient(clientDetailsModel)(amendHCForTest)
 
 }
-
-// $COVERAGE-ON$

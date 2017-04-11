@@ -388,6 +388,13 @@ object MessageLookup {
     val button = "Subscribe to Agent services"
   }
 
+  object ClientDetailsError {
+    val title = "Client match error"
+    val heading = "We couldn't confirm your client"
+    val line1 = "The details you've entered are not on our system."
+    val button = "Go back"
+  }
+
   object ClientDetails {
     val title = "Enter your client's details"
     val heading = "Enter your client's details"
