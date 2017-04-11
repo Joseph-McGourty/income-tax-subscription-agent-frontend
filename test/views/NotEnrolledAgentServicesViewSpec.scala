@@ -36,11 +36,13 @@ class NotEnrolledAgentServicesViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.para1)
 
+    val paragraph1 = testPage.selectHead("paragraph 1", "p")
+    paragraph1.mustHaveALink(messages.linkText, appConfig.agentServicesUrl)
+
+
     val form = testPage.getForm("Agent not Enrolled to Agent Services form")(actionCall = action)
 
     form.mustHaveSubmitButton(messages.button)
-
-    testPage.mustHaveALink("sign-out", commonMessages.signOut, controllers.routes.SignOutController.signOut().url)
 
   }
 }

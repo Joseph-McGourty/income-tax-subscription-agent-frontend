@@ -52,9 +52,5 @@ class NotEnrolledAgentServicesControllerSpec extends ControllerBaseSpec {
       document.title mustBe messages.title
     }
 
-    s"the page must have a link to ${controllers.routes.SignOutController.signOut().url}" in {
-      document.select("#sign-out").attr("href") mustBe controllers.routes.SignOutController.signOut().url
-    }
-
   }
 }
