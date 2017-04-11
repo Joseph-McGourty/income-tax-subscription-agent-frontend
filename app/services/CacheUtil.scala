@@ -20,12 +20,15 @@ import forms.IncomeSourceForm
 import models._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
+import utils.Implicits._
 
 object CacheUtil {
 
   implicit class CacheMapUtil(cacheMap: CacheMap) {
 
     import services.CacheConstants._
+
+    def getNino()(implicit read: Reads[ClientDetailsModel]): Option[String] = cacheMap.getEntry(ClientDetails).fold(None: Option[String])(x => x.nino.replace(" ", ""))
 
     def getIncomeSource()(implicit read: Reads[IncomeSourceModel]): Option[IncomeSourceModel] = cacheMap.getEntry(IncomeSource)
 
