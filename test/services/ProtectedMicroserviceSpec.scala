@@ -24,7 +24,7 @@ import services.mocks.MockProtectedMicroservice
 
 class ProtectedMicroserviceSpec extends MockProtectedMicroservice {
 
-  def call = await(TestProtectedMicroserviceConnector.subscribe(request = testRequest))
+  def call = await(TestSubscriptionConnector.subscribe(request = testRequest))
 
   "RegistrationService" should {
     "return the safeId when the subscription is successful" in {

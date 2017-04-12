@@ -49,11 +49,7 @@ class NotEnrolledAgentServicesControllerSpec extends ControllerBaseSpec {
     }
 
     "render the 'Not subscribed to Agent Services page'" in {
-      document.title mustBe messages.heading
-    }
-
-    s"the page must have a link to ${controllers.routes.SignOutController.signOut().url}" in {
-      document.select("#sign-out").attr("href") mustBe controllers.routes.SignOutController.signOut().url
+      document.title mustBe messages.title
     }
 
   }

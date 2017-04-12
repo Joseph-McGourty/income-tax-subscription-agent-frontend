@@ -16,33 +16,31 @@
 
 package views
 
-import assets.MessageLookup.{Base => commonMessages, NotEnrolledAgentServices => messages}
+import assets.MessageLookup.{Base => commonMessages, ClientDetailsError => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
-class NotEnrolledAgentServicesViewSpec extends ViewSpecTrait {
+class ClientDetailsErrorViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  lazy val page = views.html.not_enrolled_agent_services(action)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = views.html.client_details_error(action)(FakeRequest(), applicationMessages, appConfig)
 
-  "The Agent not Enrolled to Agent Services view" should {
+  "The Client Details Error view" should {
     val testPage = TestView(
-      name = "Agent not Enrolled to Agent Services",
+      name = "Client Details Error",
       title = messages.title,
       heading = messages.heading,
       page = page
     )
 
-    testPage.mustHavePara(messages.para1)
+    testPage.mustHavePara(messages.line1)
 
-    val paragraph1 = testPage.selectHead("paragraph 1", "p")
-    paragraph1.mustHaveALink(messages.linkText, appConfig.agentServicesUrl)
-
-
-    val form = testPage.getForm("Agent not Enrolled to Agent Services form")(actionCall = action)
+    val form = testPage.getForm("Client Details Error form")(actionCall = action)
 
     form.mustHaveSubmitButton(messages.button)
+
+    testPage.mustHaveALink("sign-out", commonMessages.signOut, controllers.routes.SignOutController.signOut().url)
 
   }
 }

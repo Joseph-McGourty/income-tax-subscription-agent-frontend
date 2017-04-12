@@ -38,7 +38,6 @@ POST        /terms                            controllers.TermsController.submit
 GET         /income-other                     controllers.OtherIncomeController.showOtherIncome
 POST        /income-other                     controllers.OtherIncomeController.submitOtherIncome
 
-
 # Throttle limit reached routes
 GET         /error/maintenance                controllers.throttling.ThrottlingController.show
 POST        /error/maintenance                controllers.throttling.ThrottlingController.submit
@@ -54,5 +53,9 @@ POST        /error/other-income               controllers.OtherIncomeErrorContro
 GET         /not-enrolled-agent-services      controllers.NotEnrolledAgentServicesController.show
 
 # Client Matching
-GET         /client-details                   controllers.ClientDetailsController.showClientDetails(editMode: Boolean ?= false)
-POST        /client-details                   controllers.ClientDetailsController.submitClientDetails(editMode: Boolean ?= false)
+GET         /client-details                   controllers.matching.ClientDetailsController.showClientDetails(editMode: Boolean ?= false)
+POST        /client-details                   controllers.matching.ClientDetailsController.submitClientDetails(editMode: Boolean ?= false)
+
+# Throttle limit reached routes
+GET         /error/client-details             controllers.matching.ClientDetailsErrorController.show
+POST        /error/client-details             controllers.matching.ClientDetailsErrorController.submit

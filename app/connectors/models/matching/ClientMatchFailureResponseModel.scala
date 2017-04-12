@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package services.mocks
+package connectors.models.matching
 
-import audit.Logging
-import connectors.mocks.MockSubscriptionConnector
-import services.SubscriptionService
-import utils.MockTrait
+import play.api.libs.json.Json
 
-trait MockProtectedMicroservice extends MockTrait with MockSubscriptionConnector {
+// the response from authenticator/match with message to indicate why matching failed
+case class ClientMatchFailureResponseModel(errors: String)
 
-  object MockSubscriptionService extends SubscriptionService(app.injector.instanceOf[Logging], TestSubscriptionConnector)
-
+object ClientMatchFailureResponseModel {
+  implicit val format = Json.format[ClientMatchFailureResponseModel]
+  val unexpectedError = "Internal error: unexpected result from matching"
 }

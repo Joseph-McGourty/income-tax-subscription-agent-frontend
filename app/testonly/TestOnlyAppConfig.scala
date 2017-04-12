@@ -28,13 +28,13 @@ class TestOnlyAppConfig @Inject()(app: Application) extends FrontendAppConfig(ap
 
   lazy val ggStubsURL: String = baseUrl("gg-stubs")
 
-  lazy val authenticatorURL: String = baseUrl("authenticator")
-
   lazy val preferencesURL: String = baseUrl("preferences")
 
   lazy val entityResolverURL: String = baseUrl("entity-resolver")
 
   lazy val protectedMicroServiceTestOnlyUrl = s"$protectedMicroServiceUrl/income-tax-subscription/test-only"
+
+  lazy val matchingStubsURL: String = baseUrl("matching-stubs")
 
 }
 

@@ -14,31 +14,33 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.matching
 
 import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
+import controllers.BaseController
 import forms._
 import models.ClientDetailsModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.KeystoreService
+import services.{ClientMatchingService, KeystoreService}
 
 import scala.concurrent.Future
 
 @Singleton
 class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
                                         val messagesApi: MessagesApi,
-                                        val keystoreService: KeystoreService
-                                         ) extends BaseController {
+                                        val keystoreService: KeystoreService,
+                                        val clientMatchingService: ClientMatchingService
+                                       ) extends BaseController {
 
   def view(clientDetailsForm: Form[ClientDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.client_details(
       clientDetailsForm,
-      controllers.routes.ClientDetailsController.submitClientDetails(editMode = isEditMode),
+      controllers.matching.routes.ClientDetailsController.submitClientDetails(editMode = isEditMode),
       backUrl,
       isEditMode
     )
@@ -55,12 +57,12 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
       ClientDetailsForm.clientDetailsForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
         clientDetails => {
-          keystoreService.saveClientDetails(clientDetails) map (_ =>
-            if (isEditMode)
-              NotImplemented
-            else
-              NotImplemented
-            )
+          keystoreService.saveClientDetails(clientDetails) flatMap { _ =>
+            clientMatchingService.matchClient(clientDetails) map {
+              case true => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
+              case false => Redirect(controllers.matching.routes.ClientDetailsErrorController.show())
+            }
+          }
         }
       )
   }

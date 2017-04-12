@@ -89,4 +89,7 @@ object TestModels extends Implicits {
 
   lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
 
+  // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
+  lazy val testClientDetails = ClientDetailsModel("Test", "User", TestConstants.testNino, testStartDate)
+
 }

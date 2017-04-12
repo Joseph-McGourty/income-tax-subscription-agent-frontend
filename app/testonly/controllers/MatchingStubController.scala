@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
-package services.mocks
+package testonly.controllers
 
-import audit.Logging
-import connectors.mocks.MockSubscriptionConnector
-import services.SubscriptionService
-import utils.MockTrait
+import javax.inject.{Inject, Singleton}
 
-trait MockProtectedMicroservice extends MockTrait with MockSubscriptionConnector {
+import play.api.mvc.Action
+import testonly.connectors.{MatchingStubConnector, UserData}
+import uk.gov.hmrc.play.frontend.controller.FrontendController
 
-  object MockSubscriptionService extends SubscriptionService(app.injector.instanceOf[Logging], TestSubscriptionConnector)
+
+@Singleton
+class MatchingStubController @Inject()(matchingStubConnector: MatchingStubConnector) extends FrontendController {
+
+  def stubClient = Action.async { implicit request =>
+    matchingStubConnector.newUser(UserData()) map {
+      _ => Ok("User stubbed")
+    }
+  }
 
 }

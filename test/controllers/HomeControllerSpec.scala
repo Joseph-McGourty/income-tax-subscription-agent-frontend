@@ -82,7 +82,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
   "Calling the index action of the HomeController with an authorised user" should {
     // TODO re enable the throttling service tests if and when it's defined
-    "If throttling is enabled when calling the index" ignore {
+    "If throttling is enabled when calling the client details" ignore {
       lazy val result = TestHomeController(enableThrottling = true, showGuidance = false).index()(authenticatedFakeRequest())
 
       "trigger a call to the throttling service" in {
@@ -90,13 +90,13 @@ class HomeControllerSpec extends ControllerBaseSpec
 
         status(result) must be(Status.SEE_OTHER)
 
-        redirectLocation(result).get mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+        redirectLocation(result).get mustBe controllers.matching.routes.ClientDetailsController.showClientDetails().url
 
         verifyMockCheckAccess(1)
       }
     }
 
-    "If throttling is disabled when calling the index" ignore {
+    "If throttling is disabled when calling the client details" ignore {
       lazy val result = TestHomeController(enableThrottling = false, showGuidance = false).index()(authenticatedFakeRequest())
 
       "not trigger a call to the throttling service" in {
@@ -104,7 +104,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
         status(result) must be(Status.SEE_OTHER)
 
-        redirectLocation(result).get mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+        redirectLocation(result).get mustBe controllers.matching.routes.ClientDetailsController.showClientDetails().url
 
         verifyMockCheckAccess(0)
       }

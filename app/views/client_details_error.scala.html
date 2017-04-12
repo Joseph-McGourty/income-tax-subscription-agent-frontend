@@ -14,25 +14,21 @@
  * limitations under the License.
  *@
 
-@import views.html.templates.main_template
-@import config.AppConfig
-@import helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
+@import views.html.templates.main_template
+@import views.html.helpers._
+@import config.AppConfig
 
-@(getAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("not_enrolled_agent_services.title"), bodyClasses = None) {
-
-    <h1 class="heading-large">@Messages("not_enrolled_agent_services.heading")</h1>
-
+@main_template(title = Messages("client-details-error.title"), bodyClasses = None) {
+    <h1 class="heading-large">@Messages("client-details-error.heading")</h1>
+    <p>@Messages("client-details-error.line_1")</p>
     <div class="form-group">
-        <p>@Html(Messages("not_enrolled_agent_services.para1", appConfig.agentServicesUrl))</p>
+    @form(action = postAction) {
+        @continueButton(Messages("base.go_back"))
+    }
     </div>
-
-    <div class="form-group">
-        @form(action = getAction) {
-            @continueButton(Messages("not_enrolled_agent_services.subscribe"))
-        }
-    </div>
+    <a id="sign-out" href="@controllers.routes.SignOutController.signOut().url">@Messages("base.sign-out")</a>
 
 }
