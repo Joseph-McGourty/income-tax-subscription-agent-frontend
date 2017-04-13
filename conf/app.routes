@@ -35,8 +35,8 @@ GET         /terms                            controllers.TermsController.showTe
 POST        /terms                            controllers.TermsController.submitTerms(editMode: Boolean ?= false)
 
 # Other Income Sources Routes
-GET         /income-other                     controllers.OtherIncomeController.showOtherIncome
-POST        /income-other                     controllers.OtherIncomeController.submitOtherIncome
+GET         /income-other                     controllers.OtherIncomeController.showOtherIncome(editMode: Boolean ?= false)
+POST        /income-other                     controllers.OtherIncomeController.submitOtherIncome(editMode: Boolean ?= false)
 
 # Throttle limit reached routes
 GET         /error/maintenance                controllers.throttling.ThrottlingController.show
