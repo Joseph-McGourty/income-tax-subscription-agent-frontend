@@ -54,7 +54,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
     implicit request =>
       keystoreService.fetchAll() flatMap {
         case Some(source) =>
-          val nino = user.nino.fold("")(x => x)
+          val nino = source.getNino().get
           middleService.submitSubscription(nino, source.getSummary()).flatMap {
             case Some(FESuccessResponse(id)) =>
               keystoreService.saveSubscriptionId(id).map(_ => Redirect(controllers.routes.ConfirmationController.showConfirmation()))

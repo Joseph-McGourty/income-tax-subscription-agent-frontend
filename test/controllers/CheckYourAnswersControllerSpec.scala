@@ -22,6 +22,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.mocks.{MockKeystoreService, MockProtectedMicroservice}
+import uk.gov.hmrc.domain.Generator
 import utils.TestModels
 
 class CheckYourAnswersControllerSpec extends ControllerBaseSpec
@@ -61,11 +62,22 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       lazy val result = call
 
       "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystore(fetchAll = TestModels.testCacheMap)
+        // generate a new nino specifically for this test,
+        // since the default value in test constant may be used by accident
+        val testNino: String = new Generator().nextNino.nino
+        setupMockKeystore(
+          fetchAll =
+            TestModels.testCacheMapCustom(
+              clientDetailsModel = TestModels.testClientDetails.copy(nino = testNino)
+            )
+        )
         setupSubscribe(subScribeSuccess)
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
+
+        // this is to test the nino from  the cache map is used to make the call
+        verifyHttpPost(url = TestSubscriptionConnector.subscriptionUrl(testNino))(1)
       }
 
       s"redirect to '${controllers.routes.ConfirmationController.showConfirmation().url}'" in {
