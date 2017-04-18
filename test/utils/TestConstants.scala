@@ -21,6 +21,9 @@ import models.DateModel
 import uk.gov.hmrc.domain.Generator
 
 object TestConstants {
+  /*
+  * this nino is a constant, if you need a fresh one use TestModels.newNino
+  */
   lazy val testNino = new Generator().nextNino.nino
   lazy val testMTDID = "XE0001234567890"
   lazy val startDate = DateModel("05", "04", "2017")

@@ -19,6 +19,8 @@ package connectors.mocks
 import config.AppConfig
 import connectors.models.subscription.{Both, FEFailureResponse, FERequest, FESuccessResponse}
 import connectors.subscription.SubscriptionConnector
+import forms.{AccountingPeriodPriorForm, IncomeSourceForm, OtherIncomeForm}
+import models._
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.JsValue
 import utils.JsonUtils._
@@ -32,14 +34,17 @@ trait MockSubscriptionConnector extends MockHttp {
     mockHttpGet
   )
 
-  def setupMockSubscribe()(status: Int, response: JsValue): Unit =
-    setupMockHttpPost(url = TestSubscriptionConnector.subscriptionUrl(""))(status, response)
+  def setupMockSubscribe(request: Option[FERequest] = None)(status: Int, response: JsValue): Unit =
+    setupMockHttpPost(url = TestSubscriptionConnector.subscriptionUrl(""), request)(status, response)
 
-  def setupMockGetSubscription()(status: Int, response: JsValue): Unit =
-    setupMockHttpGet(url = TestSubscriptionConnector.subscriptionUrl(TestConstants.testNino))(status, response)
+  def setupMockGetSubscription(nino: Option[String] = None)(status: Int, response: JsValue): Unit =
+    setupMockHttpGet(
+      url = nino.fold(None: Option[String])(nino => TestSubscriptionConnector.subscriptionUrl(nino))
+    )(status, response)
 
-  val setupSubscribe = (setupMockSubscribe() _).tupled
-  val setupGetSubscription = (setupMockGetSubscription() _).tupled
+  def setupSubscribe(request: Option[FERequest] = None) = (setupMockSubscribe(request) _).tupled
+
+  def setupGetSubscription(nino: Option[String] = None) = (setupMockGetSubscription(nino) _).tupled
 
   val testRequest = FERequest(
     nino = TestConstants.testNino,
@@ -49,12 +54,24 @@ trait MockSubscriptionConnector extends MockHttp {
     cashOrAccruals = "Cash",
     tradingName = "ABC"
   )
+
+  val testSummaryData = SummaryModel(
+    incomeSource = IncomeSourceModel(IncomeSourceForm.option_both),
+    otherIncome = OtherIncomeModel(OtherIncomeForm.option_no),
+    accountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no),
+    accountingPeriod = AccountingPeriodModel(TestConstants.startDate, TestConstants.endDate),
+    businessName = BusinessNameModel("ABC"),
+    accountingMethod = AccountingMethodModel("Cash"),
+    terms = TermModel(true)
+  )
+
   val testId = TestConstants.testMTDID
   val badRequestReason = "Bad request"
   val internalServerErrorReason = "Internal server error"
 
-  val subScribeSuccess = (OK, FESuccessResponse(testId): JsValue)
-  val subScribeBadRequest = (BAD_REQUEST, FEFailureResponse(badRequestReason): JsValue)
-  val subScribeInternalServerError = (INTERNAL_SERVER_ERROR, FEFailureResponse(internalServerErrorReason): JsValue)
+  val subscribeSuccess = (OK, FESuccessResponse(testId): JsValue)
+  val subscribeNone = (OK, FESuccessResponse(None): JsValue)
+  val subscribeBadRequest = (BAD_REQUEST, FEFailureResponse(badRequestReason): JsValue)
+  val subscribeInternalServerError = (INTERNAL_SERVER_ERROR, FEFailureResponse(internalServerErrorReason): JsValue)
 
 }
