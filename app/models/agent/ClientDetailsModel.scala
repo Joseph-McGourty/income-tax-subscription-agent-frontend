@@ -18,7 +18,9 @@ package models
 
 import play.api.libs.json.Json
 
-case class ClientDetailsModel(firstName: String, lastName: String, nino: String, dateOfBirth: DateModel)
+case class ClientDetailsModel(firstName: String, lastName: String, nino: String, dateOfBirth: DateModel) {
+  def ninoFormatted: String = nino.toUpperCase().replace(" ", "")
+}
 
 object ClientDetailsModel {
   implicit val format = Json.format[ClientDetailsModel]

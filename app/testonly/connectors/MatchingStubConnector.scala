@@ -40,7 +40,7 @@ object Value {
   implicit val format = Json.format[Value]
 }
 
-case class UserData(nino: Value = Value("AA111111A"),
+case class UserData(nino: Value = Value("AA 11 11 11 A"),
                     sautr: Value = Value("1234567890"),
                     firstName: Value = Value("Test"),
                     lastName: Value = Value("User"),
@@ -65,7 +65,7 @@ object UserData {
   private val dobFormat = DateTimeFormatter.ofPattern("ddMMuuuu").withResolverStyle(ResolverStyle.STRICT)
 
   implicit def convert(clientDetailsModel: ClientDetailsModel): UserData = UserData(
-    Value(clientDetailsModel.nino.replace(" ", "")),
+    Value(clientDetailsModel.ninoFormatted),
     Value("1234567890"),
     Value(clientDetailsModel.firstName),
     Value(clientDetailsModel.lastName),

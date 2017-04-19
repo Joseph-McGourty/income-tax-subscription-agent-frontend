@@ -28,7 +28,7 @@ object CacheUtil {
 
     import services.CacheConstants._
 
-    def getNino()(implicit read: Reads[ClientDetailsModel]): Option[String] = cacheMap.getEntry(ClientDetails).fold(None: Option[String])(x => x.nino.replace(" ", ""))
+    def getNino()(implicit read: Reads[ClientDetailsModel]): Option[String] = cacheMap.getEntry(ClientDetails).fold(None: Option[String])(x => x.ninoFormatted)
 
     def getIncomeSource()(implicit read: Reads[IncomeSourceModel]): Option[IncomeSourceModel] = cacheMap.getEntry(IncomeSource)
 
