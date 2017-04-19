@@ -18,10 +18,13 @@
 
 package testonly.connectors
 
+import java.time.LocalDate
+import java.time.format.{DateTimeFormatter, ResolverStyle}
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
 import connectors.RawResponseReads
+import models.{ClientDetailsModel, DateModel}
 import play.api.http.Status._
 import play.api.libs.json.Json
 import testonly.TestOnlyAppConfig
@@ -41,10 +44,38 @@ case class UserData(nino: Value = Value("AA111111A"),
                     sautr: Value = Value("1234567890"),
                     firstName: Value = Value("Test"),
                     lastName: Value = Value("User"),
-                    dob: Value = Value("01011980"))
+                    dob: Value = Value("01011980")) {
+  //$COVERAGE-OFF$Disabling scoverage on this method as it is only intended to be used by the test only controller
+
+  def toClientDetailsModel: ClientDetailsModel = ClientDetailsModel(
+    firstName.value,
+    lastName.value,
+    nino.value,
+    LocalDate.parse(dob.value, UserData.dobFormat): DateModel
+  )
+
+  // $COVERAGE-ON$
+
+}
 
 object UserData {
+
+  //$COVERAGE-OFF$Disabling scoverage on these fields and metho as they are only intended to be used by the test only controller
+
+  private val dobFormat = DateTimeFormatter.ofPattern("ddMMuuuu").withResolverStyle(ResolverStyle.STRICT)
+
+  implicit def convert(clientDetailsModel: ClientDetailsModel): UserData = UserData(
+    Value(clientDetailsModel.nino.replace(" ", "")),
+    Value("1234567890"),
+    Value(clientDetailsModel.firstName),
+    Value(clientDetailsModel.lastName),
+    Value(clientDetailsModel.dateOfBirth.toLocalDate.format(dobFormat))
+  )
+
+  // $COVERAGE-ON$
+
   implicit val format = Json.format[UserData]
+
 }
 
 case class Request(
@@ -87,4 +118,5 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
   }
 
 }
+
 // $COVERAGE-ON$

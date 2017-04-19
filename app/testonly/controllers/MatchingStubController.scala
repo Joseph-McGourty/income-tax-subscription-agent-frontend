@@ -18,18 +18,42 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import play.api.mvc.Action
+import config.BaseControllerConfig
+import controllers.BaseController
+import forms.ClientDetailsForm
+import models.ClientDetailsModel
+import play.api.data.Form
+import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, Request}
+import play.twirl.api.Html
 import testonly.connectors.{MatchingStubConnector, UserData}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-
+import utils.Implicits._
 
 @Singleton
-class MatchingStubController @Inject()(matchingStubConnector: MatchingStubConnector) extends FrontendController {
+class MatchingStubController @Inject()(override val baseConfig: BaseControllerConfig,
+                                       override val messagesApi: MessagesApi,
+                                       matchingStubConnector: MatchingStubConnector
+                                      ) extends BaseController {
+
+  def view(clientDetailsForm: Form[ClientDetailsModel])(implicit request: Request[_]): Html =
+    testonly.views.html.stub_client(
+      clientDetailsForm,
+      routes.MatchingStubController.stubClient()
+    )
+
+
+  def show = Action.async { implicit request =>
+    Ok(view(ClientDetailsForm.clientDetailsForm.form.fill(UserData().toClientDetailsModel)))
+  }
 
   def stubClient = Action.async { implicit request =>
-    matchingStubConnector.newUser(UserData()) map {
-      _ => Ok("User stubbed")
-    }
+    ClientDetailsForm.clientDetailsForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(view(formWithErrors)),
+      clientDetails =>
+        matchingStubConnector.newUser(clientDetails) map {
+          _ => Ok(testonly.views.html.show_stubbed_details(clientDetails))
+        }
+    )
   }
 
 }
