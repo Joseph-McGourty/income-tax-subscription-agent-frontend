@@ -78,6 +78,9 @@ object UserData {
 
 }
 
+/*
+ * the N.B. in order to make use of the stub the testId must be sent in the header under "True-Client-IP"
+ */
 case class Request(
                     data: UserData,
                     testId: String = "1234567",
@@ -103,6 +106,12 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
 
   lazy val dynamicStubUrl = appConfig.matchingStubsURL + "/dynamic-cid"
 
+  /*
+  *  N.B. This creates a stubbed user via the MatchingStubs service
+  *  In order to make use of this user the request must include a "True-Client-IP" header with the same
+  *  testId specified by the request.
+  *  Currently this is hardcoded in the Request object as "1234567"
+  */
   def newUser(userData: UserData)(implicit hc: HeaderCarrier): Future[Boolean] = {
     http.POST[Request, HttpResponse](dynamicStubUrl, Request(userData)).flatMap {
       response =>

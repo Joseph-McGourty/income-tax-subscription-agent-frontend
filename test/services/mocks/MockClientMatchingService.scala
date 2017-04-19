@@ -21,6 +21,6 @@ import services.ClientMatchingService
 
 trait MockClientMatchingService extends MockAuthenticatorConnector {
 
-  object TestClientMatchingService extends ClientMatchingService(TestAuthenticatorConnector)
+  object TestClientMatchingService extends ClientMatchingService(appConfig, TestAuthenticatorConnector)
 
 }

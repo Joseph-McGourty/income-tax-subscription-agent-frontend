@@ -45,6 +45,7 @@ trait MockConfig extends AppConfig {
   override lazy val ipExclusionList: Seq[Call] = Nil
   override lazy val agentServicesUrl: String = "/agent-subscription"
   override lazy val authenticatorUrl = ""
+  override lazy val hasEnabledTestOnlyRoutes = false
 }
 
 object MockConfig extends MockConfig
