@@ -52,7 +52,9 @@ object TestModels extends Implicits {
   val emptyCacheMap = CacheMap("", Map())
 
   val testCacheMap: CacheMap =
-    testCacheMap(incomeSource = testIncomeSourceBoth,
+    testCacheMap(
+      clientDetailsModel = testClientDetails,
+      incomeSource = testIncomeSourceBoth,
       otherIncome = testOtherIncomeNo,
       accountingPeriodPrior = testAccountingPeriodPriorCurrent,
       accountingPeriodDate = testAccountingPeriod,
@@ -60,7 +62,27 @@ object TestModels extends Implicits {
       accountingMethod = testAccountingMethod,
       terms = testTerms)
 
-  def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
+  def testCacheMapCustom(
+                          clientDetailsModel: Option[ClientDetailsModel] = testClientDetails,
+                          incomeSource: Option[IncomeSourceModel] = testIncomeSourceBoth,
+                          otherIncome: Option[OtherIncomeModel] = testOtherIncomeNo,
+                          accountingPeriodPrior: Option[AccountingPeriodPriorModel] = testAccountingPeriodPriorCurrent,
+                          accountingPeriodDate: Option[AccountingPeriodModel] = testAccountingPeriod,
+                          businessName: Option[BusinessNameModel] = testBusinessName,
+                          accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
+                          terms: Option[TermModel] = testTerms): CacheMap =
+    testCacheMap(
+      clientDetailsModel = clientDetailsModel,
+      incomeSource = incomeSource,
+      otherIncome = otherIncome,
+      accountingPeriodPrior = accountingPeriodPrior,
+      accountingPeriodDate = accountingPeriodDate,
+      businessName = businessName,
+      accountingMethod = accountingMethod,
+      terms = terms)
+
+  def testCacheMap(clientDetailsModel: Option[ClientDetailsModel] = None,
+                   incomeSource: Option[IncomeSourceModel] = None,
                    otherIncome: Option[OtherIncomeModel] = None,
                    accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
@@ -69,6 +91,7 @@ object TestModels extends Implicits {
                    terms: Option[TermModel] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
+      clientDetailsModel.fold(emptyMap)(model => Map(ClientDetails -> ClientDetailsModel.format.writes(model))) ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
       otherIncome.fold(emptyMap)(model => Map(OtherIncome -> OtherIncomeModel.format.writes(model))) ++
       accountingPeriodPrior.fold(emptyMap)(model => Map(AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model))) ++

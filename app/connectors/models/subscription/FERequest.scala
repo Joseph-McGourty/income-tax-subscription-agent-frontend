@@ -25,7 +25,10 @@ case class FERequest(nino: String,
                      accountingPeriodStart: Option[DateModel] = None,
                      accountingPeriodEnd: Option[DateModel] = None,
                      tradingName: Option[String] = None,
-                     cashOrAccruals: Option[String] = None)
+                     cashOrAccruals: Option[String] = None,
+                     // enrolUser must be set to false for agent
+                     enrolUser: Boolean = false
+                    )
 
 object FERequest {
   implicit val format = Json.format[FERequest]
