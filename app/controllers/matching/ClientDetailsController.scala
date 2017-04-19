@@ -74,7 +74,7 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
   private[matching]
   def checkExistingSubscription(clientDetails: ClientDetailsModel,
                                 default: => Future[Result])(implicit request: Request[AnyContent]): Future[Result] =
-    subscriptionService.getSubscription(clientDetails.nino).flatMap {
+    subscriptionService.getSubscription(clientDetails.nino.replace(" ","")).flatMap {
       case Some(FESuccessResponse(None)) => default
       case Some(FESuccessResponse(Some(_))) => Redirect(controllers.routes.ClientAlreadySubscribedController.show())
       case _ => showInternalServerError
