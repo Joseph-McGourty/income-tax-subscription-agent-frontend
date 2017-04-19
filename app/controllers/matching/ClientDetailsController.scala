@@ -19,14 +19,16 @@ package controllers.matching
 import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
+import connectors.models.subscription.FESuccessResponse
 import controllers.BaseController
 import forms._
 import models.ClientDetailsModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import services.{ClientMatchingService, KeystoreService}
+import services.{ClientMatchingService, KeystoreService, SubscriptionService}
+import utils.Implicits._
 
 import scala.concurrent.Future
 
@@ -34,7 +36,8 @@ import scala.concurrent.Future
 class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
                                         val messagesApi: MessagesApi,
                                         val keystoreService: KeystoreService,
-                                        val clientMatchingService: ClientMatchingService
+                                        val clientMatchingService: ClientMatchingService,
+                                        val subscriptionService: SubscriptionService
                                        ) extends BaseController {
 
   def view(clientDetailsForm: Form[ClientDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
@@ -57,15 +60,25 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
       ClientDetailsForm.clientDetailsForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
         clientDetails => {
-          keystoreService.saveClientDetails(clientDetails) flatMap { _ =>
-            clientMatchingService.matchClient(clientDetails) map {
-              case true => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
-              case false => Redirect(controllers.matching.routes.ClientDetailsErrorController.show())
-            }
-          }
+          for {
+            _ <- keystoreService.saveClientDetails(clientDetails)
+            matchFound <- clientMatchingService.matchClient(clientDetails)
+          } yield matchFound
+        }.flatMap {
+          case true => checkExistingSubscription(clientDetails, Redirect(controllers.routes.IncomeSourceController.showIncomeSource()))
+          case false => Redirect(controllers.matching.routes.ClientDetailsErrorController.show())
         }
       )
   }
+
+  private[matching]
+  def checkExistingSubscription(clientDetails: ClientDetailsModel,
+                                default: => Future[Result])(implicit request: Request[AnyContent]): Future[Result] =
+    subscriptionService.getSubscription(clientDetails.nino).flatMap {
+      case Some(FESuccessResponse(None)) => default
+      case Some(FESuccessResponse(Some(_))) => Redirect(controllers.routes.ClientAlreadySubscribedController.show())
+      case _ => showInternalServerError
+    }
 
   lazy val backUrl: String = controllers.routes.HomeController.index().url
 

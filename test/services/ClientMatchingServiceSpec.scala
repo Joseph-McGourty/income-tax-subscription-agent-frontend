@@ -27,19 +27,19 @@ class ClientMatchingServiceSpec extends MockClientMatchingService {
 
     "return true if authenticator response with ok" in {
       setupMatchClient(matchClientMatched)
-      val result = MockClientMatchingService.matchClient(testClientDetails)
+      val result = TestClientMatchingService.matchClient(testClientDetails)
       await(result) mustBe true
     }
 
     "return false if authenticator response with Unauthorized but with a matching error message" in {
       setupMatchClient(matchClientNoMatch)
-      val result = MockClientMatchingService.matchClient(testClientDetails)
+      val result = TestClientMatchingService.matchClient(testClientDetails)
       await(result) mustBe false
     }
 
     "throw InternalServerException if authenticator response with Unauthorized but with a server error message" in {
       setupMatchClient(matchClientUnexpectedFailure)
-      val result = MockClientMatchingService.matchClient(testClientDetails)
+      val result = TestClientMatchingService.matchClient(testClientDetails)
 
       val e = intercept[InternalServerException] {
         await(result)
@@ -49,7 +49,7 @@ class ClientMatchingServiceSpec extends MockClientMatchingService {
 
     "throw InternalServerException if authenticator response with an unexpected status" in {
       setupMatchClient(matchClientUnexpectedFailure)
-      val result = MockClientMatchingService.matchClient(testClientDetails)
+      val result = TestClientMatchingService.matchClient(testClientDetails)
 
       val e = intercept[InternalServerException] {
         await(result)

@@ -16,31 +16,31 @@
 
 package views
 
-import assets.MessageLookup.{Base => commonMessages, ClientDetailsError => messages}
+import assets.MessageLookup.{ClientAlreadySubscribed => messages, Base => common}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
-class ClientDetailsErrorViewSpec extends ViewSpecTrait {
+class ClientAlreadySubscribedViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  lazy val page = views.html.client_details_error(action)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = views.html.client_already_subscribed(action)(FakeRequest(), applicationMessages, appConfig)
 
-  "The Client Details Error view" should {
+  "The Client Already Enrolled view" should {
     val testPage = TestView(
-      name = "Client Details Error",
+      name = "Client Already Enrolled View",
       title = messages.title,
       heading = messages.heading,
       page = page
     )
 
-    testPage.mustHavePara(messages.line1)
+    testPage.mustHavePara(
+      messages.para1
+    )
 
-    val form = testPage.getForm("Client Details Error form")(actionCall = action)
+    val form = testPage.getForm("Client Already Enrolled form")(actionCall = action)
 
-    form.mustHaveSubmitButton(commonMessages.goBack)
-
-    testPage.mustHaveALink("sign-out", commonMessages.signOut, controllers.routes.SignOutController.signOut().url)
+    form.mustHaveSubmitButton(common.goBack)
 
   }
 }

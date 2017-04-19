@@ -56,7 +56,6 @@ property.income.title                                           = How much was y
 property.income.heading                                         = How much was your income from property this year?
 property.income.line_1                                          = This is the amount you made before deducting any allowable expenses.
 
-
 # Current Financial Period Prior page
 business.current_financial_period_prior.title                   = Business accounting period
 business.current_financial_period_prior.heading                 = Did your client''s current accounting period start before 6 April 2017?
@@ -123,10 +122,10 @@ throttle_limit.heading                                          = Service is una
 throttle_limit.line_1                                           = Please try again later.
 
 
-## Already enrolled page ##
-already-enrolled.title                                          = Your client has already signed up
-already-enrolled.heading                                        = Your client has already signed up
-already-enrolled.para1                                          = The details you've entered are already in use.
+## Client already subscribed page ##
+client-already-subscribed.title                                 = Your client has already signed up
+client-already-subscribed.heading                               = Your client has already signed up
+client-already-subscribed.para1                                 = The details you''ve entered are already in use.
 
 ## Failure Messages ##
 notAuthorised.title                                             = Not Authorised

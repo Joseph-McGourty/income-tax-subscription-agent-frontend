@@ -36,6 +36,7 @@ object MessageLookup {
     val where_can_i_get_this_information = "Where can I get this information"
     val signUp = "Sign up"
     val dateOfBirth = "Date of birth"
+    val goBack = "Go back"
   }
 
   object FrontPage {
@@ -187,7 +188,7 @@ object MessageLookup {
     val returnToHome = """To sign up for quarterly reporting, you'll have to sign in using your Government Gateway ID."""
   }
 
-  object AlreadyEnrolled {
+  object ClientAlreadySubscribed {
     val title = "Your client has already signed up"
     val heading = "Your client has already signed up"
     val para1 = "The details you've entered are already in use."
@@ -380,7 +381,6 @@ object MessageLookup {
     val title = "Client match error"
     val heading = "We couldn't confirm your client"
     val line1 = "The details you've entered are not on our system."
-    val button = "Go back"
   }
 
   object ClientDetails {
