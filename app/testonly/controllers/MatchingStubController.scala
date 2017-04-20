@@ -27,7 +27,11 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, Request}
 import play.twirl.api.Html
 import testonly.connectors.{MatchingStubConnector, UserData}
+import testonly.forms.ClientToStubForm
+import testonly.models.ClientToStubModel
 import utils.Implicits._
+
+//$COVERAGE-OFF$Disabling scoverage on this class as it is only intended to be used by the test only controller
 
 @Singleton
 class MatchingStubController @Inject()(override val baseConfig: BaseControllerConfig,
@@ -35,19 +39,19 @@ class MatchingStubController @Inject()(override val baseConfig: BaseControllerCo
                                        matchingStubConnector: MatchingStubConnector
                                       ) extends BaseController {
 
-  def view(clientDetailsForm: Form[ClientDetailsModel])(implicit request: Request[_]): Html =
+  def view(clientToStubForm: Form[ClientToStubModel])(implicit request: Request[_]): Html =
     testonly.views.html.stub_client(
-      clientDetailsForm,
+      clientToStubForm,
       routes.MatchingStubController.stubClient()
     )
 
 
   def show = Action.async { implicit request =>
-    Ok(view(ClientDetailsForm.clientDetailsForm.form.fill(UserData().toClientDetailsModel)))
+    Ok(view(ClientToStubForm.clientToStubForm.form.fill(UserData().toClientToStubModel)))
   }
 
   def stubClient = Action.async { implicit request =>
-    ClientDetailsForm.clientDetailsForm.bindFromRequest.fold(
+    ClientToStubForm.clientToStubForm.bindFromRequest.fold(
       formWithErrors => BadRequest(view(formWithErrors)),
       clientDetails =>
         matchingStubConnector.newUser(clientDetails) map {
@@ -57,3 +61,5 @@ class MatchingStubController @Inject()(override val baseConfig: BaseControllerCo
   }
 
 }
+
+// $COVERAGE-ON$

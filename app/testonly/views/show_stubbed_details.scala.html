@@ -14,13 +14,13 @@
  * limitations under the License.
  *@
 
-@import models._
+@import _root_.testonly.models.ClientToStubModel
 @import helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import config.AppConfig
 @import java.time.format.{DateTimeFormatter, ResolverStyle}
 
-@(clientDetailsModel: ClientDetailsModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(clientToStubModel: ClientToStubModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @views.html.templates.main_template(title = Messages("User stubbing service"), bodyClasses = None) {
 
@@ -31,19 +31,23 @@
         <div class="form-group">
             <div class="form-field-group">
                 @Messages("client-details.field_1"):
-                @clientDetailsModel.firstName
+                @clientToStubModel.firstName
             </div>
             <div class="form-field-group">
                 @Messages("client-details.field_2"):
-                @clientDetailsModel.lastName
+                @clientToStubModel.lastName
             </div>
             <div class="form-field-group">
                 @Messages("client-details.field_3"):
-                @clientDetailsModel.nino
+                @clientToStubModel.nino
+            </div>
+            <div class="form-field-group">
+                Self Assessment Unique Tax Reference:
+                @clientToStubModel.sautr
             </div>
             <div class="form-field-group">
                 @Messages("client-details.field_4"):
-                @clientDetailsModel.dateOfBirth.toLocalDate.format(DateTimeFormatter.ofPattern("dd MM uuuu").withResolverStyle(ResolverStyle.STRICT))
+                @clientToStubModel.dateOfBirth.toLocalDate.format(DateTimeFormatter.ofPattern("dd MM uuuu").withResolverStyle(ResolverStyle.STRICT))
             </div>
         </div>
 

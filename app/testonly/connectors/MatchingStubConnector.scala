@@ -28,6 +28,7 @@ import models.{ClientDetailsModel, DateModel}
 import play.api.http.Status._
 import play.api.libs.json.Json
 import testonly.TestOnlyAppConfig
+import testonly.models.ClientToStubModel
 import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
@@ -47,11 +48,12 @@ case class UserData(nino: Value = Value("AA 11 11 11 A"),
                     dob: Value = Value("01011980")) {
   //$COVERAGE-OFF$Disabling scoverage on this method as it is only intended to be used by the test only controller
 
-  def toClientDetailsModel: ClientDetailsModel = ClientDetailsModel(
-    firstName.value,
-    lastName.value,
-    nino.value,
-    LocalDate.parse(dob.value, UserData.dobFormat): DateModel
+  def toClientToStubModel: ClientToStubModel = ClientToStubModel(
+    firstName = firstName.value,
+    lastName = lastName.value,
+    nino = nino.value,
+    sautr = sautr.value,
+    dateOfBirth = LocalDate.parse(dob.value, UserData.dobFormat): DateModel
   )
 
   // $COVERAGE-ON$
@@ -64,12 +66,12 @@ object UserData {
 
   private val dobFormat = DateTimeFormatter.ofPattern("ddMMuuuu").withResolverStyle(ResolverStyle.STRICT)
 
-  implicit def convert(clientDetailsModel: ClientDetailsModel): UserData = UserData(
-    Value(clientDetailsModel.ninoFormatted),
-    Value("1234567890"),
-    Value(clientDetailsModel.firstName),
-    Value(clientDetailsModel.lastName),
-    Value(clientDetailsModel.dateOfBirth.toLocalDate.format(dobFormat))
+  implicit def convert(clientToStubModel: ClientToStubModel): UserData = UserData(
+    nino = Value(clientToStubModel.ninoFormatted),
+    sautr = Value(clientToStubModel.sautr),
+    firstName = Value(clientToStubModel.firstName),
+    lastName = Value(clientToStubModel.lastName),
+    dob = Value(clientToStubModel.dateOfBirth.toLocalDate.format(dobFormat))
   )
 
   // $COVERAGE-ON$
