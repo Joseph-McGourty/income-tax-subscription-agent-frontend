@@ -83,7 +83,7 @@ object UserData {
  */
 case class Request(
                     data: UserData,
-                    testId: String = "1234567",
+                    testId: String = "ITSA",
                     name: String = "CID",
                     service: String = "find",
                     resultCode: Option[Int] = Some(200),
