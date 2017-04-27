@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 
 import play.api.mvc.Call
 import play.api.{Application, Configuration}
+import play.routing.Router
 import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig {
@@ -48,6 +49,7 @@ trait AppConfig {
   val shutterPage: String
   val agentServicesUrl: String
   val authenticatorUrl: String
+  val hasEnabledTestOnlyRoutes: Boolean
 }
 
 @Singleton
@@ -106,12 +108,24 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   // Whitelisting config
   private def whitelistConfig(key: String): Seq[String] = configuration.getString(key).fold(Seq[String]())(ips => ips.split(",").toSeq)
+
   override lazy val whitelistIps: Seq[String] = whitelistConfig("ip-whitelist.urls")
-  override lazy val ipExclusionList: Seq[Call] = whitelistConfig("ip-whitelist.excludeCalls").map(ip => Call("GET",ip))
+  override lazy val ipExclusionList: Seq[Call] = whitelistConfig("ip-whitelist.excludeCalls").map(ip => Call("GET", ip))
 
   // Agent Services config
   override lazy val agentServicesUrl: String = loadConfig("agent-services.url")
 
   override lazy val authenticatorUrl: String = baseUrl("authenticator")
+
+  /*
+  *  This checks to see if the testOnlyDoNotUseInAppConf route is set in configuration instead of the default prod.Routes
+  *  This flag can be used by the application to check if the test only routes are enabled. i.e. this flag can be used to
+  *  determine the service is not running in the prod environment
+  *
+  *  One usage of this is in ClientMatchingService where we determine if a "True-Client-IP" should be added for the purpose of
+  *  matching.
+  */
+  override lazy val hasEnabledTestOnlyRoutes: Boolean =
+    configuration.getString("application.router").get == "testOnlyDoNotUseInAppConf.Routes"
 }
 

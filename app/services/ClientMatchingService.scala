@@ -18,6 +18,7 @@ package services
 
 import javax.inject.{Inject, Singleton}
 
+import config.AppConfig
 import connectors.matching.AuthenticatorConnector
 import models.ClientDetailsModel
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -25,10 +26,19 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import scala.concurrent.Future
 
 @Singleton
-class ClientMatchingService @Inject()(authenticatorConnector: AuthenticatorConnector) {
+class ClientMatchingService @Inject()(val appConfig: AppConfig,
+                                      authenticatorConnector: AuthenticatorConnector) {
 
+  /* N.B. this is header update is to be used in conjunction with the test only route
+  *  MatchingStubController
+  *  the True-Client-IP must match the testId in in testonly.connectors.Request sent
+  *  The hc must not be edited in production
+  */
   def amendHCForTest(implicit hc: HeaderCarrier): HeaderCarrier =
-    hc.withExtraHeaders("True-Client-IP" -> "1234567")
+    appConfig.hasEnabledTestOnlyRoutes match {
+      case true => hc.withExtraHeaders("True-Client-IP" -> "ITSA")
+      case false => hc
+    }
 
   @inline def matchClient(clientDetailsModel: ClientDetailsModel)(implicit hc: HeaderCarrier): Future[Boolean] =
     authenticatorConnector.matchClient(clientDetailsModel)(amendHCForTest)

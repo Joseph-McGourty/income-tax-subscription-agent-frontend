@@ -16,11 +16,13 @@
 
 package services.mocks
 
-import connectors.mocks.MockAuthenticatorConnector
-import services.ClientMatchingService
+import audit.Logging
+import connectors.mocks.MockSubscriptionConnector
+import services.SubscriptionService
+import utils.MockTrait
 
-trait MockClientMatchingService extends MockAuthenticatorConnector {
+trait MockSubscriptionService extends MockTrait with MockSubscriptionConnector {
 
-  object TestClientMatchingService extends ClientMatchingService(appConfig, TestAuthenticatorConnector)
+  object TestSubscriptionService extends SubscriptionService(app.injector.instanceOf[Logging], TestSubscriptionConnector)
 
 }
