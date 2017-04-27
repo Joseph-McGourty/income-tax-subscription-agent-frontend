@@ -20,7 +20,7 @@ import forms.prevalidation.PreprocessedForm
 import forms.submapping.DateMapping.dateMapping
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
-import models.ClientDetailsModel
+import models.agent.ClientDetailsModel
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraint

@@ -20,6 +20,7 @@ package services
 import javax.inject._
 
 import models._
+import models.agent._
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}

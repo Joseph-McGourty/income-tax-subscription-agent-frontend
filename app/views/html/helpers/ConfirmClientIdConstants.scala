@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package models.agent
+package views.html.helpers
 
-import models._
-import play.api.libs.json.Json
-import utils.Implicits.StringNinoUtil
+object ConfirmClientIdConstants {
 
-case class ClientDetailsModel(firstName: String, lastName: String, nino: String, dateOfBirth: DateModel) {
+  val DobId = "date-of-birth"
+  val FirstNameId = "first-name"
+  val LastNameId = "last-name"
+  val NinoId = "nino"
 
-  def ninoTrimed: String = nino.toUpperCase.replace(" ", "")
-
-  def ninoInDisplayFormat: String = nino.toNinoDisplayFormat
-
-}
-
-object ClientDetailsModel {
-  implicit val format = Json.format[ClientDetailsModel]
 }

@@ -19,7 +19,8 @@ package controllers.matching
 import auth._
 import controllers.ControllerBaseSpec
 import forms.ClientDetailsForm
-import models.{ClientDetailsModel, DateModel}
+import models.DateModel
+import models.agent.ClientDetailsModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, _}

@@ -19,7 +19,7 @@ package connectors.mocks
 import audit.Logging
 import connectors.matching.AuthenticatorConnector
 import connectors.models.matching.ClientMatchRequestModel
-import models.ClientDetailsModel
+import models.agent.ClientDetailsModel
 import play.api.http.Status.{OK, UNAUTHORIZED, NOT_FOUND}
 import play.api.libs.json.JsValue
 import utils.JsonUtils._

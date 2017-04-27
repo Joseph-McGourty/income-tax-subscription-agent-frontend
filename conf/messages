@@ -43,6 +43,16 @@ client-details-error.title                                      = Client match e
 client-details-error.heading                                    = We couldn''t confirm your client
 client-details-error.line_1                                     = The details you''ve entered are not on our system.
 
+# Check your client's details page
+client-details.summary.title                                    = Confirm your client
+client-details.summary.heading                                  = Check your answers
+client-details.summary.heading_hidden                           = before looking up your client
+client-details.summary.h2                                       = You''ve told us
+client-details.summary.first_name                               = First name
+client-details.summary.last_name                                = Last name
+client-details.summary.nino                                     = National Insurance number
+client-details.summary.dob                                      = Date of birth
+
 ## Income source page
 income_source.title                                             = Select your client''s income type
 income_source.heading                                           = Select your client''s income type

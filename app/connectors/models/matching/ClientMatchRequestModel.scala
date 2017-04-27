@@ -18,7 +18,7 @@ package connectors.models.matching
 
 import java.time.LocalDate
 
-import models.ClientDetailsModel
+import models.agent.ClientDetailsModel
 import models.DateModel._
 import play.api.libs.json.Json
 import uk.gov.hmrc.domain.Nino

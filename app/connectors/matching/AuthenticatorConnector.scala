@@ -22,7 +22,7 @@ import audit.Logging
 import config.AppConfig
 import connectors.RawResponseReads
 import connectors.models.matching.{ClientMatchFailureResponseModel, ClientMatchRequestModel}
-import models.ClientDetailsModel
+import models.agent.ClientDetailsModel
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse, InternalServerException}

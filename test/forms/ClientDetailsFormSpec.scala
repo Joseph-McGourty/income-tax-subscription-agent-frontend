@@ -20,7 +20,8 @@ import assets.MessageLookup
 import forms.submapping.DateMapping._
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils._
-import models.{ClientDetailsModel, DateModel}
+import models.DateModel
+import models.agent.ClientDetailsModel
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.Messages.Implicits._

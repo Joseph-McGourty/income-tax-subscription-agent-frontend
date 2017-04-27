@@ -18,6 +18,7 @@ package services
 
 import forms.IncomeSourceForm
 import models._
+import models.agent._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.Implicits._

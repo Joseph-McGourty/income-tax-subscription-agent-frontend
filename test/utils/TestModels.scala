@@ -19,6 +19,7 @@ package utils
 
 import forms._
 import models._
+import models.agent._
 import play.api.libs.json.JsValue
 import services.CacheConstants
 import uk.gov.hmrc.http.cache.client.CacheMap

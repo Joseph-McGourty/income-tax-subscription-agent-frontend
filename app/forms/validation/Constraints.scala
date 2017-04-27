@@ -40,7 +40,10 @@ object Constraints {
   val emptyNino: Constraint[String] = nonEmpty("error.nino.empty")
 
   val validateNino: Constraint[String] = {
-    val ninoRegex = """^((?!(BG|GB|KN|NK|NT|TN|ZZ)|(D|F|I|Q|U|V)[A-Z]|[A-Z](D|F|I|O|Q|U|V))[A-Z]{2})[0-9]{6}[A-D]?$"""
+    // N.B. this regex is updated to force the user to also enter the suffix
+    // the suffix is required because the service we currently call to perform the lookup does not remove it safely
+    // and will break if we do not send down the full nino
+    val ninoRegex = """^((?!(BG|GB|KN|NK|NT|TN|ZZ)|(D|F|I|Q|U|V)[A-Z]|[A-Z](D|F|I|O|Q|U|V))[A-Z]{2})[0-9]{6}[A-D]$"""
     constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else ErrorMessageFactory.error("error.nino.invalid"))
   }
 
