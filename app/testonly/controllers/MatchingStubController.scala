@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import config.BaseControllerConfig
 import controllers.BaseController
 import forms.ClientDetailsForm
-import models.ClientDetailsModel
+import models.agent.ClientDetailsModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, Request}

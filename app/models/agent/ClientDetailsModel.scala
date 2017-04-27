@@ -21,9 +21,8 @@ import play.api.libs.json.Json
 import utils.Implicits.StringNinoUtil
 
 case class ClientDetailsModel(firstName: String, lastName: String, nino: String, dateOfBirth: DateModel) {
-  def ninoFormatted: String = nino.toUpperCase().replace(" ", "")
 
-  def ninoTrimed: String = nino.toUpperCase.replace(" ", "")
+  def ninoInBackendFormat: String = nino.toUpperCase.replace(" ", "")
 
   def ninoInDisplayFormat: String = nino.toNinoDisplayFormat
 

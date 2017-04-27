@@ -38,7 +38,7 @@ class ConfirmClientControllerSpec extends ControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    MockClientMatchingService
+    TestClientMatchingService
   )
 
   "Calling the show action of the ConfirmClientController with an authorised user" should {

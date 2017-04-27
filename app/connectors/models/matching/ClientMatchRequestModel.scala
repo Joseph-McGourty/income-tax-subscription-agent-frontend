@@ -33,7 +33,7 @@ object ClientMatchRequestModel {
       clientDetailsModel.firstName,
       clientDetailsModel.lastName,
       clientDetailsModel.dateOfBirth,
-      Nino(clientDetailsModel.ninoFormatted)
+      Nino(clientDetailsModel.ninoInBackendFormat)
     )
 
   implicit val format = Json.format[ClientMatchRequestModel]
