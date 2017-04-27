@@ -49,6 +49,10 @@ GET         /error/main-income                  controllers.MainIncomeErrorContr
 GET         /error/other-income                 controllers.OtherIncomeErrorController.showOtherIncomeError
 POST        /error/other-income                 controllers.OtherIncomeErrorController.submitOtherIncomeError
 
+#
+GET         /error/client-already-subscribed        controllers.ClientAlreadySubscribedController.show
+POST        /error/client-already-subscribed        controllers.ClientAlreadySubscribedController.submit
+
 # Home controller
 GET         /not-enrolled-agent-services        controllers.NotEnrolledAgentServicesController.show
 

@@ -21,13 +21,13 @@ import auth._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.{MockKeystoreService, MockProtectedMicroservice}
+import services.mocks.{MockKeystoreService, MockSubscriptionService}
 import uk.gov.hmrc.domain.Generator
 import utils.TestModels
 
 class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
-  with MockProtectedMicroservice {
+  with MockSubscriptionService {
 
   override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -39,7 +39,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    middleService = MockSubscriptionService,
+    middleService = TestSubscriptionService,
     app.injector.instanceOf[Logging]
   )
 
@@ -71,7 +71,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
               clientDetailsModel = TestModels.testClientDetails.copy(nino = testNino)
             )
         )
-        setupSubscribe(subScribeSuccess)
+        setupSubscribe()(subscribeSuccess)
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
@@ -89,7 +89,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
       "return a internalServer error" in {
         setupMockKeystore(fetchAll = TestModels.testCacheMap)
-        setupSubscribe(subScribeBadRequest)
+        setupSubscribe()(subscribeBadRequest)
         status(result) must be(Status.INTERNAL_SERVER_ERROR)
         await(result)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)

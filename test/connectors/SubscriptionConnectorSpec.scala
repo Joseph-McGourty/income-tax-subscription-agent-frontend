@@ -36,7 +36,7 @@ class SubscriptionConnectorSpec extends MockSubscriptionConnector {
     def call = await(TestSubscriptionConnector.subscribe(request = testRequest))
 
     "return the succcess response as an object" in {
-      setupSubscribe(subScribeSuccess)
+      setupSubscribe(testRequest)(subscribeSuccess)
       val expected = FESuccessResponse(id)
       val actual = call
       actual shouldBe Some(expected)
@@ -45,39 +45,44 @@ class SubscriptionConnectorSpec extends MockSubscriptionConnector {
     "return None if the middle service indicated a bad request" in {
       val reason = "Your submission contains one or more errors. Failed Parameter(s) - [idType, idNumber, payload]"
       val code = "INVALID_NINO"
-      setupSubscribe(subScribeBadRequest)
+      setupSubscribe(testRequest)(subscribeBadRequest)
       val actual = call
       actual shouldBe None
     }
 
     "return None if the middle service indicated internal server error" in {
-      setupSubscribe(subScribeInternalServerError)
+      setupSubscribe(testRequest)(subscribeInternalServerError)
       val actual = call
       actual shouldBe None
     }
   }
 
-
   "SubscriptionConnector.getSubscription" should {
 
+    val testNino = TestConstants.testNino
     "GET to the correct url" in {
-      TestSubscriptionConnector.subscriptionUrl(TestConstants.testNino) should endWith(s"/income-tax-subscription/subscription/${TestConstants.testNino}")
+      TestSubscriptionConnector.subscriptionUrl(testNino) should endWith(s"/income-tax-subscription/subscription/$testNino")
     }
 
-    def result: Option[FEResponse] = await(TestSubscriptionConnector.getSubscription(TestConstants.testNino))
+    def result: Option[FEResponse] = await(TestSubscriptionConnector.getSubscription(testNino))
 
     "return the succcess response as an object" in {
-      setupGetSubscription(subScribeSuccess)
+      setupGetSubscription(testNino)(subscribeSuccess)
       result shouldBe Some(FESuccessResponse(id))
     }
 
-    "return None if the middle service indicated a bad request" in {
-      setupGetSubscription(subScribeBadRequest)
+    "return the None response as an object" in {
+      setupGetSubscription(testNino)(subscribeNone)
+      result shouldBe Some(FESuccessResponse(None))
+    }
+
+    "return fail if the middle service indicated a bad request" in {
+      setupGetSubscription(testNino)(subscribeBadRequest)
       result shouldBe None
     }
 
     "return None if the middle service indicated internal server error" in {
-      setupGetSubscription(subScribeInternalServerError)
+      setupGetSubscription(testNino)(subscribeInternalServerError)
       result shouldBe None
     }
   }

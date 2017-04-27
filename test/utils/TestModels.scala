@@ -22,12 +22,18 @@ import models._
 import models.agent._
 import play.api.libs.json.JsValue
 import services.CacheConstants
+import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 
 object TestModels extends Implicits {
 
   import CacheConstants._
+
+  /*
+   * this function returns a random nino each time it is called, if you need a constant nino use TestConstants.testNino
+   */
+  def newNino: String = new Generator().nextNino.nino
 
   val testStartDate = DateModel("01", "04", "2017")
   val testEndDate = DateModel("01", "04", "2018")

@@ -18,13 +18,17 @@
 
 package testonly.connectors
 
+import java.time.LocalDate
+import java.time.format.{DateTimeFormatter, ResolverStyle}
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
 import connectors.RawResponseReads
+import models.{ClientDetailsModel, DateModel}
 import play.api.http.Status._
 import play.api.libs.json.Json
 import testonly.TestOnlyAppConfig
+import testonly.models.ClientToStubModel
 import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
@@ -37,19 +41,51 @@ object Value {
   implicit val format = Json.format[Value]
 }
 
-case class UserData(nino: Value = Value("AA111111A"),
+case class UserData(nino: Value = Value("AA 11 11 11 A"),
                     sautr: Value = Value("1234567890"),
                     firstName: Value = Value("Test"),
                     lastName: Value = Value("User"),
-                    dob: Value = Value("01011980"))
+                    dob: Value = Value("01011980")) {
+  //$COVERAGE-OFF$Disabling scoverage on this method as it is only intended to be used by the test only controller
 
-object UserData {
-  implicit val format = Json.format[UserData]
+  def toClientToStubModel: ClientToStubModel = ClientToStubModel(
+    firstName = firstName.value,
+    lastName = lastName.value,
+    nino = nino.value,
+    sautr = sautr.value,
+    dateOfBirth = LocalDate.parse(dob.value, UserData.dobFormat): DateModel
+  )
+
+  // $COVERAGE-ON$
+
 }
 
+object UserData {
+
+  //$COVERAGE-OFF$Disabling scoverage on these fields and metho as they are only intended to be used by the test only controller
+
+  private val dobFormat = DateTimeFormatter.ofPattern("ddMMuuuu").withResolverStyle(ResolverStyle.STRICT)
+
+  implicit def convert(clientToStubModel: ClientToStubModel): UserData = UserData(
+    nino = Value(clientToStubModel.ninoFormatted),
+    sautr = Value(clientToStubModel.sautr),
+    firstName = Value(clientToStubModel.firstName),
+    lastName = Value(clientToStubModel.lastName),
+    dob = Value(clientToStubModel.dateOfBirth.toLocalDate.format(dobFormat))
+  )
+
+  // $COVERAGE-ON$
+
+  implicit val format = Json.format[UserData]
+
+}
+
+/*
+ * the N.B. in order to make use of the stub the testId must be sent in the header under "True-Client-IP"
+ */
 case class Request(
                     data: UserData,
-                    testId: String = "1234567",
+                    testId: String = "ITSA",
                     name: String = "CID",
                     service: String = "find",
                     resultCode: Option[Int] = Some(200),
@@ -72,6 +108,12 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
 
   lazy val dynamicStubUrl = appConfig.matchingStubsURL + "/dynamic-cid"
 
+  /*
+  *  N.B. This creates a stubbed user via the MatchingStubs service
+  *  In order to make use of this user the request must include a "True-Client-IP" header with the same
+  *  testId specified by the request.
+  *  Currently this is hardcoded in the Request object as "1234567"
+  */
   def newUser(userData: UserData)(implicit hc: HeaderCarrier): Future[Boolean] = {
     http.POST[Request, HttpResponse](dynamicStubUrl, Request(userData)).flatMap {
       response =>
@@ -87,4 +129,5 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
   }
 
 }
+
 // $COVERAGE-ON$

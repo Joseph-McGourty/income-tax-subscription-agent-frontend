@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package services.mocks
+package testonly.models
 
-import audit.Logging
-import connectors.mocks.MockSubscriptionConnector
-import services.SubscriptionService
-import utils.MockTrait
+//$COVERAGE-OFF$Disabling scoverage on this model as it is only intended to be used by the test only controller
 
-trait MockProtectedMicroservice extends MockTrait with MockSubscriptionConnector {
+import models.DateModel
+import play.api.libs.json.Json
 
-  object MockSubscriptionService extends SubscriptionService(app.injector.instanceOf[Logging], TestSubscriptionConnector)
-
+case class ClientToStubModel(firstName: String, lastName: String, nino: String, sautr: String, dateOfBirth: DateModel) {
+  def ninoFormatted: String = nino.toUpperCase().replace(" ", "")
 }
+
+object ClientToStubModel {
+  implicit val format = Json.format[ClientToStubModel]
+}
+
+// $COVERAGE-ON$

@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package models.agent
+package services.mocks
 
-import models._
-import play.api.libs.json.Json
-import utils.Implicits.StringNinoUtil
+import audit.Logging
+import connectors.mocks.MockSubscriptionConnector
+import services.SubscriptionService
+import utils.MockTrait
 
-case class ClientDetailsModel(firstName: String, lastName: String, nino: String, dateOfBirth: DateModel) {
-  def ninoFormatted: String = nino.toUpperCase().replace(" ", "")
+trait MockSubscriptionService extends MockTrait with MockSubscriptionConnector {
 
-  def ninoTrimed: String = nino.toUpperCase.replace(" ", "")
+  object TestSubscriptionService extends SubscriptionService(app.injector.instanceOf[Logging], TestSubscriptionConnector)
 
-  def ninoInDisplayFormat: String = nino.toNinoDisplayFormat
-
-}
-
-object ClientDetailsModel {
-  implicit val format = Json.format[ClientDetailsModel]
 }
