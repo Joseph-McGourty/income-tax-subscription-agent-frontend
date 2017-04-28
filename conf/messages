@@ -279,7 +279,6 @@ income-other.no                                                 = No
 not_enrolled_agent_services.title                               = You can''t sign up your clients yet
 not_enrolled_agent_services.heading                             = You can''t sign up your clients yet
 not_enrolled_agent_services.para1                               = To sign up for quarterly reporting, you must <a href="{0}">create an Agent Services account</a>.
-not_enrolled_agent_services.subscribe                           = Sign out
 
 ## Client Details ##
 client-details.title                                            = Enter your client''s details
