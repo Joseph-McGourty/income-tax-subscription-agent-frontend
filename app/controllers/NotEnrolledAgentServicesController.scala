@@ -31,7 +31,7 @@ class NotEnrolledAgentServicesController @Inject()(val baseConfig: BaseControlle
 
   val show: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(views.html.not_enrolled_agent_services(getAction = Call("GET", applicationConfig.agentServicesUrl))))
+      Future.successful(Ok(views.html.not_enrolled_agent_services(getAction = controllers.routes.SignOutController.signOut())))
   }
 
 }
