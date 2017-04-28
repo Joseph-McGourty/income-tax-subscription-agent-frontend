@@ -60,5 +60,5 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
       }
   }
 
-  lazy val gotoFirst = Redirect(controllers.matching.routes.ClientDetailsController.showClientDetails())
+  lazy val gotoFirst = Redirect(controllers.matching.routes.ClientDetailsController.show())
 }

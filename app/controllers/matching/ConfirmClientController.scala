@@ -19,19 +19,23 @@ package controllers.matching
 import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
+import connectors.models.subscription.FESuccessResponse
 import controllers.BaseController
 import models.agent.ClientDetailsModel
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import services.{ClientMatchingService, KeystoreService}
+import services.{ClientMatchingService, KeystoreService, SubscriptionService}
 import utils.Implicits._
+
+import scala.concurrent.Future
 
 @Singleton
 class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
                                         val messagesApi: MessagesApi,
                                         val keystoreService: KeystoreService,
-                                        val clientMatchingService: ClientMatchingService
+                                        val clientMatchingService: ClientMatchingService,
+                                        val subscriptionService: SubscriptionService
                                        ) extends BaseController {
 
   def view(clientDetailsModel: ClientDetailsModel)(implicit request: Request[_]): Html =
@@ -45,22 +49,36 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
     implicit request =>
       keystoreService.fetchClientDetails() map {
         case Some(clientDetails) => Ok(view(clientDetails))
-        case _ => Redirect(routes.ClientDetailsController.showClientDetails())
+        case _ => Redirect(routes.ClientDetailsController.show())
       }
   }
 
   def submit(): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchClientDetails() flatMap {
-        case Some(clientDetails) =>
-          clientMatchingService.matchClient(clientDetails) map {
-            case true => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
-            case false => Redirect(controllers.matching.routes.ClientDetailsErrorController.show())
-          }
-        case _ => Redirect(routes.ClientDetailsController.showClientDetails())
+        case Some(clientDetails) => {
+          for {
+            matchFound <- clientMatchingService.matchClient(clientDetails)
+          } yield matchFound
+        }.flatMap {
+          case true => checkExistingSubscription(clientDetails, Redirect(controllers.routes.IncomeSourceController.showIncomeSource()))
+          case false => Redirect(controllers.matching.routes.ClientDetailsErrorController.show())
+        }
+        // if there are no client details redirect them back to client details
+        case _ => Redirect(routes.ClientDetailsController.show())
       }
   }
 
-  lazy val backUrl: String = routes.ClientDetailsController.showClientDetails().url
+  lazy val backUrl: String = routes.ClientDetailsController.show().url
+
+
+  private[matching]
+  def checkExistingSubscription(clientDetails: ClientDetailsModel,
+                                default: => Future[Result])(implicit request: Request[AnyContent]): Future[Result] =
+    subscriptionService.getSubscription(clientDetails.ninoInBackendFormat).flatMap {
+      case Some(FESuccessResponse(None)) => default
+      case Some(FESuccessResponse(Some(_))) => Redirect(controllers.routes.ClientAlreadySubscribedController.show())
+      case _ => showInternalServerError
+    }
 
 }

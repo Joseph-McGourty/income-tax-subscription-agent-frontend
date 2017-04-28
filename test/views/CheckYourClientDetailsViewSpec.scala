@@ -130,7 +130,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
       val sectionId = FirstNameId
       val expectedQuestion = messages.firstName
       val expectedAnswer = testFirstName
-      val expectedEditLink = controllers.matching.routes.ClientDetailsController.showClientDetails(editMode = true).url
+      val expectedEditLink = controllers.matching.routes.ClientDetailsController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -144,7 +144,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
       val sectionId = LastNameId
       val expectedQuestion = messages.lastName
       val expectedAnswer = testLastName
-      val expectedEditLink = controllers.matching.routes.ClientDetailsController.showClientDetails(editMode = true).url
+      val expectedEditLink = controllers.matching.routes.ClientDetailsController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -158,7 +158,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
       val sectionId = NinoId
       val expectedQuestion = messages.nino
       val expectedAnswer = testNino.toNinoDisplayFormat
-      val expectedEditLink = controllers.matching.routes.ClientDetailsController.showClientDetails(editMode = true).url
+      val expectedEditLink = controllers.matching.routes.ClientDetailsController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -172,7 +172,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
       val sectionId = DobId
       val expectedQuestion = messages.dob
       val expectedAnswer = testDob.toCheckYourAnswersDateFormat
-      val expectedEditLink = controllers.matching.routes.ClientDetailsController.showClientDetails(editMode = true).url
+      val expectedEditLink = controllers.matching.routes.ClientDetailsController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

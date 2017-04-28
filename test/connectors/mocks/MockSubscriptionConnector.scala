@@ -42,9 +42,14 @@ trait MockSubscriptionConnector extends MockHttp {
       url = nino.fold(None: Option[String])(nino => TestSubscriptionConnector.subscriptionUrl(nino))
     )(status, response)
 
-  def setupSubscribe(request: Option[FERequest] = None) = (setupMockSubscribe(request) _).tupled
+  def setupSubscribe(request: Option[FERequest] = None): ((Int, JsValue)) => Unit =
+    (setupMockSubscribe(request) _).tupled
 
-  def setupGetSubscription(nino: Option[String] = None) = (setupMockGetSubscription(nino) _).tupled
+  def setupGetSubscription(nino: Option[String] = None): ((Int, JsValue)) => Unit =
+    (setupMockGetSubscription(nino) _).tupled
+
+  def verifyGetSubscription(nino: String)(count: Int): Unit =
+    verifyMockHttpGet(url = TestSubscriptionConnector.subscriptionUrl(nino))(count)
 
   val testRequest = FERequest(
     nino = TestConstants.testNino,
@@ -65,13 +70,13 @@ trait MockSubscriptionConnector extends MockHttp {
     terms = TermModel(true)
   )
 
-  val testId = TestConstants.testMTDID
+  val testId: String = TestConstants.testMTDID
   val badRequestReason = "Bad request"
   val internalServerErrorReason = "Internal server error"
 
-  val subscribeSuccess = (OK, FESuccessResponse(testId): JsValue)
-  val subscribeNone = (OK, FESuccessResponse(None): JsValue)
-  val subscribeBadRequest = (BAD_REQUEST, FEFailureResponse(badRequestReason): JsValue)
-  val subscribeInternalServerError = (INTERNAL_SERVER_ERROR, FEFailureResponse(internalServerErrorReason): JsValue)
+  val subscribeSuccess: (Int, JsValue) = (OK, FESuccessResponse(testId): JsValue)
+  val subscribeNone: (Int, JsValue) = (OK, FESuccessResponse(None): JsValue)
+  val subscribeBadRequest: (Int, JsValue) = (BAD_REQUEST, FEFailureResponse(badRequestReason): JsValue)
+  val subscribeInternalServerError: (Int, JsValue) = (INTERNAL_SERVER_ERROR, FEFailureResponse(internalServerErrorReason): JsValue)
 
 }

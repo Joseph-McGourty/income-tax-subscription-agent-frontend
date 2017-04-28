@@ -21,12 +21,13 @@ import controllers.ControllerBaseSpec
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, _}
-import services.mocks.{MockClientMatchingService, MockKeystoreService}
-import utils.TestModels
+import services.mocks.{MockClientMatchingService, MockKeystoreService, MockSubscriptionService}
+import utils.{TestConstants, TestModels}
 
 class ConfirmClientControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
-  with MockClientMatchingService {
+  with MockClientMatchingService
+  with MockSubscriptionService {
 
   override val controllerName: String = "ConfirmClientController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -38,7 +39,8 @@ class ConfirmClientControllerSpec extends ControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    TestClientMatchingService
+    TestClientMatchingService,
+    TestSubscriptionService
   )
 
   "Calling the show action of the ConfirmClientController with an authorised user" should {
@@ -70,65 +72,136 @@ class ConfirmClientControllerSpec extends ControllerBaseSpec
 
   "Calling the submit action of the ConfirmClientController with an authorised user and valid submission" should {
 
+    val testNino = TestConstants.testNino
+
     def callSubmit() = TestConfirmClientController.submit()(authenticatedFakeRequest())
 
-    "When a match has been found" should {
-      "return a redirect status (SEE_OTHER)" in {
-        setupMatchClient(matchClientMatched)
-        setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
+    "the client does not already have a subscription" should {
 
-        val goodRequest = callSubmit()
+      "When a match has been found" should {
+        "return a redirect status (SEE_OTHER)" in {
+          setupMatchClient(matchClientMatched)
+          setupGetSubscription(testNino)(subscribeNone)
+          setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
+          val goodRequest = callSubmit()
 
-        await(goodRequest)
-        verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
+          status(goodRequest) must be(Status.SEE_OTHER)
+
+          await(goodRequest)
+          verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
+          verifyGetSubscription(testNino)(1)
+        }
+
+        s"redirect to '${controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
+          setupMatchClient(matchClientMatched)
+          setupGetSubscription(testNino)(subscribeNone)
+          setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
+
+          val goodRequest = callSubmit()
+
+          redirectLocation(goodRequest) mustBe Some(controllers.routes.IncomeSourceController.showIncomeSource().url)
+
+          await(goodRequest)
+          verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
+          verifyGetSubscription(testNino)(1)
+        }
       }
 
-      s"redirect to '${controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
-        setupMatchClient(matchClientMatched)
-        setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
+      "When no match was been found" should {
+        "return a redirect status (SEE_OTHER)" in {
+          setupMatchClient(matchClientNoMatch)
+          setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
 
-        val goodRequest = callSubmit()
+          val goodRequest = callSubmit()
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.IncomeSourceController.showIncomeSource().url)
+          status(goodRequest) must be(Status.SEE_OTHER)
 
-        await(goodRequest)
-        verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
+          await(goodRequest)
+          verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
+          verifyGetSubscription(testNino)(0)
+        }
+
+        s"redirect to '${controllers.matching.routes.ClientDetailsErrorController.show().url}" in {
+          setupMatchClient(matchClientNoMatch)
+          setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
+
+          val goodRequest = callSubmit()
+
+          redirectLocation(goodRequest) mustBe Some(controllers.matching.routes.ClientDetailsErrorController.show().url)
+
+          await(goodRequest)
+          verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
+          verifyGetSubscription(testNino)(0)
+        }
       }
     }
 
-    "When no match was been found" should {
-      "return a redirect status (SEE_OTHER)" in {
-        setupMatchClient(matchClientNoMatch)
-        setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
+    "the client already has a subscription" should {
 
-        val goodRequest = callSubmit()
+      "When a match has been found" should {
+        "return a redirect status (SEE_OTHER)" in {
+          setupMatchClient(matchClientMatched)
+          setupGetSubscription(testNino)(subscribeSuccess)
+          setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
+          val goodRequest = callSubmit()
 
-        await(goodRequest)
-        verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
+          status(goodRequest) must be(Status.SEE_OTHER)
+
+          await(goodRequest)
+          verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
+          verifyGetSubscription(testNino)(1)
+        }
+
+        s"redirect to '${controllers.routes.ClientAlreadySubscribedController.show().url}" in {
+          setupMatchClient(matchClientMatched)
+          setupGetSubscription(testNino)(subscribeSuccess)
+          setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
+
+          val goodRequest = callSubmit()
+
+          redirectLocation(goodRequest) mustBe Some(controllers.routes.ClientAlreadySubscribedController.show().url)
+
+          await(goodRequest)
+          verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
+          verifyGetSubscription(testNino)(1)
+        }
       }
 
-      s"redirect to '${controllers.matching.routes.ClientDetailsErrorController.show().url}" in {
-        setupMatchClient(matchClientNoMatch)
-        setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
+      "When no match was been found" should {
+        "return a redirect status (SEE_OTHER)" in {
+          setupMatchClient(matchClientNoMatch)
+          setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
 
-        val goodRequest = callSubmit()
+          val goodRequest = callSubmit()
 
-        redirectLocation(goodRequest) mustBe Some(controllers.matching.routes.ClientDetailsErrorController.show().url)
+          status(goodRequest) must be(Status.SEE_OTHER)
 
-        await(goodRequest)
-        verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
+          await(goodRequest)
+          verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
+          verifyGetSubscription(testNino)(0)
+        }
+
+        s"redirect to '${controllers.matching.routes.ClientDetailsErrorController.show().url}" in {
+          setupMatchClient(matchClientNoMatch)
+          setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
+
+          val goodRequest = callSubmit()
+
+          redirectLocation(goodRequest) mustBe Some(controllers.matching.routes.ClientDetailsErrorController.show().url)
+
+          await(goodRequest)
+          verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
+          verifyGetSubscription(testNino)(0)
+        }
       }
     }
-
   }
 
   "The back url" should {
-    s"point to ${controllers.matching.routes.ClientDetailsController.showClientDetails().url}" in {
-      TestConfirmClientController.backUrl mustBe controllers.matching.routes.ClientDetailsController.showClientDetails().url
+    s"point to ${controllers.matching.routes.ClientDetailsController.show().url}" in {
+      TestConfirmClientController.backUrl mustBe controllers.matching.routes.ClientDetailsController.show().url
     }
   }
 

@@ -45,7 +45,7 @@
     val rowName = FirstNameId
     val rowQuestion = Messages("client-details.summary.first_name")
     val rowAnswer = clientDetailsModel.firstName
-    val rowUrl = controllers.matching.routes.ClientDetailsController.showClientDetails(editMode = true).url
+    val rowUrl = controllers.matching.routes.ClientDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -53,7 +53,7 @@
     val rowName = LastNameId
     val rowQuestion = Messages("client-details.summary.last_name")
     val rowAnswer = clientDetailsModel.lastName
-    val rowUrl = controllers.matching.routes.ClientDetailsController.showClientDetails(editMode = true).url
+    val rowUrl = controllers.matching.routes.ClientDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -61,7 +61,7 @@
     val rowName = NinoId
     val rowQuestion = Messages("client-details.summary.nino")
     val rowAnswer = clientDetailsModel.ninoInDisplayFormat
-    val rowUrl = controllers.matching.routes.ClientDetailsController.showClientDetails(editMode = true).url
+    val rowUrl = controllers.matching.routes.ClientDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -69,7 +69,7 @@
     val rowName = DobId
     val rowQuestion = Messages("client-details.summary.dob")
     val rowAnswer = clientDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat
-    val rowUrl = controllers.matching.routes.ClientDetailsController.showClientDetails(editMode = true).url
+    val rowUrl = controllers.matching.routes.ClientDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
