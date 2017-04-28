@@ -374,7 +374,6 @@ object MessageLookup {
     val heading = title
     val linkText = "create an Agent Services account"
     val para1 = s"To sign up for quarterly reporting, you must $linkText"
-    val button = "Sign out"
   }
 
   object ClientDetailsError {
