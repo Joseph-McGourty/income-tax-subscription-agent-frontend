@@ -86,7 +86,7 @@ object UserData {
  */
 case class Request(
                     data: UserData,
-                    testId: String = "ITSA",
+                    testId: String = "ITSA-AGENT",
                     name: String = "CID",
                     service: String = "find",
                     resultCode: Option[Int] = Some(200),
@@ -113,7 +113,7 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
   *  N.B. This creates a stubbed user via the MatchingStubs service
   *  In order to make use of this user the request must include a "True-Client-IP" header with the same
   *  testId specified by the request.
-  *  Currently this is hardcoded in the Request object as "1234567"
+  *  Currently this is hardcoded in the Request object as "ITSA-AGENT"
   */
   def newUser(userData: UserData)(implicit hc: HeaderCarrier): Future[Boolean] = {
     http.POST[Request, HttpResponse](dynamicStubUrl, Request(userData)).flatMap {
