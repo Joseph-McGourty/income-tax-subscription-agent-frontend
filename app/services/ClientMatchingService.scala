@@ -36,7 +36,7 @@ class ClientMatchingService @Inject()(val appConfig: AppConfig,
   */
   def amendHCForTest(implicit hc: HeaderCarrier): HeaderCarrier =
     appConfig.hasEnabledTestOnlyRoutes match {
-      case true => hc.withExtraHeaders("True-Client-IP" -> "ITSA")
+      case true => hc.withExtraHeaders("True-Client-IP" -> "ITSA-AGENT")
       case false => hc
     }
 
