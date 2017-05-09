@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
 import connectors.matching.AuthenticatorConnector
-import models.ClientDetailsModel
+import models.agent.ClientDetailsModel
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future

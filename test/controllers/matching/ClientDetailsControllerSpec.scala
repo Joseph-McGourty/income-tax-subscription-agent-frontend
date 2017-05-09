@@ -16,38 +16,38 @@
 
 package controllers.matching
 
+import assets.MessageLookup.{ClientDetails => messages}
 import auth._
 import controllers.ControllerBaseSpec
 import forms.ClientDetailsForm
-import models.{ClientDetailsModel, DateModel}
+import models.DateModel
+import models.agent.ClientDetailsModel
+import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.Helpers.{await, _}
-import services.mocks.{MockClientMatchingService, MockKeystoreService, MockSubscriptionService}
+import play.api.test.Helpers.{await, contentAsString, contentType, _}
+import services.mocks.MockKeystoreService
 import utils.TestConstants
 
+
 class ClientDetailsControllerSpec extends ControllerBaseSpec
-  with MockKeystoreService
-  with MockClientMatchingService
-  with MockSubscriptionService {
+  with MockKeystoreService {
 
   override val controllerName: String = "ClientDetailsController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showClientDetails" -> TestClientDetailsController.showClientDetails(isEditMode = false),
-    "submitClientDetails" -> TestClientDetailsController.submitClientDetails(isEditMode = false)
+    "show" -> TestClientDetailsController.show(isEditMode = false),
+    "submit" -> TestClientDetailsController.submit(isEditMode = false)
   )
 
   object TestClientDetailsController extends ClientDetailsController(
     MockBaseControllerConfig,
     messagesApi,
-    MockKeystoreService,
-    TestClientMatchingService,
-    TestSubscriptionService
+    MockKeystoreService
   )
 
-  "Calling the showClientDetails action of the ClientDetailsController with an authorised user" should {
+  "Calling the show action of the ClientDetailsController with an authorised user" should {
 
-    lazy val result = TestClientDetailsController.showClientDetails(isEditMode = false)(authenticatedFakeRequest())
+    lazy val result = TestClientDetailsController.show(isEditMode = false)(authenticatedFakeRequest())
 
     "return ok (200)" in {
       setupMockKeystore(fetchClientDetails = None)
@@ -56,199 +56,99 @@ class ClientDetailsControllerSpec extends ControllerBaseSpec
 
       await(result)
       verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
+    }
 
+    "return HTML" in {
+      contentType(result) must be(Some("text/html"))
+      charset(result) must be(Some("utf-8"))
+    }
+
+    "render the 'Not subscribed to Agent Services page'" in {
+      val document = Jsoup.parse(contentAsString(result))
+      document.title mustBe messages.title
     }
   }
 
-  "Calling the submitClientDetails action of the ClientDetailsController with an authorised user and valid submission" should {
+  val testNino = TestConstants.testNino
 
-    val testNino = TestConstants.testNino
+  for (editMode <- Seq(true, false)) {
 
-    def callSubmit(isEditMode: Boolean) =
-      TestClientDetailsController.submitClientDetails(isEditMode = isEditMode)(
-        authenticatedFakeRequest()
-          .post(ClientDetailsForm.clientDetailsForm.form, ClientDetailsModel(
-            firstName = "Abc",
-            lastName = "Abc",
-            nino = testNino,
-            dateOfBirth = DateModel("01", "01", "1980")))
-      )
+    s"editMode=$editMode" when {
 
-    "When a match has been found and it is not in edit mode" when {
-      "the client does not already have a subscription" should {
-        "return a redirect status (SEE_OTHER)" in {
-          setupMatchClient(matchClientMatched)
-          setupGetSubscription(testNino)(subscribeNone)
+      "Calling the submit action of the ClientDetailsController with an authorised user and valid submission" should {
+
+        def callSubmit(isEditMode: Boolean) =
+          TestClientDetailsController.submit(isEditMode = isEditMode)(
+            authenticatedFakeRequest()
+              .post(ClientDetailsForm.clientDetailsForm.form, ClientDetailsModel(
+                firstName = "Abc",
+                lastName = "Abc",
+                nino = testNino,
+                dateOfBirth = DateModel("01", "01", "1980")))
+          )
+
+        "return a redirect status (SEE_OTHER - 303)" in {
           setupMockKeystoreSaveFunctions()
 
-          val goodRequest = callSubmit(isEditMode = false)
+          val goodResult = callSubmit(isEditMode = editMode)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
+          status(goodResult) must be(Status.SEE_OTHER)
 
-          await(goodRequest)
+          await(goodResult)
           verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
         }
 
-        s"redirect to '${controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
-          setupMatchClient(matchClientMatched)
-          setupGetSubscription(testNino)(subscribeNone)
+        s"redirect to '${controllers.matching.routes.ConfirmClientController.show().url}'" in {
           setupMockKeystoreSaveFunctions()
 
-          val goodRequest = callSubmit(isEditMode = false)
+          val goodResult = callSubmit(isEditMode = editMode)
 
-          redirectLocation(goodRequest) mustBe Some(controllers.routes.IncomeSourceController.showIncomeSource().url)
+          redirectLocation(goodResult) mustBe Some(controllers.matching.routes.ConfirmClientController.show().url)
 
-          await(goodRequest)
-          verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
-        }
-      }
-
-      "the client already has a subscription" should {
-        "return a redirect status (SEE_OTHER)" in {
-          setupMatchClient(matchClientMatched)
-          setupGetSubscription(testNino)(subscribeSuccess)
-          setupMockKeystoreSaveFunctions()
-
-          val goodRequest = callSubmit(isEditMode = false)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-
-          await(goodRequest)
-          verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
-        }
-
-        s"redirect to '${controllers.routes.ClientAlreadySubscribedController.show().url}" in {
-          setupMatchClient(matchClientMatched)
-          setupGetSubscription(testNino)(subscribeSuccess)
-          setupMockKeystoreSaveFunctions()
-
-          val goodRequest = callSubmit(isEditMode = false)
-
-          redirectLocation(goodRequest) mustBe Some(controllers.routes.ClientAlreadySubscribedController.show().url)
-
-          await(goodRequest)
+          await(goodResult)
           verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
         }
       }
-    }
 
-    "When no match was been found and it is not in edit mode" should {
-      "return a redirect status (SEE_OTHER)" in {
-        setupMatchClient(matchClientNoMatch)
-        setupMockKeystoreSaveFunctions()
+      "Calling the submit action of the ClientDetailsController with an authorised user and invalid submission" should {
 
-        val goodRequest = callSubmit(isEditMode = false)
+        def callSubmit(isEditMode: Boolean) =
+          TestClientDetailsController.submit(isEditMode = isEditMode)(
+            authenticatedFakeRequest()
+              .post(ClientDetailsForm.clientDetailsForm.form, ClientDetailsModel(
+                firstName = "Abc",
+                lastName = "Abc",
+                nino = testNino,
+                dateOfBirth = DateModel("00", "01", "1980")))
+          )
 
-        status(goodRequest) must be(Status.SEE_OTHER)
+        "return a redirect status (BAD_REQUEST - 400)" in {
+          setupMockKeystoreSaveFunctions()
 
-        await(goodRequest)
-        verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
-      }
+          val badResult = callSubmit(isEditMode = editMode)
 
-      s"redirect to '${controllers.matching.routes.ClientDetailsErrorController.show().url}" in {
-        setupMatchClient(matchClientNoMatch)
-        setupMockKeystoreSaveFunctions()
+          status(badResult) must be(Status.BAD_REQUEST)
 
-        val goodRequest = callSubmit(isEditMode = false)
+          await(badResult)
+          verifyKeystore(fetchClientDetails = 0, saveClientDetails = 0)
+        }
 
-        redirectLocation(goodRequest) mustBe Some(controllers.matching.routes.ClientDetailsErrorController.show().url)
+        "return HTML" in {
+          val badResult = callSubmit(isEditMode = editMode)
 
-        await(goodRequest)
-        verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
+          contentType(badResult) must be(Some("text/html"))
+          charset(badResult) must be(Some("utf-8"))
+        }
+
+        "render the 'Not subscribed to Agent Services page'" in {
+          val badResult = callSubmit(isEditMode = editMode)
+          val document = Jsoup.parse(contentAsString(badResult))
+          document.title mustBe messages.title
+        }
+
       }
     }
 
-    "When a match has been found and it is in edit mode" should {
-      "the client does not already have a subscription" should {
-        "return a redirect status (SEE_OTHER)" in {
-          setupMatchClient(matchClientMatched)
-          setupGetSubscription(testNino)(subscribeNone)
-          setupMockKeystoreSaveFunctions()
-
-          val goodRequest = callSubmit(isEditMode = true)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-
-          await(goodRequest)
-          verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
-        }
-
-        s"redirect to '${controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
-          setupMatchClient(matchClientMatched)
-          setupGetSubscription(testNino)(subscribeNone)
-          setupMockKeystoreSaveFunctions()
-
-          val goodRequest = callSubmit(isEditMode = true)
-
-          redirectLocation(goodRequest) mustBe Some(controllers.routes.IncomeSourceController.showIncomeSource().url)
-
-          await(goodRequest)
-          verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
-        }
-      }
-
-      "the client already has a subscription" should {
-        "return a redirect status (SEE_OTHER)" in {
-          setupMatchClient(matchClientMatched)
-          setupGetSubscription(testNino)(subscribeSuccess)
-          setupMockKeystoreSaveFunctions()
-
-          val goodRequest = callSubmit(isEditMode = true)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-
-          await(goodRequest)
-          verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
-        }
-
-        s"redirect to '${controllers.routes.ClientAlreadySubscribedController.show().url}" in {
-          setupMatchClient(matchClientMatched)
-          setupGetSubscription(testNino)(subscribeSuccess)
-          setupMockKeystoreSaveFunctions()
-
-          val goodRequest = callSubmit(isEditMode = true)
-
-          redirectLocation(goodRequest) mustBe Some(controllers.routes.ClientAlreadySubscribedController.show().url)
-
-          await(goodRequest)
-          verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
-        }
-      }
-    }
-
-    "When no match was been found and it is in edit mode" should {
-      "return a redirect status (SEE_OTHER)" in {
-        setupMatchClient(matchClientNoMatch)
-        setupMockKeystoreSaveFunctions()
-
-        val goodRequest = callSubmit(isEditMode = true)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
-      }
-
-      s"redirect to '${controllers.matching.routes.ClientDetailsErrorController.show().url}" in {
-        setupMatchClient(matchClientNoMatch)
-        setupMockKeystoreSaveFunctions()
-
-        val goodRequest = callSubmit(isEditMode = true)
-
-        redirectLocation(goodRequest) mustBe Some(controllers.matching.routes.ClientDetailsErrorController.show().url)
-
-        await(goodRequest)
-        verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
-      }
-    }
-
-
-  }
-
-  "The back url" should {
-    s"point to ${controllers.routes.HomeController.index().url}" in {
-      TestClientDetailsController.backUrl mustBe controllers.routes.HomeController.index().url
-    }
   }
 
   authorisationTests()

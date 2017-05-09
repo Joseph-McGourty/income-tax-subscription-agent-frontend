@@ -18,6 +18,7 @@ package services
 
 import forms.IncomeSourceForm
 import models._
+import models.agent._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.Implicits._
@@ -28,7 +29,7 @@ object CacheUtil {
 
     import services.CacheConstants._
 
-    def getNino()(implicit read: Reads[ClientDetailsModel]): Option[String] = cacheMap.getEntry(ClientDetails).fold(None: Option[String])(x => x.ninoFormatted)
+    def getNino()(implicit read: Reads[ClientDetailsModel]): Option[String] = cacheMap.getEntry(ClientDetails).fold(None: Option[String])(x => x.ninoInBackendFormat)
 
     def getIncomeSource()(implicit read: Reads[IncomeSourceModel]): Option[IncomeSourceModel] = cacheMap.getEntry(IncomeSource)
 

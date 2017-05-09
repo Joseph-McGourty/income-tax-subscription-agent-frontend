@@ -17,6 +17,7 @@
 package services.mocks
 
 import models._
+import models.agent._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.KeystoreService

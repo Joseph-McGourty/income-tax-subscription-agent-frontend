@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package models
+package models.agent
 
 import forms.validation.Constraints
+import models.DateModel
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import utils.TestModels
@@ -38,9 +39,16 @@ class ClientDetailsModelSpec extends PlaySpec with GuiceOneServerPerSuite {
 
   "the Client Details Model" should {
 
-    ".ninoFormatted should return an upper cased nino with no spaces" in {
-      val nino = clientDetails.ninoFormatted
+    ".ninoInBackendFormat should return an upper cased nino with no spaces" in {
+      val nino = clientDetails.ninoInBackendFormat
       nino mustBe testNino
+      nino.matches(Constraints.ninoRegex)
+    }
+
+    ".ninoInDisplayFormat should return an upper cased nino with spaces between each two characters" in {
+      val nino = clientDetails.ninoInDisplayFormat
+      nino must not be testNino
+      nino.replace(" ", "") mustBe testNino
       nino.matches(Constraints.ninoRegex)
     }
 

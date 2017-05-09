@@ -31,12 +31,12 @@ class ClientDetailsErrorController @Inject()(val baseConfig: BaseControllerConfi
 
   lazy val show: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      Ok(views.html.client_details_error(postAction = controllers.matching.routes.ClientDetailsErrorController.submit))
+      Ok(views.html.client_details_error(postAction = controllers.matching.routes.ClientDetailsErrorController.submit()))
   }
 
   lazy val submit: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      Redirect(controllers.matching.routes.ClientDetailsController.showClientDetails())
+      Redirect(controllers.matching.routes.ClientDetailsController.show())
   }
 
 }

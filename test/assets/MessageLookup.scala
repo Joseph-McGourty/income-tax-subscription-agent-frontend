@@ -395,4 +395,15 @@ object MessageLookup {
     val formhint2 = "For example, 10 12 1990"
   }
 
+  object ConfirmClient {
+    val title = "Confirm your client"
+    val heading = "Check your answers"
+    val heading_hidden = "before looking up your client"
+    val h2 = "You've told us"
+    val firstName = "First name"
+    val lastName = "Last name"
+    val nino = "National Insurance number"
+    val dob = "Date of birth"
+  }
+
 }

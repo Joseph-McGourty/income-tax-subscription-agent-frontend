@@ -69,8 +69,8 @@ class ClientAlreadySubscribedControllerSpec extends ControllerBaseSpec {
       status(result) must be(Status.SEE_OTHER)
     }
 
-    s"redirect to '${controllers.matching.routes.ClientDetailsController.showClientDetails().url}'" in {
-      redirectLocation(result) mustBe Some(controllers.matching.routes.ClientDetailsController.showClientDetails().url)
+    s"redirect to '${controllers.matching.routes.ClientDetailsController.show().url}'" in {
+      redirectLocation(result) mustBe Some(controllers.matching.routes.ClientDetailsController.show().url)
     }
 
   }

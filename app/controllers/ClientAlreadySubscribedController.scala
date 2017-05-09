@@ -36,7 +36,7 @@ class ClientAlreadySubscribedController @Inject()(val baseConfig: BaseController
 
   val submit: Action[AnyContent] = Authorised.asyncCore { implicit user =>
     implicit request =>
-      Future.successful(Redirect(controllers.matching.routes.ClientDetailsController.showClientDetails()))
+      Future.successful(Redirect(controllers.matching.routes.ClientDetailsController.show()))
   }
 
 

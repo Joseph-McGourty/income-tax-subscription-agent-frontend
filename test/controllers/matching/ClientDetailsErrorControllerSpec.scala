@@ -71,7 +71,7 @@ class ClientDetailsErrorControllerSpec extends ControllerBaseSpec {
     }
 
     "Redirect to the 'Client details' page" in {
-      redirectLocation(result).get mustBe controllers.matching.routes.ClientDetailsController.showClientDetails().url
+      redirectLocation(result).get mustBe controllers.matching.routes.ClientDetailsController.show().url
     }
 
   }

@@ -23,13 +23,11 @@ import play.api.test.FakeRequest
 
 class ClientDetailsViewSpec extends ViewSpecTrait {
 
-  val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
   def page(isEditMode: Boolean) = views.html.client_details(
     clientDetailsForm = ClientDetailsForm.clientDetailsForm.form,
     postAction = action,
-    backUrl = backUrl,
     isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
 
@@ -43,8 +41,6 @@ class ClientDetailsViewSpec extends ViewSpecTrait {
   "The Client Details view" should {
 
     val testPage = documentCore(isEditMode = false)
-
-    testPage.mustHaveBackLinkTo(backUrl)
 
     testPage.mustHavePara(messages.line1)
 

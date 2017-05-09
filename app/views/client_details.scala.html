@@ -14,16 +14,15 @@
  * limitations under the License.
  *@
 
-@import models._
+@import models.agent._
 @import forms.ClientDetailsForm._
 @import helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import config.AppConfig
 
-@(clientDetailsForm: Form[ClientDetailsModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(clientDetailsForm: Form[ClientDetailsModel], postAction: Call, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @views.html.templates.main_template(title = Messages("client-details.title"), bodyClasses = None) {
-    @back_link(backUrl)
 
     @summaryErrorHelper(clientDetailsForm)
 

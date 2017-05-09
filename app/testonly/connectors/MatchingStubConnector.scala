@@ -24,7 +24,8 @@ import javax.inject.{Inject, Singleton}
 
 import audit.Logging
 import connectors.RawResponseReads
-import models.{ClientDetailsModel, DateModel}
+import models.DateModel
+import models.agent.ClientDetailsModel
 import play.api.http.Status._
 import play.api.libs.json.Json
 import testonly.TestOnlyAppConfig

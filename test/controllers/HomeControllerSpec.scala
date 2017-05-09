@@ -90,7 +90,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
         status(result) must be(Status.SEE_OTHER)
 
-        redirectLocation(result).get mustBe controllers.matching.routes.ClientDetailsController.showClientDetails().url
+        redirectLocation(result).get mustBe controllers.matching.routes.ClientDetailsController.show().url
 
         verifyMockCheckAccess(1)
       }
@@ -104,7 +104,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
         status(result) must be(Status.SEE_OTHER)
 
-        redirectLocation(result).get mustBe controllers.matching.routes.ClientDetailsController.showClientDetails().url
+        redirectLocation(result).get mustBe controllers.matching.routes.ClientDetailsController.show().url
 
         verifyMockCheckAccess(0)
       }
