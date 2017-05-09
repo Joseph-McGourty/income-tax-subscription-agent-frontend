@@ -42,7 +42,7 @@ class NotEnrolledAgentServicesViewSpec extends ViewSpecTrait {
 
     val form = testPage.getForm("Agent not Enrolled to Agent Services form")(actionCall = action)
 
-    form.mustHaveSubmitButton(messages.button)
+    form.mustHaveSubmitButton(commonMessages.signOut)
 
   }
 }
