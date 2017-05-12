@@ -61,7 +61,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
             matchFound <- clientMatchingService.matchClient(clientDetails)
           } yield matchFound
         }.flatMap {
-          case true => checkExistingSubscription(clientDetails, Redirect(controllers.routes.IncomeSourceController.showIncomeSource()))
+          case true => checkExistingSubscription(clientDetails, Redirect(controllers.routes.ClientRelationshipController.checkClientRelationship()))
           case false => Redirect(controllers.matching.routes.ClientDetailsErrorController.show())
         }
         // if there are no client details redirect them back to client details

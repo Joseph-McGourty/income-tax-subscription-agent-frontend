@@ -53,10 +53,6 @@ POST        /error/other-income                     controllers.OtherIncomeError
 GET         /error/client-already-subscribed        controllers.ClientAlreadySubscribedController.show
 POST        /error/client-already-subscribed        controllers.ClientAlreadySubscribedController.submit
 
-#
-GET         /error/no-client-relationship           controllers.ClientRelationshipController.noClientError
-POST        /error/no-client-relationship           controllers.ClientRelationshipController.noClientErrorRedirect
-
 # Home controller
 GET         /not-enrolled-agent-services            controllers.NotEnrolledAgentServicesController.show
 
@@ -71,3 +67,10 @@ POST        /confirm-client                         controllers.matching.Confirm
 # Throttle limit reached routes
 GET         /error/client-details                   controllers.matching.ClientDetailsErrorController.show
 POST        /error/client-details                   controllers.matching.ClientDetailsErrorController.submit
+
+# Check client relationship
+GET         /check-client-relationship              controllers.ClientRelationshipController.checkClientRelationship
+
+#
+GET         /error/no-client-relationship           controllers.ClientRelationshipController.noClientError
+POST        /error/no-client-relationship           controllers.ClientRelationshipController.noClientErrorRedirect

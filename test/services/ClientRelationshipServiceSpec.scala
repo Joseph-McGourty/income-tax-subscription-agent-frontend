@@ -36,5 +36,15 @@ class ClientRelationshipServiceSpec extends MockClientRelationshipService {
 
       await(res) mustBe false
     }
+
+    "return a failed future if the connection fails" in {
+      val exception = new Exception()
+
+      setupAgentServicesConnectorFailure(testNino)(exception)
+
+      val res = TestClientRelationshipService.isPreExistingRelationship(testNino)
+
+      intercept[Exception](await(res)) mustBe exception
+    }
   }
 }

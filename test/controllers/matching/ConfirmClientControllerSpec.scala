@@ -100,7 +100,7 @@ class ConfirmClientControllerSpec extends ControllerBaseSpec
 
           val goodRequest = callSubmit()
 
-          redirectLocation(goodRequest) mustBe Some(controllers.routes.IncomeSourceController.showIncomeSource().url)
+          redirectLocation(goodRequest) mustBe Some(controllers.routes.ClientRelationshipController.checkClientRelationship().url)
 
           await(goodRequest)
           verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
