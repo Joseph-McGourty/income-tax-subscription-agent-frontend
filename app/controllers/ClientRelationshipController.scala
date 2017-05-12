@@ -33,16 +33,14 @@ class ClientRelationshipController @Inject()(val baseConfig: BaseControllerConfi
                                              keystoreService: KeystoreService) extends BaseController {
   val checkClientRelationship: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      (
-        for {
-          clientNINO <- keystoreService.fetchClientDetails()
-            .collect { case Some(ClientDetailsModel(_, _, nino, _)) => nino }
-          isPreExistingRelationship <- clientRelationshipService.isPreExistingRelationship(clientNINO)
-        } yield if (isPreExistingRelationship) {
-            Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
-          }
-          else Redirect(controllers.routes.ClientRelationshipController.noClientError())
-        ).recover { case _ => InternalServerError }
+      for {
+        clientNINO <- keystoreService.fetchClientDetails()
+          .collect { case Some(ClientDetailsModel(_, _, nino, _)) => nino }
+        isPreExistingRelationship <- clientRelationshipService.isPreExistingRelationship(clientNINO)
+      } yield if (isPreExistingRelationship) {
+        Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
+      }
+      else Redirect(controllers.routes.ClientRelationshipController.noClientError())
   }
 
   val noClientError: Action[AnyContent] = Authorised.async { implicit user =>

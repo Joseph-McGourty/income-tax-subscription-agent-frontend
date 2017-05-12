@@ -16,7 +16,7 @@
 
 package connectors
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import audit.Logging
 import config.AppConfig
@@ -27,6 +27,7 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpResponse, InternalServ
 import scala.concurrent.Future._
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class AgentServicesConnector @Inject()(appConfig: AppConfig,
                                        httpGet: HttpGet,
                                        logging: Logging)(implicit ec: ExecutionContext) extends RawResponseReads {
