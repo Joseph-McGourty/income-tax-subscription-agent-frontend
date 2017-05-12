@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AgentServicesConnector @Inject()(appConfig: AppConfig,
                                        httpGet: HttpGet,
                                        logging: Logging)(implicit ec: ExecutionContext) extends RawResponseReads {
-  def agentClientURL(nino: String): String = s"${appConfig.agentServicesUrl}/agentClientRelationship/$nino"
+  def agentClientURL(nino: String): String = s"${appConfig.agentMicroserviceUrl}/client-relationship/$nino"
 
   def parsingFailure(status: Int, body: String): Throwable =
     new InternalServerException(s"AgentServicesConnector.isPreExistingRelationship unexpected response from agent services: status=$status body=$body")

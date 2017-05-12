@@ -48,6 +48,7 @@ trait AppConfig {
   val ipExclusionList: Seq[Call]
   val shutterPage: String
   val agentServicesUrl: String
+  val agentMicroserviceUrl: String
   val authenticatorUrl: String
   val hasEnabledTestOnlyRoutes: Boolean
 }
@@ -113,7 +114,9 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   override lazy val ipExclusionList: Seq[Call] = whitelistConfig("ip-whitelist.excludeCalls").map(ip => Call("GET", ip))
 
   // Agent Services config
-  override lazy val agentServicesUrl: String = loadConfig("agent-services.url")
+  override lazy val agentServicesUrl: String = baseUrl("agent-services")
+
+  override lazy val agentMicroserviceUrl: String = loadConfig("agent-microservice.url")
 
   override lazy val authenticatorUrl: String = baseUrl("authenticator")
 
