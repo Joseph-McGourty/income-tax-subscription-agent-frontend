@@ -290,7 +290,7 @@ object MessageLookup {
     }
 
     object Terms {
-      val empty = "You must confirm T&C's to continue"
+      val empty = "You must accept the terms of participation to continue"
     }
 
     object ClientDetails {
