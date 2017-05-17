@@ -34,5 +34,4 @@ trait MockClientRelationshipService extends MockTrait {
   def setupAgentServicesConnectorFailure(nino: String)(failure: Throwable): Unit =
     when(mockAgentServicesConnector.isPreExistingRelationship(nino)).thenReturn(Future.failed(failure))
 
-  val testNino = "AA123456A"
 }

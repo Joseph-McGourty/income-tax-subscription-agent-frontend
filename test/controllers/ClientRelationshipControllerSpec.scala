@@ -16,7 +16,7 @@
 
 package controllers
 
-import assets.MessageLookup.ClientAlreadySubscribed
+import assets.MessageLookup.{NoClientRelationship => messages}
 import auth.authenticatedFakeRequest
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers
@@ -27,12 +27,6 @@ import services.ClientRelationshipService
 import services.mocks.MockKeystoreService
 import utils.TestConstants._
 import utils.TestModels
-import assets.MessageLookup.{NoClientRelationship => messages}
-import auth._
-import org.jsoup.Jsoup
-import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
-import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
@@ -84,18 +78,20 @@ class ClientRelationshipControllerSpec extends ControllerBaseSpec with MockKeyst
 
       val res = TestClientRelationshipController.checkClientRelationship(authenticatedFakeRequest())
 
-      status(res) mustBe INTERNAL_SERVER_ERROR
+      intercept[Exception](await(res)) mustBe a[NoSuchElementException]
     }
 
     "return an INTERNAL_SERVER_ERROR if the call to agent services fails" in {
       setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
 
+      val exception = new Exception()
+
       when(mockClientRelationshipService.isPreExistingRelationship(ArgumentMatchers.eq(testNino))(ArgumentMatchers.any()))
-        .thenReturn(Future.failed(new Exception()))
+        .thenReturn(Future.failed(exception))
 
       val res = TestClientRelationshipController.checkClientRelationship(authenticatedFakeRequest())
 
-      status(res) mustBe INTERNAL_SERVER_ERROR
+      intercept[Exception](await(res)) mustBe exception
     }
   }
 

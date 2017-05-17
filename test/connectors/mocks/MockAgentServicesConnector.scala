@@ -25,6 +25,4 @@ trait MockAgentServicesConnector extends MockHttp {
 
   def mockIsPreExistingRelationship(nino: String)(status: Int, response: JsValue): Unit =
     setupMockHttpGet(Some(TestAgentServicesConnector.agentClientURL(nino)))(status, Some(response))
-
-  val testNino = "AA123456A"
 }

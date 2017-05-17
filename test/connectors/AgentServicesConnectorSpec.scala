@@ -20,6 +20,7 @@ import connectors.mocks.MockAgentServicesConnector
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.http.InternalServerException
+import utils.TestConstants._
 
 class AgentServicesConnectorSpec extends MockAgentServicesConnector {
   "isPreExistingRelationship" should {
