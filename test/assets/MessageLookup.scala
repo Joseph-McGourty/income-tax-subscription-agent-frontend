@@ -194,6 +194,12 @@ object MessageLookup {
     val para1 = "The details you've entered are already in use."
   }
 
+  object NoClientRelationship {
+    val title = "You have no pre-existing relationship with this client"
+    val heading = "You have no pre-existing relationship with this client"
+    val para1 = "Content TBC"
+  }
+
   object Confirmation {
     val title = "Confirmation page"
     val heading = "Success"

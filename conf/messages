@@ -137,6 +137,11 @@ client-already-subscribed.title                                 = Your client ha
 client-already-subscribed.heading                               = Your client has already signed up
 client-already-subscribed.para1                                 = The details you''ve entered are already in use.
 
+## No client relationship page ##
+no-client-relationship.title                                 = You have no pre-existing relationship with this client
+no-client-relationship.heading                               = You have no pre-existing relationship with this client
+no-client-relationship.para1                                 = Content TBC
+
 ## Failure Messages ##
 notAuthorised.title                                             = Not Authorised
 notAuthorised.pageHeading                                       = We were unable to confirm your identity
