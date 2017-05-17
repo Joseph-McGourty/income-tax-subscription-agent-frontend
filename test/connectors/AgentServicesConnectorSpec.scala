@@ -53,7 +53,7 @@ class AgentServicesConnectorSpec extends MockAgentServicesConnector {
 
   "createClientRelationship" should {
     "successfully create a client relationship from the provided details" in {
-      mockCreateClientRelationship(testARN, testMTDID)(OK, None)
+      mockCreateClientRelationship(testARN, testMTDID)(CREATED, None)
 
       val res = TestAgentServicesConnector.createClientRelationship(testARN, testMTDID)
 

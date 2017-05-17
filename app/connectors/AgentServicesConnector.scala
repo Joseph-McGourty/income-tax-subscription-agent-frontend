@@ -52,7 +52,7 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
 
     httpPut.PUT(url, "")
       .collect {
-        case HttpResponse(Status.OK, _, _, _) => ()
+        case res if res.status == Status.CREATED => ()
       }
   }
 
