@@ -23,7 +23,7 @@ import utils.TestConstants._
 class ClientRelationshipServiceSpec extends MockClientRelationshipService {
   "isPreExistingRelationship" should {
     "return true if the connector returns true" in {
-      setupAgentServicesConnector(testNino)(isPreExistingRelationship = true)
+      MockConnectorSetup.preExistingRelationship(testNino)(isPreExistingRelationship = true)
 
       val res = TestClientRelationshipService.isPreExistingRelationship(testNino)
 
@@ -31,7 +31,7 @@ class ClientRelationshipServiceSpec extends MockClientRelationshipService {
     }
 
     "return false if the connector returns false" in {
-      setupAgentServicesConnector(testNino)(isPreExistingRelationship = false)
+      MockConnectorSetup.preExistingRelationship(testNino)(isPreExistingRelationship = false)
 
       val res = TestClientRelationshipService.isPreExistingRelationship(testNino)
 
@@ -41,9 +41,29 @@ class ClientRelationshipServiceSpec extends MockClientRelationshipService {
     "return a failed future if the connection fails" in {
       val exception = new Exception()
 
-      setupAgentServicesConnectorFailure(testNino)(exception)
+      MockConnectorSetup.preExistingRelationshipFailure(testNino)(exception)
 
       val res = TestClientRelationshipService.isPreExistingRelationship(testNino)
+
+      intercept[Exception](await(res)) mustBe exception
+    }
+  }
+
+  "createClientRelationship" should {
+    "return a successful Future[Unit] when the connector is successful" in {
+      MockConnectorSetup.createClientRelationship(testARN, testMTDID)
+
+      val res = TestClientRelationshipService.createClientRelationship(testARN, testMTDID)
+
+      await(res) must be(())
+    }
+
+    "return a failed future when the connector fails" in {
+      val exception = new Exception()
+
+      MockConnectorSetup.createClientRelationshipFailure(testARN, testMTDID)(exception)
+
+      val res = TestClientRelationshipService.createClientRelationship(testARN, testMTDID)
 
       intercept[Exception](await(res)) mustBe exception
     }

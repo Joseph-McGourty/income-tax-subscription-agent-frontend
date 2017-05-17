@@ -28,10 +28,17 @@ trait MockClientRelationshipService extends MockTrait {
 
   val mockAgentServicesConnector = mock[AgentServicesConnector]
 
-  def setupAgentServicesConnector(nino: String)(isPreExistingRelationship: Boolean): Unit =
-    when(mockAgentServicesConnector.isPreExistingRelationship(nino)).thenReturn(Future.successful(isPreExistingRelationship))
+  object MockConnectorSetup {
+    def preExistingRelationship(nino: String)(isPreExistingRelationship: Boolean): Unit =
+      when(mockAgentServicesConnector.isPreExistingRelationship(nino)).thenReturn(Future.successful(isPreExistingRelationship))
 
-  def setupAgentServicesConnectorFailure(nino: String)(failure: Throwable): Unit =
-    when(mockAgentServicesConnector.isPreExistingRelationship(nino)).thenReturn(Future.failed(failure))
+    def preExistingRelationshipFailure(nino: String)(failure: Throwable): Unit =
+      when(mockAgentServicesConnector.isPreExistingRelationship(nino)).thenReturn(Future.failed(failure))
 
+    def createClientRelationship(arn: String, mtdid: String): Unit =
+      when(mockAgentServicesConnector.createClientRelationship(arn, mtdid)).thenReturn(Future.successful(()))
+
+    def createClientRelationshipFailure(arn: String, mtdid: String)(failure: Throwable): Unit =
+      when(mockAgentServicesConnector.createClientRelationship(arn, mtdid)).thenReturn(Future.failed(failure))
+  }
 }
