@@ -20,6 +20,7 @@ import connectors.mocks.MockAgentServicesConnector
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.http.InternalServerException
+import utils.TestConstants._
 
 class AgentServicesConnectorSpec extends MockAgentServicesConnector {
   "isPreExistingRelationship" should {
@@ -47,6 +48,16 @@ class AgentServicesConnectorSpec extends MockAgentServicesConnector {
 
       val ex = intercept[InternalServerException](await(res))
       ex.getMessage mustBe TestAgentServicesConnector.parsingFailure(INTERNAL_SERVER_ERROR, invalidBody.toString).getMessage
+    }
+  }
+
+  "createClientRelationship" should {
+    "successfully create a client relationship from the provided details" in {
+      mockCreateClientRelationship(testARN, testMTDID)(OK, None)
+
+      val res = TestAgentServicesConnector.createClientRelationship(testARN, testMTDID)
+
+      await(res) must be(())
     }
   }
 }

@@ -30,4 +30,5 @@ object TestConstants {
   lazy val endDate = DateModel("04", "04", "2018")
   lazy val ggServiceName = Constants.ggServiceName
   lazy val agentServiceName = Constants.agentServiceName
+  lazy val testARN = "XE0001234567890"
 }
