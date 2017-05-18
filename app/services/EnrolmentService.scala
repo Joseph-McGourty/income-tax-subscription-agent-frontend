@@ -21,6 +21,7 @@ import javax.inject.{Inject, Singleton}
 import audit.Logging
 import common.Constants
 import connectors.EnrolmentConnector
+import connectors.models.Enrolment
 import connectors.models.Enrolment.Enrolled
 import play.api.mvc.Result
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -34,11 +35,27 @@ class EnrolmentService @Inject()(val authConnector: AuthConnector,
                                  val enrolmentConnector: EnrolmentConnector,
                                  logging: Logging) {
 
-  def checkAgentServiceEnrolment(f: Enrolled => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
-    logging.debug(s"Checking enrolment")
+  def getEnrolments(implicit hc: HeaderCarrier): Future[Option[Seq[Enrolment]]] = {
+    logging.debug(s"getEnrolments")
     for {
       authority <- authConnector.currentAuthority
-      enrolments <- enrolmentConnector.getEnrolments(authority.fold("")(_.uri))
+        .collect{case Some(auth) => auth}
+      enrolments <- enrolmentConnector.getEnrolments(authority.uri)
+    } yield enrolments
+  }
+
+  def getARN(implicit hc: HeaderCarrier): Future[Option[String]] = for {
+    optEnrolments <- getEnrolments
+  } yield for {
+    enrolments <- optEnrolments
+    agentEnrolment <- enrolments.find(_.key == Constants.agentServiceName)
+    arn <- agentEnrolment.identifiers.find(_.key == Constants.agentIdentifierKey)
+  } yield arn.value
+
+  def checkAgentServiceEnrolment(f: Enrolled => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
+    logging.debug(s"checkAgentServiceEnrolment")
+    for {
+      enrolments <- getEnrolments
       result <- f(enrolments.isEnrolled(Constants.agentServiceName))
     } yield result
   }

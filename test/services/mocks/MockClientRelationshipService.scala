@@ -17,8 +17,10 @@
 package services.mocks
 
 import connectors.AgentServicesConnector
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.ClientRelationshipService
+import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.MockTrait
 
 import scala.concurrent.Future
@@ -28,10 +30,35 @@ trait MockClientRelationshipService extends MockTrait {
 
   val mockAgentServicesConnector = mock[AgentServicesConnector]
 
-  def setupAgentServicesConnector(nino: String)(isPreExistingRelationship: Boolean): Unit =
-    when(mockAgentServicesConnector.isPreExistingRelationship(nino)).thenReturn(Future.successful(isPreExistingRelationship))
+  val mockClientRelationshipService = mock[ClientRelationshipService]
 
-  def setupAgentServicesConnectorFailure(nino: String)(failure: Throwable): Unit =
-    when(mockAgentServicesConnector.isPreExistingRelationship(nino)).thenReturn(Future.failed(failure))
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockAgentServicesConnector)
+    reset(mockClientRelationshipService)
+  }
 
+  def setupCreateClientRelationship(arn: String, mtdid: String): Unit =
+    when(mockClientRelationshipService
+      .createClientRelationship(ArgumentMatchers.eq(arn), ArgumentMatchers.eq(mtdid))(ArgumentMatchers.any[HeaderCarrier])
+    ).thenReturn(Future.successful(()))
+
+  def setupCreateClientRelationshipFailure(arn: String, mtdid: String)(failure: Throwable): Unit =
+    when(mockClientRelationshipService
+      .createClientRelationship(ArgumentMatchers.eq(arn), ArgumentMatchers.eq(mtdid))(ArgumentMatchers.any[HeaderCarrier])
+    ).thenReturn(Future.failed(failure))
+
+  object MockConnectorSetup {
+    def preExistingRelationship(nino: String)(isPreExistingRelationship: Boolean): Unit =
+      when(mockAgentServicesConnector.isPreExistingRelationship(nino)).thenReturn(Future.successful(isPreExistingRelationship))
+
+    def preExistingRelationshipFailure(nino: String)(failure: Throwable): Unit =
+      when(mockAgentServicesConnector.isPreExistingRelationship(nino)).thenReturn(Future.failed(failure))
+
+    def createClientRelationship(arn: String, mtdid: String): Unit =
+      when(mockAgentServicesConnector.createClientRelationship(arn, mtdid)).thenReturn(Future.successful(()))
+
+    def createClientRelationshipFailure(arn: String, mtdid: String)(failure: Throwable): Unit =
+      when(mockAgentServicesConnector.createClientRelationship(arn, mtdid)).thenReturn(Future.failed(failure))
+  }
 }

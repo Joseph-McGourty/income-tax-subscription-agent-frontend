@@ -39,10 +39,7 @@ class EnrolmentConnector @Inject()(appConfig: AppConfig,
     http.GET[HttpResponse](getUrl).map {
       response =>
         response.status match {
-          case OK => response.json.as[Seq[Enrolment]] match {
-            case Nil => None
-            case x => Some(x)
-          }
+          case OK => response.json.asOpt[Seq[Enrolment]]
           case _ =>
             logging.warn("Get enrolments responded with a unexpected error")
             None

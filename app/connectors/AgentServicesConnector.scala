@@ -19,10 +19,11 @@ package connectors
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
+import common.Constants._
 import config.AppConfig
 import play.api.http.Status
 import play.api.libs.json.JsBoolean
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpResponse, InternalServerException}
+import uk.gov.hmrc.play.http._
 
 import scala.concurrent.Future._
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,18 +31,40 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AgentServicesConnector @Inject()(appConfig: AppConfig,
                                        httpGet: HttpGet,
+                                       httpPut: HttpPut,
                                        logging: Logging)(implicit ec: ExecutionContext) extends RawResponseReads {
-  def agentClientURL(nino: String): String = s"${appConfig.agentMicroserviceUrl}/client-relationship/$nino"
-
-  def parsingFailure(status: Int, body: String): Throwable =
-    new InternalServerException(s"AgentServicesConnector.isPreExistingRelationship unexpected response from agent services: status=$status body=$body")
-
   def isPreExistingRelationship(nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
     val url = agentClientURL(nino)
 
     httpGet.GET(url).flatMap {
       case HttpResponse(Status.OK, JsBoolean(value), _, _) => successful(value)
-      case HttpResponse(status, _, _, body) => failed(parsingFailure(status, body))
+      case HttpResponse(status, _, _, body) => failed(isPreExistingRelationshipFailure(status, body))
     }
   }
+
+  def agentClientURL(nino: String): String = s"${appConfig.agentMicroserviceUrl}/client-relationship/$nino"
+
+  def isPreExistingRelationshipFailure(status: Int, body: String): Throwable = failure("isPreExistingRelationship", status, body)
+
+  def createClientRelationshipFailure(status: Int, body: String): Throwable = failure("createClientRelationship", status, body)
+
+  private def failure(methodCall: String, status: Int, body: String) = {
+    val message = s"AgentServicesConnector.$methodCall unexpected response from agent services: status=$status body=$body"
+
+    logging.warn(message)
+    new InternalServerException(message)
+  }
+
+  def createClientRelationship(arn: String, mtdid: String)(implicit hc: HeaderCarrier): Future[Unit] = {
+    val url = createClientRelationshipURL(arn, mtdid)
+
+    httpPut.PUT(url, "")
+      .flatMap {
+        case HttpResponse(Status.CREATED, _, _, _) => successful(())
+        case HttpResponse(status, _, _, body) => failed(createClientRelationshipFailure(status, body))
+      }
+  }
+
+  def createClientRelationshipURL(arn: String, mtdid: String): String =
+    s"${appConfig.agentMicroserviceUrl}/agent-client-relationships/agent/$arn/service/$ggServiceName/client/$identifierKey/$mtdid"
 }

@@ -25,9 +25,10 @@ object TestConstants {
   * this nino is a constant, if you need a fresh one use TestModels.newNino
   */
   lazy val testNino = new Generator().nextNino.nino
-  lazy val testMTDID = "XE0001234567890"
+  lazy val testMTDID = new Generator().nextAtedUtr.utr //Not a valid MTDID, for test purposes only
   lazy val startDate = DateModel("05", "04", "2017")
   lazy val endDate = DateModel("04", "04", "2018")
   lazy val ggServiceName = Constants.ggServiceName
   lazy val agentServiceName = Constants.agentServiceName
+  lazy val testARN = new Generator().nextAtedUtr.utr //Not a valid ARN, for test purposes only
 }
