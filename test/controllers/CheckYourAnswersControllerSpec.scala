@@ -21,13 +21,22 @@ import auth._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.{MockKeystoreService, MockSubscriptionService}
+import services.mocks.{MockClientRelationshipService, MockEnrolmentService, MockKeystoreService, MockSubscriptionService}
 import uk.gov.hmrc.domain.Generator
+import uk.gov.hmrc.play.http.InternalServerException
 import utils.TestModels
+import utils.TestConstants._
 
 class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
-  with MockSubscriptionService {
+  with MockSubscriptionService
+  with MockClientRelationshipService
+  with MockEnrolmentService {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    setupMockEnrolmentCheckAgentService()
+  }
 
   override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -40,8 +49,11 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     messagesApi,
     MockKeystoreService,
     middleService = TestSubscriptionService,
+    clientRelationshipService = mockClientRelationshipService,
     app.injector.instanceOf[Logging]
-  )
+  ) {
+    override lazy val enrolmentService = mockEnrolmentService
+  }
 
   "Calling the show action of the CheckYourAnswersController with an authorised user" should {
 
@@ -64,7 +76,6 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       "return a redirect status (SEE_OTHER - 303)" in {
         // generate a new nino specifically for this test,
         // since the default value in test constant may be used by accident
-        val testNino: String = new Generator().nextNino.nino
         setupMockKeystore(
           fetchAll =
             TestModels.testCacheMapCustom(
@@ -72,6 +83,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
             )
         )
         setupSubscribe()(subscribeSuccess)
+        setupMockEnrolmentGetARN(testARN)
+        setupCreateClientRelationship(testARN, testMTDID)
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
@@ -85,16 +98,32 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       }
     }
     "When the submission is unsuccessful" should {
-      lazy val result = call
-
-      "return a internalServer error" in {
+      "return a failure if subscription fails" in {
         setupMockKeystore(fetchAll = TestModels.testCacheMap)
         setupSubscribe()(subscribeBadRequest)
-        status(result) must be(Status.INTERNAL_SERVER_ERROR)
-        await(result)
+        val ex = intercept[InternalServerException](await(call))
+        ex.message mustBe "Successful response not received from submission"
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
 
+      "return a failure if the call to enrolment fails" in {
+        setupMockKeystore(fetchAll = TestModels.testCacheMap)
+        setupSubscribe()(subscribeSuccess)
+        setupMockEnrolmentGetARNFailure(new Exception())
+        val ex = intercept[InternalServerException](await(call))
+        ex.message mustBe "Call to enrolment failed"
+        verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
+      }
+
+      "return a failure if create client relationship fails" in {
+        setupMockKeystore(fetchAll = TestModels.testCacheMap)
+        setupSubscribe()(subscribeSuccess)
+        setupMockEnrolmentGetARN(testARN)
+        setupCreateClientRelationshipFailure(testARN, testMTDID)(new Exception())
+        val ex = intercept[InternalServerException](await(call))
+        ex.message mustBe "Failed to create client relationship"
+        verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
+      }
     }
   }
 

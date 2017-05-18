@@ -16,22 +16,30 @@
 
 package services
 
-import auth.{authenticatedFakeRequest, mockAuthorisedUserIdCL200, mockNotASEnrolled}
+import audit.Logging
+import auth.{authenticatedFakeRequest, ggUser, mockAuthorisedUserIdCL200, mockNotASEnrolled}
+import common.Constants
+import connectors.EnrolmentConnector
 import connectors.models.Enrolment.{Enrolled, NotEnrolled}
+import _root_.connectors.models.{Enrolment, Identifier}
 import org.scalatest.Matchers._
+import org.scalatest.mockito.MockitoSugar
 import play.api.mvc.Results
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockEnrolmentService
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
+import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.HeaderCarrier
-import utils.UnitTestTrait
+import utils.{TestConstants, UnitTestTrait}
+import org.mockito.Mockito._
 
 import scala.concurrent.Future
 
 
 class EnrolmentServiceSpec extends UnitTestTrait
-  with MockEnrolmentService {
+  with MockEnrolmentService
+  with MockitoSugar {
 
   val isEnrolled = (e: Enrolled) => e match {
     case x =>
@@ -47,7 +55,7 @@ class EnrolmentServiceSpec extends UnitTestTrait
 
   implicit def hcUtil(implicit request: FakeRequest[_]): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
 
-  "EnrolmentService" should {
+  "checkAgentServiceEnrolment" should {
     "return is enrolled for an user with AS enrolment" in {
       implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockAuthorisedUserIdCL200)
       await(TestEnrolmentService.checkAgentServiceEnrolment(isEnrolled)(hcUtil(request)))
@@ -59,4 +67,37 @@ class EnrolmentServiceSpec extends UnitTestTrait
     }
   }
 
+  val mockAuthConnector = mock[AuthConnector]
+  val mockEnrolmentConnector = mock[EnrolmentConnector]
+  val mockLogging = mock[Logging]
+
+  val service = new EnrolmentService(mockAuthConnector, mockEnrolmentConnector, mockLogging)
+
+  "getEnrolments" should {
+    "return all enrolments for a user" in {
+      val authority = ggUser.userCL50
+      when(mockAuthConnector.currentAuthority).thenReturn(Future.successful(Some(authority)))
+
+      val enrolment = Enrolment(Constants.agentServiceName, Seq(Identifier(Constants.agentIdentifierKey, TestConstants.testARN)), Enrolment.Activated)
+      when(mockEnrolmentConnector.getEnrolments(authority.uri)).thenReturn(Future.successful(Some(Seq(enrolment))))
+
+      val res = await(service.getEnrolments)
+
+      res.get should contain(enrolment)
+    }
+  }
+
+  "getARN" should {
+    "return the ARN for a user" in {
+      val authority = ggUser.userCL50
+      when(mockAuthConnector.currentAuthority).thenReturn(Future.successful(Some(authority)))
+
+      val enrolment = Enrolment(Constants.agentServiceName, Seq(Identifier(Constants.agentIdentifierKey, TestConstants.testARN)), Enrolment.Activated)
+      when(mockEnrolmentConnector.getEnrolments(authority.uri)).thenReturn(Future.successful(Some(Seq(enrolment))))
+
+      val res = await(service.getARN)
+
+      res should contain(TestConstants.testARN)
+    }
+  }
 }

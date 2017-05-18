@@ -22,7 +22,8 @@ import audit.Logging
 import config.BaseControllerConfig
 import connectors.models.subscription.FESuccessResponse
 import play.api.i18n.MessagesApi
-import services.{KeystoreService, SubscriptionService}
+import services.{ClientRelationshipService, KeystoreService, SubscriptionService}
+import uk.gov.hmrc.play.http.InternalServerException
 
 import scala.concurrent.Future
 
@@ -31,11 +32,13 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                                            val messagesApi: MessagesApi,
                                            val keystoreService: KeystoreService,
                                            val middleService: SubscriptionService,
+                                           val clientRelationshipService: ClientRelationshipService,
                                            logging: Logging
-                                 ) extends BaseController {
+                                          ) extends BaseController {
 
   import services.CacheUtil._
 
+  lazy val backUrl: String = controllers.routes.TermsController.showTerms().url
   val show = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchAll() map {
@@ -49,25 +52,31 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
           InternalServerError
       }
   }
-
   val submit = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchAll() flatMap {
         case Some(source) =>
           val nino = source.getNino().get
-          middleService.submitSubscription(nino, source.getSummary()).flatMap {
-            case Some(FESuccessResponse(Some(id))) =>
-              keystoreService.saveSubscriptionId(id).map(_ => Redirect(controllers.routes.ConfirmationController.showConfirmation()))
-            case _ =>
-              logging.warn("Successful response not received from submission")
-              Future.successful(InternalServerError("Submission failed"))
-          }
+          for {
+            mtditid <- middleService.submitSubscription(nino, source.getSummary())
+              .collect { case Some(FESuccessResponse(Some(id))) => id }
+              .recoverWith { case _ => error("Successful response not received from submission") }
+            arn <- enrolmentService.getARN
+              .collect { case Some(arn) => arn }
+              .recoverWith { case _ => error("Call to enrolment failed") }
+            _ <- clientRelationshipService.createClientRelationship(arn, mtditid)
+              .recoverWith { case _ => error("Failed to create client relationship") }
+            cacheMap <- keystoreService.saveSubscriptionId(mtditid)
+              .recoverWith { case _ => error("Failed to save to keystore") }
+          } yield Redirect(controllers.routes.ConfirmationController.showConfirmation())
         case _ =>
-          logging.info("User attempted to submit 'Check Your Answers' without any keystore cached data")
-          Future.successful(InternalServerError)
+          error("User attempted to submit 'Check Your Answers' without any keystore cached data")
       }
   }
 
-  lazy val backUrl: String = controllers.routes.TermsController.showTerms().url
+  def error(message: String): Future[Nothing] = {
+    logging.warn(message)
+    Future.failed(new InternalServerException(message))
+  }
 
 }
