@@ -25,29 +25,29 @@ import utils.TestConstants._
 class AgentServicesConnectorSpec extends MockAgentServicesConnector {
   "isPreExistingRelationship" should {
     "return true if the agent and client have a pre existing relationship" in {
-      mockIsPreExistingRelationship(testNino)(OK, Json.toJson(true))
+      mockIsPreExistingRelationship(testARN, testNino)(OK)
 
-      val res = TestAgentServicesConnector.isPreExistingRelationship(testNino)
+      val res = TestAgentServicesConnector.isPreExistingRelationship(testARN, testNino)
 
       await(res) mustBe true
     }
 
     "return false if the agent and client do not have a pre existing relationship" in {
-      mockIsPreExistingRelationship(testNino)(OK, Json.toJson(false))
+      mockIsPreExistingRelationship(testARN, testNino)(NOT_FOUND)
 
-      val res = TestAgentServicesConnector.isPreExistingRelationship(testNino)
+      val res = TestAgentServicesConnector.isPreExistingRelationship(testARN, testNino)
 
       await(res) mustBe false
     }
 
     "return a failure on a non OK status" in {
       val invalidBody = Json.toJson("invalid")
-      mockIsPreExistingRelationship(testNino)(INTERNAL_SERVER_ERROR, invalidBody)
+      mockIsPreExistingRelationship(testARN, testNino)(INTERNAL_SERVER_ERROR, invalidBody)
 
-      val res = TestAgentServicesConnector.isPreExistingRelationship(testNino)
+      val res = TestAgentServicesConnector.isPreExistingRelationship(testARN, testNino)
 
       val ex = intercept[InternalServerException](await(res))
-      ex.getMessage mustBe TestAgentServicesConnector.isPreExistingRelationshipFailure(INTERNAL_SERVER_ERROR, invalidBody.toString).getMessage
+      ex.getMessage mustBe TestAgentServicesConnector.isPreExistingRelationshipFailure(INTERNAL_SERVER_ERROR, invalidBody.toString()).getMessage
     }
   }
 

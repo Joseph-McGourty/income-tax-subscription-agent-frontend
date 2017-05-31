@@ -49,11 +49,11 @@ trait MockClientRelationshipService extends MockTrait {
     ).thenReturn(Future.failed(failure))
 
   object MockConnectorSetup {
-    def preExistingRelationship(nino: String)(isPreExistingRelationship: Boolean): Unit =
-      when(mockAgentServicesConnector.isPreExistingRelationship(nino)).thenReturn(Future.successful(isPreExistingRelationship))
+    def preExistingRelationship(arn: String, nino: String)(isPreExistingRelationship: Boolean): Unit =
+      when(mockAgentServicesConnector.isPreExistingRelationship(arn, nino)).thenReturn(Future.successful(isPreExistingRelationship))
 
-    def preExistingRelationshipFailure(nino: String)(failure: Throwable): Unit =
-      when(mockAgentServicesConnector.isPreExistingRelationship(nino)).thenReturn(Future.failed(failure))
+    def preExistingRelationshipFailure(arn: String, nino: String)(failure: Throwable): Unit =
+      when(mockAgentServicesConnector.isPreExistingRelationship(arn, nino)).thenReturn(Future.failed(failure))
 
     def createClientRelationship(arn: String, mtdid: String): Unit =
       when(mockAgentServicesConnector.createClientRelationship(arn, mtdid)).thenReturn(Future.successful(()))

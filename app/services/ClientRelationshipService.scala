@@ -24,8 +24,8 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import scala.concurrent.Future
 
 class ClientRelationshipService @Inject()(val agentServicesConnector: AgentServicesConnector) {
-  def isPreExistingRelationship(nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    agentServicesConnector.isPreExistingRelationship(nino)
+  def isPreExistingRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    agentServicesConnector.isPreExistingRelationship(arn, nino)
   }
 
   def createClientRelationship(arn: String, mtdid: String)(implicit hc: HeaderCarrier): Future[Unit] = {

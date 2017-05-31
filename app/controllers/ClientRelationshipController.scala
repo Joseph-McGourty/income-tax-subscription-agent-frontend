@@ -36,7 +36,9 @@ class ClientRelationshipController @Inject()(val baseConfig: BaseControllerConfi
       for {
         clientNINO <- keystoreService.fetchClientDetails()
           .collect { case Some(ClientDetailsModel(_, _, nino, _)) => nino }
-        isPreExistingRelationship <- clientRelationshipService.isPreExistingRelationship(clientNINO)
+        arn <- enrolmentService.getARN
+          .collect { case Some(arn) => arn }
+        isPreExistingRelationship <- clientRelationshipService.isPreExistingRelationship(arn, clientNINO)
       } yield if (isPreExistingRelationship) {
         Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
       }

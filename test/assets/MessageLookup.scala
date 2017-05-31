@@ -195,9 +195,10 @@ object MessageLookup {
   }
 
   object NoClientRelationship {
-    val title = "You have no pre-existing relationship with this client"
-    val heading = "You have no pre-existing relationship with this client"
-    val para1 = "Content TBC"
+    val title = "You can't use this service yet"
+    val heading = "You can't use this service yet"
+    val linkText = "authorise you as their agent."
+    val para1 = s"To sign your client up for quarterly reporting, they need to $linkText"
   }
 
   object Confirmation {

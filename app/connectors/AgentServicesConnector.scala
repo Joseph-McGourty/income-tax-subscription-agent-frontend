@@ -33,16 +33,17 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
                                        httpGet: HttpGet,
                                        httpPut: HttpPut,
                                        logging: Logging)(implicit ec: ExecutionContext) extends RawResponseReads {
-  def isPreExistingRelationship(nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    val url = agentClientURL(nino)
+  def isPreExistingRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    val url = agentClientURL(arn, nino)
 
     httpGet.GET(url).flatMap {
-      case HttpResponse(Status.OK, JsBoolean(value), _, _) => successful(value)
-      case HttpResponse(status, _, _, body) => failed(isPreExistingRelationshipFailure(status, body))
+      case res if res.status == Status.OK => successful(true)
+      case res if res.status == Status.NOT_FOUND => successful(false)
+      case res => failed(isPreExistingRelationshipFailure(res.status, res.body))
     }
   }
 
-  def agentClientURL(nino: String): String = s"${appConfig.agentMicroserviceUrl}/client-relationship/$nino"
+  def agentClientURL(arn: String, nino: String): String = s"${appConfig.agentMicroserviceUrl}/agent/$arn/service/IR-SA/client/ni/$nino"
 
   def isPreExistingRelationshipFailure(status: Int, body: String): Throwable = failure("isPreExistingRelationship", status, body)
 

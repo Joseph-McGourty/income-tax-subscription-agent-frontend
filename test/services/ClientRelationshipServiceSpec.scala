@@ -23,17 +23,17 @@ import utils.TestConstants._
 class ClientRelationshipServiceSpec extends MockClientRelationshipService {
   "isPreExistingRelationship" should {
     "return true if the connector returns true" in {
-      MockConnectorSetup.preExistingRelationship(testNino)(isPreExistingRelationship = true)
+      MockConnectorSetup.preExistingRelationship(testARN, testNino)(isPreExistingRelationship = true)
 
-      val res = TestClientRelationshipService.isPreExistingRelationship(testNino)
+      val res = TestClientRelationshipService.isPreExistingRelationship(testARN, testNino)
 
       await(res) mustBe true
     }
 
     "return false if the connector returns false" in {
-      MockConnectorSetup.preExistingRelationship(testNino)(isPreExistingRelationship = false)
+      MockConnectorSetup.preExistingRelationship(testARN, testNino)(isPreExistingRelationship = false)
 
-      val res = TestClientRelationshipService.isPreExistingRelationship(testNino)
+      val res = TestClientRelationshipService.isPreExistingRelationship(testARN, testNino)
 
       await(res) mustBe false
     }
@@ -41,9 +41,9 @@ class ClientRelationshipServiceSpec extends MockClientRelationshipService {
     "return a failed future if the connection fails" in {
       val exception = new Exception()
 
-      MockConnectorSetup.preExistingRelationshipFailure(testNino)(exception)
+      MockConnectorSetup.preExistingRelationshipFailure(testARN, testNino)(exception)
 
-      val res = TestClientRelationshipService.isPreExistingRelationship(testNino)
+      val res = TestClientRelationshipService.isPreExistingRelationship(testARN, testNino)
 
       intercept[Exception](await(res)) mustBe exception
     }
