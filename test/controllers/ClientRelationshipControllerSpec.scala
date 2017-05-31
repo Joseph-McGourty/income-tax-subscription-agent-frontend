@@ -27,7 +27,8 @@ import services.ClientRelationshipService
 import services.mocks.{MockEnrolmentService, MockKeystoreService}
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.TestConstants._
-import utils.TestModels
+import utils.TestModels.testClientDetails
+import utils.{TestConstants, TestModels}
 
 import scala.concurrent.Future
 
@@ -57,7 +58,7 @@ class ClientRelationshipControllerSpec
 
   "checkClientRelationship" should {
     "redirect to 'Capture Client's Subscription Details' if there is a pre-existing relationship" in {
-      setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
+      setupMockKeystore(fetchClientDetails = testClientDetails)
 
       setupMockEnrolmentGetARN(testARN)
 
@@ -72,7 +73,7 @@ class ClientRelationshipControllerSpec
     }
 
     "show the 'Unable to subscribe' page if there is no pre-existing relationship" in {
-      setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
+      setupMockKeystore(fetchClientDetails = testClientDetails)
 
       setupMockEnrolmentGetARN(testARN)
 
@@ -94,7 +95,7 @@ class ClientRelationshipControllerSpec
     }
 
     "return an INTERNAL_SERVER_ERROR if the ARN cannot be collected" in {
-      setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
+      setupMockKeystore(fetchClientDetails = testClientDetails)
 
       val exception = new Exception()
 
@@ -106,7 +107,7 @@ class ClientRelationshipControllerSpec
     }
 
     "return an INTERNAL_SERVER_ERROR if the call to agent services fails" in {
-      setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
+      setupMockKeystore(fetchClientDetails = testClientDetails)
 
       setupMockEnrolmentGetARN(testARN)
 
@@ -118,6 +119,19 @@ class ClientRelationshipControllerSpec
       val res = TestClientRelationshipController.checkClientRelationship(authenticatedFakeRequest())
 
       intercept[Exception](await(res)) mustBe exception
+    }
+
+    "remove spaces from the NINO before passing it to the service" in {
+      setupMockKeystore(fetchClientDetails = testClientDetails.copy(nino = testClientDetails.ninoInDisplayFormat))
+
+      setupMockEnrolmentGetARN(testARN)
+
+      when(mockClientRelationshipService.isPreExistingRelationship(ArgumentMatchers.eq(testARN), ArgumentMatchers.eq(testNino))(ArgumentMatchers.any()))
+        .thenReturn(Future.successful(true))
+
+      val res = TestClientRelationshipController.checkClientRelationship(authenticatedFakeRequest())
+
+      status(res) mustBe SEE_OTHER
     }
   }
 

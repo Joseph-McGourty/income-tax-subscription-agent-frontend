@@ -35,7 +35,7 @@ class ClientRelationshipController @Inject()(val baseConfig: BaseControllerConfi
     implicit request =>
       for {
         clientNINO <- keystoreService.fetchClientDetails()
-          .collect { case Some(ClientDetailsModel(_, _, nino, _)) => nino }
+          .collect { case Some(clientDetails) => clientDetails.ninoInBackendFormat }
         arn <- enrolmentService.getARN
           .collect { case Some(arn) => arn }
         isPreExistingRelationship <- clientRelationshipService.isPreExistingRelationship(arn, clientNINO)
