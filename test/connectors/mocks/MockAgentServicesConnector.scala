@@ -23,8 +23,8 @@ import play.api.libs.json.JsValue
 trait MockAgentServicesConnector extends MockHttp {
   object TestAgentServicesConnector extends AgentServicesConnector(appConfig, mockHttpGet, mockHttpPut, app.injector.instanceOf[Logging])
 
-  def mockIsPreExistingRelationship(nino: String)(status: Int, response: JsValue): Unit =
-    setupMockHttpGet(Some(TestAgentServicesConnector.agentClientURL(nino)))(status, Some(response))
+  def mockIsPreExistingRelationship(arn: String, nino: String)(status: Int, response: Option[JsValue] = None): Unit =
+    setupMockHttpGet(Some(TestAgentServicesConnector.agentClientURL(arn, nino)))(status, response)
 
   def mockCreateClientRelationship(arn: String, mtdid: String)(status: Int, response: Option[JsValue]): Unit =
     setupMockHttpPut(Some(TestAgentServicesConnector.createClientRelationshipURL(arn, mtdid)))(status, response)

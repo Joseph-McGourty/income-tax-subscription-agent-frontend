@@ -138,9 +138,9 @@ client-already-subscribed.heading                               = Your client ha
 client-already-subscribed.para1                                 = The details you''ve entered are already in use.
 
 ## No client relationship page ##
-no-client-relationship.title                                 = You have no pre-existing relationship with this client
-no-client-relationship.heading                               = You have no pre-existing relationship with this client
-no-client-relationship.para1                                 = Content TBC
+no-client-relationship.title                                 = You can''t use this service yet
+no-client-relationship.heading                               = You can''t use this service yet
+no-client-relationship.para1                                 = To sign your client up for quarterly reporting, they need to <a href="{0}" rel="external">authorise you as their agent.</a>
 
 ## Failure Messages ##
 notAuthorised.title                                             = Not Authorised

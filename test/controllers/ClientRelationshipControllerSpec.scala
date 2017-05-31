@@ -24,18 +24,26 @@ import org.mockito.Mockito._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.ClientRelationshipService
-import services.mocks.MockKeystoreService
+import services.mocks.{MockEnrolmentService, MockKeystoreService}
+import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.TestConstants._
 import utils.TestModels
 
 import scala.concurrent.Future
 
-class ClientRelationshipControllerSpec extends ControllerBaseSpec with MockKeystoreService {
-  override val controllerName: String = "ClientRelationshipController"
+class ClientRelationshipControllerSpec
+  extends ControllerBaseSpec
+    with MockKeystoreService
+    with MockEnrolmentService {
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    setupMockEnrolmentCheckAgentService()
+  }
+
   override lazy val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "checkClientRelationship" -> TestClientRelationshipController.checkClientRelationship
   )
-
+  override val controllerName: String = "ClientRelationshipController"
   val mockClientRelationshipService = mock[ClientRelationshipService]
 
   object TestClientRelationshipController extends ClientRelationshipController(
@@ -43,14 +51,19 @@ class ClientRelationshipControllerSpec extends ControllerBaseSpec with MockKeyst
     messagesApi,
     mockClientRelationshipService,
     MockKeystoreService
-  )
+  ) {
+    override lazy val enrolmentService = mockEnrolmentService
+  }
 
   "checkClientRelationship" should {
     "redirect to 'Capture Client's Subscription Details' if there is a pre-existing relationship" in {
       setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
 
-      when(mockClientRelationshipService.isPreExistingRelationship(ArgumentMatchers.eq(testNino))(ArgumentMatchers.any()))
+      setupMockEnrolmentGetARN(testARN)
+
+      when(mockClientRelationshipService.isPreExistingRelationship(ArgumentMatchers.eq(testARN), ArgumentMatchers.eq(testNino))(ArgumentMatchers.any()))
         .thenReturn(Future.successful(true))
+
 
       val res = TestClientRelationshipController.checkClientRelationship(authenticatedFakeRequest())
 
@@ -61,7 +74,9 @@ class ClientRelationshipControllerSpec extends ControllerBaseSpec with MockKeyst
     "show the 'Unable to subscribe' page if there is no pre-existing relationship" in {
       setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
 
-      when(mockClientRelationshipService.isPreExistingRelationship(ArgumentMatchers.eq(testNino))(ArgumentMatchers.any()))
+      setupMockEnrolmentGetARN(testARN)
+
+      when(mockClientRelationshipService.isPreExistingRelationship(ArgumentMatchers.eq(testARN), ArgumentMatchers.eq(testNino))(ArgumentMatchers.any()))
         .thenReturn(Future.successful(false))
 
       val res = TestClientRelationshipController.checkClientRelationship(authenticatedFakeRequest())
@@ -73,20 +88,31 @@ class ClientRelationshipControllerSpec extends ControllerBaseSpec with MockKeyst
     "return an INTERNAL_SERVER_ERROR if there are no client details in keystore" in {
       setupMockKeystore(fetchClientDetails = None)
 
-      when(mockClientRelationshipService.isPreExistingRelationship(ArgumentMatchers.eq(testNino))(ArgumentMatchers.any()))
-        .thenReturn(Future.failed(new Exception()))
-
       val res = TestClientRelationshipController.checkClientRelationship(authenticatedFakeRequest())
 
       intercept[Exception](await(res)) mustBe a[NoSuchElementException]
     }
 
-    "return an INTERNAL_SERVER_ERROR if the call to agent services fails" in {
+    "return an INTERNAL_SERVER_ERROR if the ARN cannot be collected" in {
       setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
 
       val exception = new Exception()
 
-      when(mockClientRelationshipService.isPreExistingRelationship(ArgumentMatchers.eq(testNino))(ArgumentMatchers.any()))
+      setupMockEnrolmentGetARNFailure(exception)
+
+      val res = TestClientRelationshipController.checkClientRelationship(authenticatedFakeRequest())
+
+      intercept[Exception](await(res)) mustBe exception
+    }
+
+    "return an INTERNAL_SERVER_ERROR if the call to agent services fails" in {
+      setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
+
+      setupMockEnrolmentGetARN(testARN)
+
+      val exception = new Exception()
+
+      when(mockClientRelationshipService.isPreExistingRelationship(ArgumentMatchers.eq(testARN), ArgumentMatchers.eq(testNino))(ArgumentMatchers.any()))
         .thenReturn(Future.failed(exception))
 
       val res = TestClientRelationshipController.checkClientRelationship(authenticatedFakeRequest())
