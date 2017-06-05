@@ -115,7 +115,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
 
-      "return a failure if create client relationship fails" in {
+      // TODO re-enable create relationship test once the agent team is ready
+      "return a failure if create client relationship fails" ignore {
         setupMockKeystore(fetchAll = TestModels.testCacheMap)
         setupSubscribe()(subscribeSuccess)
         setupMockEnrolmentGetARN(testARN)

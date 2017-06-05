@@ -64,8 +64,9 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
             arn <- enrolmentService.getARN
               .collect { case Some(arn) => arn }
               .recoverWith { case _ => error("Call to enrolment failed") }
-            _ <- clientRelationshipService.createClientRelationship(arn, mtditid)
-              .recoverWith { case _ => error("Failed to create client relationship") }
+            // TODO re-enable create relationship once the agent team is ready
+            //_ <- clientRelationshipService.createClientRelationship(arn, mtditid)
+            //  .recoverWith { case _ => error("Failed to create client relationship") }
             cacheMap <- keystoreService.saveSubscriptionId(mtditid)
               .recoverWith { case _ => error("Failed to save to keystore") }
           } yield Redirect(controllers.routes.ConfirmationController.showConfirmation())
