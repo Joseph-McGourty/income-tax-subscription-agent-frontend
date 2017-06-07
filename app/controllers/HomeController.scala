@@ -21,11 +21,14 @@ import javax.inject.{Inject, Singleton}
 import audit.Logging
 import config.BaseControllerConfig
 import connectors.models.throttling.CanAccess
+import models.SessionConstants._
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import services.ThrottlingService
-import uk.gov.hmrc.play.http.InternalServerException
+import uk.gov.hmrc.play.http.{HeaderCarrier, InternalServerException}
 import utils.Implicits._
+
+import scala.concurrent.Future
 
 @Singleton
 class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
@@ -36,7 +39,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
 
   lazy val showGuidance: Boolean = baseConfig.applicationConfig.showGuidance
 
-  def home : Action[AnyContent] = Action.async { implicit request =>
+  def home: Action[AnyContent] = Action.async { implicit request =>
     showGuidance match {
       case true => Ok(views.html.agent_frontpage(controllers.routes.HomeController.index()))
       case _ => Redirect(controllers.routes.HomeController.index())
@@ -60,5 +63,13 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
       }
   }
 
-  lazy val gotoFirst = Redirect(controllers.matching.routes.ClientDetailsController.show())
+  def gotoFirst(implicit hc: HeaderCarrier): Future[Result] = for {
+    optArn <- enrolmentService.getARN
+  } yield optArn match {
+    case Some(arn) =>
+      Redirect(controllers.matching.routes.ClientDetailsController.show())
+        .addingToSession(arnName -> arn)
+    case None =>
+      Redirect(controllers.routes.NotEnrolledAgentServicesController.show())
+  }
 }
