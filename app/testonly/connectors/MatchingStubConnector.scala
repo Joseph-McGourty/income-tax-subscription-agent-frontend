@@ -27,7 +27,7 @@ import connectors.RawResponseReads
 import models.DateModel
 import models.agent.ClientDetailsModel
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import testonly.TestOnlyAppConfig
 import testonly.models.ClientToStubModel
 import uk.gov.hmrc.play.http.ws.WSHttp
@@ -120,10 +120,17 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
       response =>
         response.status match {
           case CREATED =>
-            logging.debug("MatchingStubConnector.newUser successful")
+            logging.info("MatchingStubConnector.newUser successful")
             true
           case status =>
-            logging.debug(s"MatchingStubConnector.newUser failure: status=$status, body=${response.body}")
+            logging.warn(
+              s"""MatchingStubConnector.newUser failure:
+                 | Request {
+                 |   dynamicStubUrl: $dynamicStubUrl
+                 |   hc.headers: ${hc.headers.map{case (a,b)=>s"a$a: $b"}.mkString("\n")}
+                 |   json: ${UserData.format.writes(userData): JsValue}
+                 | }
+                 | Response: status=$status, body=${response.body}""".stripMargin)
             false
         }
     }
