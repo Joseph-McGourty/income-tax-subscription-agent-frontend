@@ -43,7 +43,8 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
     }
   }
 
-  def agentClientURL(arn: String, nino: String): String = s"${appConfig.agentMicroserviceUrl}/agent/$arn/service/IR-SA/client/ni/$nino"
+  def agentClientURL(arn: String, nino: String): String =
+    s"${appConfig.agentMicroserviceUrl}/agent-client-relationships/agent/$arn/service/IR-SA/client/ni/$nino"
 
   def isPreExistingRelationshipFailure(status: Int, body: String): Throwable = failure("isPreExistingRelationship", status, body)
 
