@@ -34,7 +34,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
       When("I call POST /check-your-answers")
       val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers(Map.empty)
 
-      Then("The result should have a status of OK")
+      Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
       res should have(
         httpStatus(SEE_OTHER),
         redirectURI(confirmationURI)
