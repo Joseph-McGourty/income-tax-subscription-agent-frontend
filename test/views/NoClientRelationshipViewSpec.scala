@@ -16,7 +16,9 @@
 
 package views
 
-import assets.MessageLookup.{NoClientRelationship => messages, Base => common}
+import assets.MessageLookup
+import assets.MessageLookup.{Base => common, NoClientRelationship => messages}
+import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
@@ -25,6 +27,8 @@ class NoClientRelationshipViewSpec extends ViewSpecTrait {
   val action = ViewSpecTrait.testCall
 
   lazy val page = views.html.no_client_relationship(action)(FakeRequest(), applicationMessages, appConfig)
+
+  lazy val document = Jsoup.parse(page.body)
 
   "The No Client Relationship View" should {
     val testPage = TestView(
@@ -42,5 +46,14 @@ class NoClientRelationshipViewSpec extends ViewSpecTrait {
 
     form.mustHaveSubmitButton(common.goBack)
 
+    "has a 'Cannot use this service' section" which {
+
+      s"has an Agent authorisation link '${MessageLookup.NoClientRelationship.linkText}'" in {
+        document.select("#cannotUseService a").text() mustBe MessageLookup.NoClientRelationship.linkText
+        document.select("#cannotUseService a").attr("href") mustBe appConfig.agentAuthUrl
+      }
+
+    }
   }
 }
+

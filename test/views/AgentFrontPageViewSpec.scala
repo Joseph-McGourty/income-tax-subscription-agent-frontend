@@ -16,7 +16,9 @@
 
 package views
 
+import assets.MessageLookup
 import assets.MessageLookup.{Base => common, FrontPage => messages}
+import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
@@ -27,6 +29,8 @@ class AgentFrontPageViewSpec extends ViewSpecTrait {
   lazy val page = views.html.agent_frontpage(
     getAction = action
   )(FakeRequest(), applicationMessages, appConfig)
+
+  lazy val document = Jsoup.parse(page.body)
 
   "The Agent 'Front/Start Page view" should {
 
@@ -55,7 +59,10 @@ class AgentFrontPageViewSpec extends ViewSpecTrait {
       messages.bullet_5,
       messages.bullet_6,
       messages.bullet_7,
-      messages.bullet_8
+      messages.bullet_8,
+      messages.bullet_9
+      //      messages.bullet_10
+
     )
 
     testPage.mustHaveH2(messages.subHeading_1)
@@ -64,7 +71,22 @@ class AgentFrontPageViewSpec extends ViewSpecTrait {
 
     val form = testPage.getForm("Agent 'Front/Start Page view")(actionCall = action)
 
-    form.mustHaveSubmitButton(common.signUp)
+    form.mustHaveSubmitButton(common.startNow)
 
+  }
+
+  "has a 'To use this service' section" which {
+
+    s"has an Agent authorisation link '${MessageLookup.FrontPage.linkText_1}'" in {
+      val link1 = document.select("#beforeYouStart a").get(0)
+      link1.text() mustBe MessageLookup.FrontPage.linkText_1
+      link1.attr("href") mustBe appConfig.agentAuthUrl
+    }
+
+    s"has an Agent services account link '${MessageLookup.FrontPage.linkText_2}'" in {
+      val link2 = document.select("#beforeYouStart a").get(1)
+      link2.text() mustBe MessageLookup.FrontPage.linkText_2
+      link2.attr("href") mustBe appConfig.agentAccountUrl
+    }
   }
 }

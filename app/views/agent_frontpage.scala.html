@@ -51,20 +51,28 @@
         <p>@Html(Messages("frontpage.para_4"))</p>
 
         @form(action = getAction) {
-            @startButton(Messages("base.sign-up"))
+            @startButton(Messages("base.start-now"))
         }
     </div>
 
     <h2 class="heading-medium">@Messages("frontpage.sub_heading_2")</h2>
 
-    <p>@Html(Messages("frontpage.para_5"))</p>
+    <div id="beforeYouStart">
+        <div class="form-group">
+             <p>@Html(Messages("frontpage.para_5"))</p>
+        </div>
+        <ul class="list list-bullet">
+            <li>@Messages("frontpage.bullet_6")</li>
+            <li>@Messages("frontpage.bullet_7")</li>
+            <li>@Messages("frontpage.bullet_8")</li>
+        </ul>
 
-    <ul class="list list-bullet">
-        <li>@Messages("frontpage.bullet_6")</li>
-        <li>@Messages("frontpage.bullet_7")</li>
-        <li>@Messages("frontpage.bullet_8")</li>
-    </ul>
+        <p>@Html(Messages("frontpage.para_6"))</p>
 
-    <p>@Html(Messages("frontpage.para_6"))</p>
-
+        <ul class="list list-bullet">
+            <li>@Html(Messages("frontpage.bullet_9", appConfig.agentAuthUrl))</li>
+            <li>@Html(Messages("frontpage.bullet_10", appConfig.agentAccountUrl))</li>
+        </ul>
+    </div>
 }
+

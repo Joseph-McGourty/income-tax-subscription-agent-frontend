@@ -21,14 +21,14 @@ base.go_back                                                    = Go back
 # Agent front page
 frontpage.title                                                 = Sign up to report your client''s income and expenses quarterly
 frontpage.heading                                               = Sign up to report your client''s income and expenses quarterly
-frontpage.para_1                                                = By signing up to HM Revenue and Customs secure service, you''re helping to test a new way of working out your tax. You''ll do this by:
-frontpage.bullet_1                                              = using your accounting software to record your clients income and expenses
+frontpage.para_1                                                = By signing up to HM Revenue and Customs secure service, you''re helping to test a new way of working out your client''s tax. You''ll do this by:
+frontpage.bullet_1                                              = using your accounting software to record your client''s income and expenses
 frontpage.bullet_2                                              = sending details to us regularly from July 2017
 frontpage.para_2                                                = You can sign up your client if their current accounting period starts after 5 April 2017 and they''re one of the following:
 frontpage.bullet_3                                              = a sole trader with income from one business
 frontpage.bullet_4                                              = someone who rents out a UK property
 frontpage.bullet_5                                              = a sole trader with income from one business and they rent out a UK property
-frontpage.para_3                                                = If they have income other than those listed above, you won''t be able to report it using this service yet.
+frontpage.para_3                                                = If your client has any income other than those listed above, you won''t be able to report it using this service yet.
 frontpage.sub_heading_1                                         = Sign up using Government Gateway
 frontpage.para_4                                                = You''ll need to enter the user ID and password you got when you created your Agent Services account.
 frontpage.sub_heading_2                                         = Before you start
@@ -36,7 +36,10 @@ frontpage.para_5                                                = You''ll need y
 frontpage.bullet_6                                              = full name
 frontpage.bullet_7                                              = date of birth
 frontpage.bullet_8                                              = National Insurance Number
-frontpage.para_6                                                = To see your client''s tax details, they must authorise you as their agent. You can still sign up and send reports, but you won''t be able to access their information until you''ve been authorised.
+frontpage.para_6                                                = To use this service:
+frontpage.bullet_9                                              = your client needs to <a href="{0}">authorise you as their agent</a>
+frontpage.bullet_10                                             = you need to <a href="{0}">create an Agent Services account</a>
+
 
 # Client details page
 client-details-error.title                                      = Client match error

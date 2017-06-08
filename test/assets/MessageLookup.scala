@@ -35,6 +35,7 @@ object MessageLookup {
     val change = "Change"
     val where_can_i_get_this_information = "Where can I get this information"
     val signUp = "Sign up"
+    val startNow = "Start now"
     val dateOfBirth = "Date of birth"
     val goBack = "Go back"
   }
@@ -44,7 +45,11 @@ object MessageLookup {
     val heading = title
     val subHeading_1 = "Sign up using Government Gateway"
     val subHeading_2 = "Before you start"
-    val bullet_1 = "using your accounting software to record your clients income and expenses"
+
+    val linkText_1 = "authorise you as their agent"
+    val linkText_2 = "create an Agent Services account"
+
+    val bullet_1 = "using your accounting software to record your client's income and expenses"
     val bullet_2 = "sending details to us regularly from July 2017"
     val bullet_3 = "a sole trader with income from one business"
     val bullet_4 = "someone who rents out a UK property"
@@ -52,12 +57,17 @@ object MessageLookup {
     val bullet_6 = "full name"
     val bullet_7 = "date of birth"
     val bullet_8 = "National Insurance Number"
-    val para_1 = "By signing up to HM Revenue and Customs secure service, you're helping to test a new way of working out your tax. You'll do this by:"
+    val bullet_9 = s"your client needs to $linkText_1"
+    val bullet_10 = s"you need to $linkText_2"
+
+    val para_1 = "By signing up to HM Revenue and Customs secure service, you're helping to test a new way of working out your client's tax. You'll do this by:"
     val para_2 = "You can sign up your client if their current accounting period starts after 5 April 2017 and they're one of the following:"
-    val para_3 = "If they have income other than those listed above, you won't be able to report it using this service yet."
+    val para_3 = "If your client has any income other than those listed above, you won't be able to report it using this service yet."
     val para_4 = "You'll need to enter the user ID and password you got when you created your Agent Services account."
     val para_5 = "You'll need your client's:"
-    val para_6 = "To see your client's tax details, they must authorise you as their agent. You can still sign up and send reports, but you won't be able to access their information until you've been authorised."
+    val para_6 = "To use this service:"
+
+
   }
 
   object PreferencesCallBack {

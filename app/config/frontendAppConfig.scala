@@ -43,6 +43,8 @@ trait AppConfig {
   val ggUrl: String
   val ggSignOutUrl: String
   val btaUrl: String
+  val agentAuthUrl: String
+  val agentAccountUrl: String
   val showGuidance: Boolean
   val whitelistIps: Seq[String]
   val ipExclusionList: Seq[Call]
@@ -78,6 +80,12 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   // BTA link
   override lazy val btaUrl = loadConfig(s"bta.url")
+
+  // Agent Auth link
+  override lazy val agentAuthUrl = loadConfig(s"agent-auth.url")
+
+  // Agent Services Account link
+  override lazy val agentAccountUrl = loadConfig(s"agent-account.url")
 
   //GA Config
   override lazy val analyticsToken = loadConfig(s"google-analytics.token")
