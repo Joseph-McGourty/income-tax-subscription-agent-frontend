@@ -23,7 +23,7 @@ import config.BaseControllerConfig
 import connectors.models.throttling.CanAccess
 import models.SessionConstants._
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, RequestHeader, Result}
 import services.ThrottlingService
 import uk.gov.hmrc.play.http.{HeaderCarrier, InternalServerException}
 import utils.Implicits._
@@ -63,7 +63,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
       }
   }
 
-  def gotoFirst(implicit hc: HeaderCarrier): Future[Result] = for {
+  def gotoFirst(implicit hc: HeaderCarrier, request: RequestHeader): Future[Result] = for {
     optArn <- enrolmentService.getARN
   } yield optArn match {
     case Some(arn) =>
