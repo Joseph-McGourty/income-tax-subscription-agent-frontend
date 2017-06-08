@@ -31,6 +31,7 @@ object IntegrationTestConstants {
   val SessionId = s"stubbed-${UUID.randomUUID}"
   val userId = "/auth/oid/1234567890"
   val dateOfBirth = DateModel("01", "01", "1980")
+  lazy val testARN = new Generator().nextAtedUtr.utr //Not a valid ARN, for test purposes only
 
   val baseURI = "/report-quarterly/income-and-expenses/sign-up/client"
   val userDetailsURI = "/user-details"

@@ -19,12 +19,12 @@ package helpers.servicemocks
 import common.Constants
 import connectors.models.{Enrolment, Identifier}
 import play.api.http.Status
-import utils.TestConstants
+import helpers.IntegrationTestConstants._
 
 
 object EnrolmentsStub extends WireMockMethods {
 
-  val agentEnrolment = Enrolment(Constants.agentServiceName, Seq(Identifier(Constants.agentIdentifierKey, TestConstants.testARN)), Enrolment.Activated)
+  val agentEnrolment = Enrolment(Constants.agentServiceName, Seq(Identifier(Constants.agentIdentifierKey, testARN)), Enrolment.Activated)
 
   def stubAgentEnrolment(): Unit = {
     val enrolments: Seq[Enrolment] = Seq(agentEnrolment)
