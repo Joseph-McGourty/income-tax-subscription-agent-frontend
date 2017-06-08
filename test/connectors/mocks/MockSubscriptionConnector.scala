@@ -53,6 +53,7 @@ trait MockSubscriptionConnector extends MockHttp {
 
   val testRequest = FERequest(
     nino = TestConstants.testNino,
+    arn = TestConstants.testARN,
     incomeSource = Both,
     accountingPeriodStart = TestConstants.startDate,
     accountingPeriodEnd = TestConstants.endDate,

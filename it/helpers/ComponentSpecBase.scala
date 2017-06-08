@@ -18,7 +18,8 @@ package helpers
 
 import java.util.UUID
 
-import controllers.ITSASessionKey.GoHome
+import controllers.ITSASessionKeys
+import controllers.ITSASessionKeys.GoHome
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import org.scalatest._
@@ -39,9 +40,17 @@ trait ComponentSpecBase extends UnitSpec
   with WiremockHelper with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
   with I18nSupport with CustomMatchers with WireMockMethods {
 
+  override implicit lazy val app: Application = new GuiceApplicationBuilder()
+    .in(Environment.simple(mode = Mode.Dev))
+    .configure(config)
+    .build
+  override lazy val messagesApi = app.injector.instanceOf[MessagesApi]
   val mockHost = WiremockHelper.wiremockHost
   val mockPort = WiremockHelper.wiremockPort.toString
   val mockUrl = s"http://$mockHost:$mockPort"
+  implicit val nilWrites: Writes[Nil.type] = new Writes[Nil.type] {
+    override def writes(o: Nil.type): JsValue = JsArray()
+  }
 
   def config: Map[String, String] = Map(
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
@@ -49,17 +58,12 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.auth.port" -> mockPort,
     "microservice.services.session-cache.host" -> mockHost,
     "microservice.services.session-cache.port" -> mockPort,
+    "microservice.services.subscription-service.host" -> mockHost,
+    "microservice.services.subscription-service.port" -> mockPort,
     "microservice.services.feature-switch.show-guidance" -> "true",
     "auditing.consumer.baseUri.host" -> mockHost,
     "auditing.consumer.baseUri.port" -> mockPort
   )
-
-  override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .in(Environment.simple(mode = Mode.Dev))
-    .configure(config)
-    .build
-
-  override lazy val messagesApi = app.injector.instanceOf[MessagesApi]
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -72,8 +76,15 @@ trait ComponentSpecBase extends UnitSpec
     super.afterAll()
   }
 
+  def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =
+    form.fill(data).data map { case (k, v) => k -> Seq(v) }
+
   object IncomeTaxSubscriptionFrontend {
     val csrfToken = UUID.randomUUID().toString
+
+    def startPage(): WSResponse = get("/")
+
+    def index(): WSResponse = get("/index")
 
     def get(uri: String): WSResponse = await(
       buildClient(uri)
@@ -81,22 +92,21 @@ trait ComponentSpecBase extends UnitSpec
         .get()
     )
 
+    def submitCheckYourAnswers: (Map[String, Seq[String]]) => WSResponse = post("/check-your-answers")
+
     def post(uri: String)(body: Map[String, Seq[String]]): WSResponse = await(
       buildClient(uri)
-        .withHeaders(HeaderNames.COOKIE -> getSessionCookie(Map(GoHome -> "et")), "Csrf-Token" -> "nocheck")
+        .withHeaders(
+          HeaderNames.COOKIE -> getSessionCookie(
+            Map(
+              GoHome -> "et",
+              ITSASessionKeys.ArnKey -> IntegrationTestConstants.testARN
+            )
+          ),
+          "Csrf-Token" -> "nocheck")
         .post(body)
     )
 
-    def startPage(): WSResponse = get("/")
-    def index(): WSResponse = get("/index")
-
-  }
-
-  def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =
-    form.fill(data).data map { case (k, v) => k -> Seq(v) }
-
-  implicit val nilWrites: Writes[Nil.type] = new Writes[Nil.type] {
-    override def writes(o: Nil.type): JsValue = JsArray()
   }
 
 }

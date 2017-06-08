@@ -21,12 +21,12 @@ import javax.inject.{Inject, Singleton}
 import audit.Logging
 import config.BaseControllerConfig
 import connectors.models.throttling.CanAccess
-import models.SessionConstants._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, RequestHeader, Result}
 import services.ThrottlingService
 import uk.gov.hmrc.play.http.{HeaderCarrier, InternalServerException}
 import utils.Implicits._
+import ITSASessionKeys._
 
 import scala.concurrent.Future
 
@@ -68,7 +68,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
   } yield optArn match {
     case Some(arn) =>
       Redirect(controllers.matching.routes.ClientDetailsController.show())
-        .addingToSession(arnName -> arn)
+        .addingToSession(ArnKey -> arn)
     case None =>
       Redirect(controllers.routes.NotEnrolledAgentServicesController.show())
   }

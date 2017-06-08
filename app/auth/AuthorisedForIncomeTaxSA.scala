@@ -19,7 +19,7 @@ package auth
 import config.AppConfig
 import connectors.models.Enrolment.{Enrolled, NotEnrolled}
 import controllers.ErrorPageRenderer
-import controllers.ITSASessionKey._
+import controllers.ITSASessionKeys._
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.EnrolmentService
 import uk.gov.hmrc.play.frontend.auth._

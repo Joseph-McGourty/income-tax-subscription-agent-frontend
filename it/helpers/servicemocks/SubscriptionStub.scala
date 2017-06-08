@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
-package models
+package helpers.servicemocks
 
-object SessionConstants {
-  val arnName = "arn"
+import connectors.models.subscription.FESuccessResponse
+import helpers.IntegrationTestConstants._
+import play.api.http.Status
+
+object SubscriptionStub extends WireMockMethods{
+  def subscriptionURI(nino: String): String = s"/income-tax-subscription/subscription/$nino"
+
+  def stubSuccessfulSubscription(): Unit = {
+    when(method = POST, uri = subscriptionURI(testNino))
+      .thenReturn(Status.OK, successfulSubscriptionResponse)
+  }
+
+  val successfulSubscriptionResponse = FESuccessResponse(Some(testMTDID))
 }

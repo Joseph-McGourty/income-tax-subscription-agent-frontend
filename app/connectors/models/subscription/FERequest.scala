@@ -21,7 +21,8 @@ import play.api.libs.json.Json
 
 case class FERequest(nino: String,
                      incomeSource: IncomeSourceType,
-                     isAgent: Boolean = false,
+                     isAgent: Boolean = true,
+                     arn: String,
                      accountingPeriodStart: Option[DateModel] = None,
                      accountingPeriodEnd: Option[DateModel] = None,
                      tradingName: Option[String] = None,

@@ -25,7 +25,6 @@ import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.mocks.MockThrottlingService
 import assets.MessageLookup.FrontPage
-import models.SessionConstants
 import utils.TestConstants
 
 
@@ -112,7 +111,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
         redirectLocation(result).get mustBe controllers.matching.routes.ClientDetailsController.show().url
 
-        await(result).session(request).get(SessionConstants.arnName) must contain(TestConstants.testARN)
+        await(result).session(request).get(ITSASessionKeys.ArnKey) must contain(TestConstants.testARN)
       }
     }
   }

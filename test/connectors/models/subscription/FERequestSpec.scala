@@ -28,13 +28,15 @@ class FERequestSpec extends UnitSpec {
       // the default parameter should set enroluser to false
       val feRequest = FERequest(
         nino = TestConstants.testNino,
+        arn = TestConstants.testARN,
         incomeSource = Business
       )
 
       val request: JsValue = Json.toJson(feRequest)
       val expected = Json.fromJson[FERequest](
         s"""{"nino" : "${TestConstants.testNino}",
-           | "isAgent" : false,
+           | "arn" : "${TestConstants.testARN}",
+           | "isAgent" : true,
            | "incomeSource":"${IncomeSourceType.business}",
            | "enrolUser" : false}""".stripMargin).get
       val actual = Json.fromJson[FERequest](request).get

@@ -23,7 +23,7 @@ import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, EnrolmentsStub}
 
 class HomeControllerISpec extends ComponentSpecBase {
-  "GET /report-quarterly/income-and-expenses/sign-up" when {
+  "GET /" when {
     "feature-switch.show-guidance is true" should {
       "return the guidance page" in {
         When("I call GET /")
