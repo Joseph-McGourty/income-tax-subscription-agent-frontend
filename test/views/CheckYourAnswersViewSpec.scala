@@ -203,19 +203,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       )
     }
 
-//    "display the correct info for the terms" in {
-//      val sectionId = TermsId
-//      val expectedQuestion = messages.terms
-//      val expectedAnswer = messages.terms_agreed
-//
-//      sectionTest(
-//        sectionId = sectionId,
-//        expectedQuestion = expectedQuestion,
-//        expectedAnswer = expectedAnswer,
-//        expectedEditLink = None
-//      )
-//    }
-
   }
 
 }
