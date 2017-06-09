@@ -62,7 +62,7 @@ income_source.heading                                           = Select your cl
 income_source.business                                          = Sole trader business
 income_source.property                                          = Renting out a UK property
 income_source.both                                              = Their sole trader business and renting out a UK property
-income_source.other                                             = Other
+income_source.other                                             = Other income sources
 
 # Property income page
 property.income.title                                           = How much was your income from property this year?
@@ -78,7 +78,7 @@ business.current_financial_period_prior.no                      = No
 # Current Financial Period Prior page
 business.register_next_accounting_period.title                   = You can''t send quarterly reports yet
 business.register_next_accounting_period.heading                 = You can''t send quarterly reports yet
-business.register_next_accounting_period.line_1                  = You can sign up now, but you won''t be able to send any reports for your client until their next accounting period begins.
+business.register_next_accounting_period.line_1                  = You can sign your client up now, but you won''t be able to send any reports until their next accounting period begins.
 business.register_next_accounting_period.button                  = Continue to sign up
 
 ## Business Accounting Period page
@@ -176,8 +176,6 @@ summary.business_name                                           = What''s the na
 summary.income_type                                             = What accounting method does your client use?
 summary.income_type.cash                                        = Cash basis
 summary.income_type.accruals                                    = Accruals basis
-summary.terms                                                   = Terms of participation
-summary.terms.agreed                                            = I agree
 
 ## Confirmation page ##
 confirmation.title                                              = Confirmation page
@@ -270,7 +268,7 @@ no-nino.line_1                                                  = You can sign u
 main-income-error.title                                         = You can''t sign up your client yet
 main-income-error.heading                                       = You can''t sign up your client yet
 main-income-error.para1                                         = At the moment, you can only sign up if your client is one of the following:
-main-income-error.para2                                         = You''ll be able to send quarterly reports for other income later in the year.
+main-income-error.para2                                         = You''ll be able to use this reporting method for your client later in the year.
 main-income-error.bullet1                                       = a sole trader with income from one business
 main-income-error.bullet2                                       = someone who rents out a UK property
 main-income-error.bullet3                                       = a sole trader with income from one business and you rent out a UK property
@@ -278,13 +276,13 @@ main-income-error.bullet3                                       = a sole trader 
 ## Other income error page ##
 other-income-error.title                                        = You can only send quarterly reports on part of your client''s income
 other-income-error.heading                                      = You can only send quarterly reports on part of your client''s income
-other-income-error.para1                                        = As this service is currently a trial, you can only send quarterly reports on income from your client''s sole trader business, renting out a UK property or both.
+other-income-error.para1                                        = You''ll be able to use this reporting method for your client''s other income later in the year.
 
 ## Other sources of income page ##
 income-other.title                                              = Does your client have any other sources of income?
 income-other.heading                                            = Does your client have any other sources of income?
 income-other.para1                                              = This could include:
-income-other.bullet1                                            = employment that isn''t their sole trader business
+income-other.bullet1                                            = employment
 income-other.bullet2                                            = UK pensions or annuities
 income-other.bullet3                                            = taxable state benefits
 income-other.bullet4                                            = employment or investments from outside the UK
@@ -306,6 +304,5 @@ client-details.field_1                                          = First name
 client-details.field_2                                          = Last name
 client-details.field_3                                          = National Insurance number
 client-details.field_4                                          = Date of birth
-client_details.formhint.1.line_1                                = This is on your client''s National Insurance card, payslip or P60.
-client_details.formhint.1.line_2                                = For example, ''QQ 12 34 56 C''.
+client_details.formhint.1.line_1                                = For example, ''QQ 12 34 56 C''.
 client-details.formhint.2                                       = For example, 10 12 1990

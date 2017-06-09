@@ -42,8 +42,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     otherIncome = testOtherIncome,
     accountingPeriod = testAccountingPeriod,
     businessName = testBusinessName,
-    accountingMethod = testAccountingMethod,
-    terms = testTerms
+    accountingMethod = testAccountingMethod
+//    terms = testTerms
   )
 
   lazy val postAction: Call = controllers.routes.CheckYourAnswersController.submit()
@@ -203,18 +203,18 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       )
     }
 
-    "display the correct info for the terms" in {
-      val sectionId = TermsId
-      val expectedQuestion = messages.terms
-      val expectedAnswer = messages.terms_agreed
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = None
-      )
-    }
+//    "display the correct info for the terms" in {
+//      val sectionId = TermsId
+//      val expectedQuestion = messages.terms
+//      val expectedAnswer = messages.terms_agreed
+//
+//      sectionTest(
+//        sectionId = sectionId,
+//        expectedQuestion = expectedQuestion,
+//        expectedAnswer = expectedAnswer,
+//        expectedEditLink = None
+//      )
+//    }
 
   }
 

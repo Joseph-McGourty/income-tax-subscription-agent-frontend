@@ -84,7 +84,7 @@ object MessageLookup {
     val business = "Sole trader business"
     val property = "Renting out a UK property"
     val both = "Their sole trader business and renting out a UK property"
-    val other = "Other"
+    val other = "Other income sources"
   }
 
   object Property {
@@ -118,7 +118,7 @@ object MessageLookup {
     object RegisterNextAccountingPeriod {
       val title = "You can't send quarterly reports yet"
       val heading = title
-      val line_1 = "You can sign up now, but you won't be able to send any reports for your client until their next accounting period begins."
+      val line_1 = "You can sign your client up now, but you won't be able to send any reports until their next accounting period begins."
       val button = "Continue to sign up"
     }
 
@@ -360,7 +360,7 @@ object MessageLookup {
     val title = "You can't sign up your client yet"
     val heading = "You can't sign up your client yet"
     val para1 = "At the moment, you can only sign up if your client is one of the following:"
-    val para2 = "You'll be able to send quarterly reports for other income later in the year."
+    val para2 = "You'll be able to use this reporting method for your client later in the year."
     val bullet1 = "a sole trader with income from one business"
     val bullet2 = "someone who rents out a UK property"
     val bullet3 = "a sole trader with income from one business and you rent out a UK property"
@@ -369,14 +369,14 @@ object MessageLookup {
   object OtherIncomeError {
     val title = "You can only send quarterly reports on part of your client's income"
     val heading: String = title
-    val para1 = "As this service is currently a trial, you can only send quarterly reports on income from your client's sole trader business, renting out a UK property or both."
+    val para1 = "You'll be able to use this reporting method for your client's other income later in the year."
   }
 
   object OtherIncome {
     val title = "Does your client have any other sources of income?"
     val heading = "Does your client have any other sources of income?"
     val para1 = "This could include:"
-    val bullet1 = "employment that isn't their sole trader business"
+    val bullet1 = "employment"
     val bullet2 = "UK pensions or annuities"
     val bullet3 = "taxable state benefits"
     val bullet4 = "employment or investments from outside the UK"
@@ -407,8 +407,7 @@ object MessageLookup {
     val field2 = "Last name"
     val field3 = "National Insurance number"
     val field4 = "Date of birth"
-    val formhint1_line1 = "This is on your client's National Insurance card, payslip or P60."
-    val formhint1_line2 = "For example, 'QQ 12 34 56 C'."
+    val formhint1_line1 = "For example, 'QQ 12 34 56 C'."
     val formhint2 = "For example, 10 12 1990"
   }
 
