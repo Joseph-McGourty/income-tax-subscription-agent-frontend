@@ -18,10 +18,13 @@ package helpers
 
 import java.util.UUID
 
+import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import controllers.ITSASessionKeys
 import controllers.ITSASessionKeys.GoHome
 import forms.ClientDetailsForm
+import helpers.IntegrationTestConstants.baseURI
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.agent.ClientDetailsModel
@@ -34,14 +37,32 @@ import play.api.http.HeaderNames
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, JsValue, Writes}
-import play.api.libs.ws.WSResponse
+import play.api.libs.ws.{WSClient, WSResponse}
 import uk.gov.hmrc.play.test.UnitSpec
 
 trait ComponentSpecBase extends UnitSpec
   with GivenWhenThen with TestSuite
   with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers
-  with WiremockHelper with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
+  with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
   with I18nSupport with CustomMatchers with WireMockMethods {
+
+  import WiremockHelper._
+
+  lazy val ws = app.injector.instanceOf[WSClient]
+
+  lazy val wmConfig = wireMockConfig().port(wiremockPort)
+  lazy val wireMockServer = new WireMockServer(wmConfig)
+
+  def startWiremock() = {
+    wireMockServer.start()
+    WireMock.configureFor(wiremockHost, wiremockPort)
+  }
+
+  def stopWiremock() = wireMockServer.stop()
+
+  def resetWiremock() = WireMock.reset()
+
+  def buildClient(path: String) = ws.url(s"http://localhost:$port$baseURI$path").withFollowRedirects(false)
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
