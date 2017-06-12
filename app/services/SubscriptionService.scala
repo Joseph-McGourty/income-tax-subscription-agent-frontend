@@ -33,18 +33,19 @@ class SubscriptionService @Inject()(logging: Logging,
 
   type OS = Option[String]
 
-  private[services] def buildRequest(nino: String, summaryData: SummaryModel): FERequest =
+  private[services] def buildRequest(nino: String, arn: String, summaryData: SummaryModel): FERequest =
     FERequest(
       nino = nino,
       incomeSource = IncomeSourceType(summaryData.incomeSource.get.source),
+      arn = arn,
       accountingPeriodStart = summaryData.accountingPeriod.fold[Option[DateModel]](None)(_.startDate),
       accountingPeriodEnd = summaryData.accountingPeriod.fold[Option[DateModel]](None)(_.endDate),
       cashOrAccruals = summaryData.accountingMethod.fold[OS](None)(_.accountingMethod),
       tradingName = summaryData.businessName.fold[OS](None)(_.businessName)
     )
 
-  def submitSubscription(nino: String, summaryData: SummaryModel)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
-    val request = buildRequest(nino, summaryData)
+  def submitSubscription(nino: String, arn: String, summaryData: SummaryModel)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
+    val request = buildRequest(nino, arn, summaryData)
     logging.debug(s"Submitting subscription with request: $request")
     subscriptionConnector.subscribe(request)
   }

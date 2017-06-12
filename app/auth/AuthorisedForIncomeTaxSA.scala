@@ -19,7 +19,7 @@ package auth
 import config.AppConfig
 import connectors.models.Enrolment.{Enrolled, NotEnrolled}
 import controllers.ErrorPageRenderer
-import controllers.ITSASessionKey._
+import controllers.ITSASessionKeys._
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.EnrolmentService
 import uk.gov.hmrc.play.frontend.auth._
@@ -88,6 +88,10 @@ trait AuthorisedForIncomeTaxSA extends Actions with ErrorPageRenderer {
 
   object IncomeTaxSARegime extends IncomeTaxSARegime
 
+  /*
+  * N.B. The authedBy.async will check to see if the user id stored in the user session matches the user id returned from auth
+  * re :https://github.com/hmrc/play-authorised-frontend/blob/208e8fc3543f18ed4fa17fb1255073146eb57089/src/test/scala/uk/gov/hmrc/play/frontend/auth/AuthenticationProviderSpec.scala
+  */
   object Authorised extends AuthorisedBy(IncomeTaxSARegime)
 
 }

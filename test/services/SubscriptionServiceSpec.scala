@@ -26,25 +26,27 @@ import utils.{TestConstants, TestModels}
 class SubscriptionServiceSpec extends MockSubscriptionService {
 
   val testNino: String = TestConstants.testNino
+  val testArn: String = TestConstants.testARN
 
   "SubscriptionService.buildRequest" should {
     "convert the user's data into the correct FERequest format" in {
       // a freshly generated nino is used to ensure it is not simply pulling the test nino from somewhere else
       val nino = TestModels.newNino
-      val request = TestSubscriptionService.buildRequest(nino, testSummaryData)
+      val request = TestSubscriptionService.buildRequest(nino, testArn, testSummaryData)
       request.nino mustBe nino
+      request.arn mustBe testArn
       request.accountingPeriodStart.get mustBe testSummaryData.accountingPeriod.get.startDate
       request.accountingPeriodEnd.get mustBe testSummaryData.accountingPeriod.get.endDate
       request.cashOrAccruals.get mustBe testSummaryData.accountingMethod.get.accountingMethod
       IncomeSourceType.unapply(request.incomeSource).get mustBe testSummaryData.incomeSource.get.source
-      request.isAgent mustBe false
+      request.isAgent mustBe true
       request.tradingName.get mustBe testSummaryData.businessName.get.businessName
     }
   }
 
   "SubscriptionService.submitSubscription" should {
-    val testRequest = TestSubscriptionService.buildRequest(testNino, testSummaryData)
-    def call = await(TestSubscriptionService.submitSubscription(nino = testNino, summaryData = testSummaryData))
+    val testRequest = TestSubscriptionService.buildRequest(testNino, testArn, testSummaryData)
+    def call = await(TestSubscriptionService.submitSubscription(nino = testNino, arn = testArn, summaryData = testSummaryData))
 
     "return the safeId when the subscription is successful" in {
       setupSubscribe(testRequest)(subscribeSuccess)
