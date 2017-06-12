@@ -56,14 +56,12 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
     implicit request =>
       keystoreService.fetchAll() flatMap {
         case Some(source) =>
-          val nino = source.getNino().get
+          val nino = source.getNino().get //Will fail if there is no NINO
+          val arn = request.session.get(ITSASessionKeys.ArnKey).get //Will fail if there is no ARN in session
           for {
-            mtditid <- middleService.submitSubscription(nino, source.getSummary())
+            mtditid <- middleService.submitSubscription(nino, arn, source.getSummary())
               .collect { case Some(FESuccessResponse(Some(id))) => id }
               .recoverWith { case _ => error("Successful response not received from submission") }
-            arn <- enrolmentService.getARN
-              .collect { case Some(arn) => arn }
-              .recoverWith { case _ => error("Call to enrolment failed") }
             // TODO re-enable create relationship once the agent team is ready
             //_ <- clientRelationshipService.createClientRelationship(arn, mtditid)
             //  .recoverWith { case _ => error("Failed to create client relationship") }
