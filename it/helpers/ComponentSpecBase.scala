@@ -38,6 +38,8 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.{WSClient, WSResponse}
+import play.api.mvc.Headers
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
 
 trait ComponentSpecBase extends UnitSpec
@@ -84,6 +86,8 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.session-cache.port" -> mockPort,
     "microservice.services.subscription-service.host" -> mockHost,
     "microservice.services.subscription-service.port" -> mockPort,
+    "microservice.services.authenticator.host" -> mockHost,
+    "microservice.services.authenticator.port" -> mockPort,
     "microservice.services.feature-switch.show-guidance" -> "true",
     "auditing.consumer.baseUri.host" -> mockHost,
     "auditing.consumer.baseUri.port" -> mockPort
@@ -111,6 +115,16 @@ trait ComponentSpecBase extends UnitSpec
   object IncomeTaxSubscriptionFrontend {
     val csrfToken = UUID.randomUUID().toString
 
+    val headers = Seq(HeaderNames.COOKIE -> getSessionCookie(
+      Map(
+        GoHome -> "et",
+        ITSASessionKeys.ArnKey -> IntegrationTestConstants.testARN
+      )
+    ),
+    "Csrf-Token" -> "nocheck")
+
+    implicit val headerCarrier = HeaderCarrier.fromHeadersAndSession(Headers(headers:_*))
+
     def startPage(): WSResponse = get("/")
 
     def index(): WSResponse = get("/index")
@@ -130,18 +144,13 @@ trait ComponentSpecBase extends UnitSpec
         )
       )
 
-    def submitCheckYourAnswers: (Map[String, Seq[String]]) => WSResponse = post("/check-your-answers")
+    def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)
+
+    def submitConfirmClient(): WSResponse = post("/confirm-client")(Map.empty)
 
     def post(uri: String)(body: Map[String, Seq[String]]): WSResponse = await(
       buildClient(uri)
-        .withHeaders(
-          HeaderNames.COOKIE -> getSessionCookie(
-            Map(
-              GoHome -> "et",
-              ITSASessionKeys.ArnKey -> IntegrationTestConstants.testARN
-            )
-          ),
-          "Csrf-Token" -> "nocheck")
+        .withHeaders(headers:_*)
         .post(body)
     )
 

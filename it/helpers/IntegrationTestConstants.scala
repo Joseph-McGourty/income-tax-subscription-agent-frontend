@@ -38,6 +38,7 @@ object IntegrationTestConstants {
   val confirmDetailsURI = "/confirm-details"
   val clientDetailsURI = s"$baseURI/client-details"
   val confirmationURI = s"$baseURI/confirmation"
+  val checkClientRelationshipURI = s"$baseURI/check-client-relationship"
 
   object Auth {
     def authResponseJson(uri: String, userDetailsLink: String, gatewayId: String, idsLink: String): JsValue = Json.parse(

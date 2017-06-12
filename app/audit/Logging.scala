@@ -19,10 +19,8 @@ package audit
 import javax.inject.{Inject, Singleton}
 
 import play.api.{Application, Configuration, Logger}
-import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.audit.model.{Audit, DataEvent}
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.model.Audit
 
 case class LoggingConfig(heading: String)
 

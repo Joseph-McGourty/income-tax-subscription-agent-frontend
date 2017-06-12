@@ -16,18 +16,15 @@
 
 package helpers.servicemocks
 
-import uk.gov.hmrc.play.http.HeaderCarrier
+import connectors.models.matching.ClientMatchRequestModel
+import helpers.IntegrationTestModels
+import play.api.http.Status
 
-object AuditStub extends WireMockMethods {
-  val appName = "income-tax-subscription-agent-frontend"
+object AuthenticatorStub extends WireMockMethods {
+  def stubMatchFound(): Unit = {
+    val model = ClientMatchRequestModel.requestConvert(IntegrationTestModels.testClientDetails)
 
-  def stubAuditing(): Unit =
-    when(method = POST, uri = "/write/audit")
-      .thenReturn(status = 200, body = """{"x":2}""")
-
-  def verifyAudit()(implicit hc: HeaderCarrier): Unit = {
-    //We cannot verify content of audit body without string matching/regex
-    //It is tested in more detail at unit level
-    verify(method = POST, uri = "/write/audit")
+    when(method = POST, uri = "/authenticator/match", body = model)
+      .thenReturn(status = Status.OK)
   }
 }
