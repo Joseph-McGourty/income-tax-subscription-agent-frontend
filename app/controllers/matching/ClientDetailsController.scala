@@ -19,16 +19,14 @@ package controllers.matching
 import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
-import connectors.models.subscription.FESuccessResponse
 import controllers.BaseController
 import forms._
 import models.agent.ClientDetailsModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.{ClientMatchingService, KeystoreService, SubscriptionService}
-import utils.Implicits._
+import services.KeystoreService
 
 import scala.concurrent.Future
 
@@ -56,8 +54,26 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
     implicit request =>
       ClientDetailsForm.clientDetailsForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
-        clientDetails =>
-          keystoreService.saveClientDetails(clientDetails).map(_ => Redirect(routes.ConfirmClientController.show()))
+        clientDetails => {
+          val persist = keystoreService.fetchClientDetails().flatMap {
+            case Some(oldDetails) if oldDetails == clientDetails =>
+              Future.successful()
+            case Some(_) =>
+              // n.b. the delete must come before the save otherwise nothing will ever be saved.
+              // this feature is currently NOT unit testable
+              for {
+                _ <- keystoreService.deleteAll()
+                _ <- keystoreService.saveClientDetails(clientDetails)
+              } yield Unit
+            case None =>
+              keystoreService.saveClientDetails(clientDetails)
+          }
+
+          for {
+            _ <- persist
+          } yield Redirect(routes.ConfirmClientController.show())
+        }
+
       )
   }
 
