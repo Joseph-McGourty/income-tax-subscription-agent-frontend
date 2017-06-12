@@ -18,10 +18,13 @@ package helpers
 
 import java.util.UUID
 
+import com.github.tomakehurst.wiremock.client.WireMock
 import controllers.ITSASessionKeys
 import controllers.ITSASessionKeys.GoHome
+import forms.ClientDetailsForm
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
+import models.agent.ClientDetailsModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -65,6 +68,11 @@ trait ComponentSpecBase extends UnitSpec
     "auditing.consumer.baseUri.port" -> mockPort
   )
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    resetWiremock()
+  }
+
   override def beforeAll(): Unit = {
     super.beforeAll()
     startWiremock()
@@ -91,6 +99,15 @@ trait ComponentSpecBase extends UnitSpec
         .withHeaders(HeaderNames.COOKIE -> getSessionCookie(Map(GoHome -> "et")))
         .get()
     )
+
+    def showClientDetails(): WSResponse = get("/client-details")
+
+    def submitClientDetails(clientDetails: Option[ClientDetailsModel]): WSResponse =
+      post("/client-details")(
+        clientDetails.fold(Map.empty: Map[String, Seq[String]])(
+          cd => toFormData(ClientDetailsForm.clientDetailsValidationForm, cd)
+        )
+      )
 
     def submitCheckYourAnswers: (Map[String, Seq[String]]) => WSResponse = post("/check-your-answers")
 
