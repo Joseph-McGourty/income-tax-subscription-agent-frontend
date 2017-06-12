@@ -17,10 +17,10 @@
 package helpers.servicemocks
 
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels
 import helpers.IntegrationTestModels._
+import helpers.WiremockHelper
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsValue, Json, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 object KeystoreStub extends WireMockMethods {
@@ -39,6 +39,8 @@ object KeystoreStub extends WireMockMethods {
 
   def stubFullKeystore(): Unit = stubKeystoreData(fullKeystoreData)
 
+  def stubEmptyKeystore(): Unit = stubKeystoreData(keystoreData())
+
   def stubKeystoreData(data: Map[String, JsValue]): Unit = {
     val body = CacheMap(SessionId, data)
 
@@ -46,6 +48,26 @@ object KeystoreStub extends WireMockMethods {
       .thenReturn(Status.OK, body)
   }
 
+  def stubKeystoreSave[T](id: String, body: T)(implicit writer: Writes[T]): Unit = {
+    when(method = PUT, uri = putUri(id))
+      .thenReturn(Status.OK, CacheMap(SessionId, fullKeystoreData + (id -> Json.toJson(body))))
+  }
+
+  def stubKeystoreDelete(): Unit = {
+    when(method = DELETE, uri = keystoreUri)
+      .thenReturn(Status.OK, "")
+  }
+
+  def verifyKeyStoreDelete(count: Option[Int] = None): Unit = {
+    WiremockHelper.verifyDelete(keystoreUri, count)
+  }
+
+  def verifyKeyStoreSave[T](id: String, body: T, count: Option[Int] = None)(implicit writer: Writes[T]): Unit = {
+    import helpers.ImplicitConversions._
+    WiremockHelper.verifyPut(putUri(id), Some((body: JsValue).toString()), count)
+  }
+
   case class KeystoreData(id: String, data: Map[String, JsValue])
+
 }
 

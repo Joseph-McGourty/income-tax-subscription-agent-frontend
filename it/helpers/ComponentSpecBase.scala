@@ -18,10 +18,16 @@ package helpers
 
 import java.util.UUID
 
+import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import controllers.ITSASessionKeys
 import controllers.ITSASessionKeys.GoHome
+import forms.ClientDetailsForm
+import helpers.IntegrationTestConstants.baseURI
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
+import models.agent.ClientDetailsModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -31,7 +37,7 @@ import play.api.http.HeaderNames
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, JsValue, Writes}
-import play.api.libs.ws.WSResponse
+import play.api.libs.ws.{WSClient, WSResponse}
 import play.api.mvc.Headers
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
@@ -39,8 +45,26 @@ import uk.gov.hmrc.play.test.UnitSpec
 trait ComponentSpecBase extends UnitSpec
   with GivenWhenThen with TestSuite
   with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers
-  with WiremockHelper with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
+  with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
   with I18nSupport with CustomMatchers with WireMockMethods {
+
+  import WiremockHelper._
+
+  lazy val ws = app.injector.instanceOf[WSClient]
+
+  lazy val wmConfig = wireMockConfig().port(wiremockPort)
+  lazy val wireMockServer = new WireMockServer(wmConfig)
+
+  def startWiremock() = {
+    wireMockServer.start()
+    WireMock.configureFor(wiremockHost, wiremockPort)
+  }
+
+  def stopWiremock() = wireMockServer.stop()
+
+  def resetWiremock() = WireMock.reset()
+
+  def buildClient(path: String) = ws.url(s"http://localhost:$port$baseURI$path").withFollowRedirects(false)
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
@@ -69,10 +93,15 @@ trait ComponentSpecBase extends UnitSpec
     "auditing.consumer.baseUri.port" -> mockPort
   )
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    resetWiremock()
+    AuditStub.stubAuditing()
+  }
+
   override def beforeAll(): Unit = {
     super.beforeAll()
     startWiremock()
-    AuditStub.stubAuditing()
   }
 
   override def afterAll(): Unit = {
@@ -105,6 +134,15 @@ trait ComponentSpecBase extends UnitSpec
         .withHeaders(HeaderNames.COOKIE -> getSessionCookie(Map(GoHome -> "et")))
         .get()
     )
+
+    def showClientDetails(): WSResponse = get("/client-details")
+
+    def submitClientDetails(clientDetails: Option[ClientDetailsModel]): WSResponse =
+      post("/client-details")(
+        clientDetails.fold(Map.empty: Map[String, Seq[String]])(
+          cd => toFormData(ClientDetailsForm.clientDetailsValidationForm, cd)
+        )
+      )
 
     def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)
 

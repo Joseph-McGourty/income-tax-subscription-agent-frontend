@@ -19,8 +19,6 @@ package audit
 import javax.inject.{Inject, Singleton}
 
 import play.api.{Application, Configuration, Logger}
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.audit.model.Audit
 
 case class LoggingConfig(heading: String)
 
@@ -34,13 +32,9 @@ object LoggingConfig {
 
 @Singleton
 class Logging @Inject()(application: Application,
-                        configuration: Configuration,
-                        auditConnector: AuditConnector) {
-
+                        configuration: Configuration) {
 
   lazy val appName: String = configuration.getString("appName").getOrElse("APP NAME NOT SET")
-
-  lazy val audit: Audit = new Audit(appName, auditConnector)
 
   @inline def trace(msg: String)(implicit config: Option[LoggingConfig] = None): Unit = Logger.trace(config.addHeading(msg))
 

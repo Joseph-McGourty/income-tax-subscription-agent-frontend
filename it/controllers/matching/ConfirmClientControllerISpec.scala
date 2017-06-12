@@ -33,7 +33,6 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       EnrolmentsStub.stubAgentEnrolment()
       KeystoreStub.stubFullKeystore()
-      AuditStub.stubAuditing()
       AuthenticatorStub.stubMatchFound()
       SubscriptionStub.stubGetNoSubscription()
 
