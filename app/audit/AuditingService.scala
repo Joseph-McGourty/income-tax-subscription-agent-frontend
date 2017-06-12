@@ -37,7 +37,7 @@ class AuditingService @Inject()(configuration: Configuration,
 
 object AuditingService {
   def toDataEvent(appName: String, auditModel: AuditModel)(implicit hc: HeaderCarrier): DataEvent = {
-    val auditType: String = auditModel.auditType.toString
+    val auditType: String = auditModel.auditType
     val transactionName: String = auditModel.transactionName
     val path: String = "N/A"
     val detail: Map[String, String] = auditModel.detail
@@ -55,7 +55,6 @@ object AuditingService {
 trait AuditModel {
   val transactionName: String
   val detail: Map[String, String]
-  val auditType: AuditType
+  val auditType: String
 }
 
-trait AuditType

@@ -84,14 +84,11 @@ class ConfirmClientControllerSpec extends ControllerBaseSpec
 
     def callSubmit(): Future[Result] = TestConfirmClientController.submit()(request)
 
-    def verifyClientMatchingRequestAudit(): Unit =
-      verifyAudit(ClientMatchingAuditModel(ClientMatchingRequest, TestConstants.testARN, TestModels.testClientDetails))
-
     def verifyClientMatchingSuccessAudit(): Unit =
-      verifyAudit(ClientMatchingAuditModel(ClientMatchingSuccess, TestConstants.testARN, TestModels.testClientDetails))
+      verifyAudit(ClientMatchingAuditModel(TestConstants.testARN, TestModels.testClientDetails, isSuccess = true))
 
     def verifyClientMatchingFailureAudit(): Unit =
-      verifyAudit(ClientMatchingAuditModel(ClientMatchingFailure, TestConstants.testARN, TestModels.testClientDetails))
+      verifyAudit(ClientMatchingAuditModel(TestConstants.testARN, TestModels.testClientDetails, isSuccess = false))
 
 
     "the client does not already have a subscription" should {
@@ -110,7 +107,6 @@ class ConfirmClientControllerSpec extends ControllerBaseSpec
           await(goodRequest)
           verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
           verifyGetSubscription(testNino)(1)
-          verifyClientMatchingRequestAudit()
           verifyClientMatchingSuccessAudit()
         }
       }
@@ -128,7 +124,6 @@ class ConfirmClientControllerSpec extends ControllerBaseSpec
           await(goodRequest)
           verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
           verifyGetSubscription(testNino)(0)
-          verifyClientMatchingRequestAudit()
           verifyClientMatchingFailureAudit()
         }
       }
@@ -150,7 +145,6 @@ class ConfirmClientControllerSpec extends ControllerBaseSpec
           await(goodRequest)
           verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
           verifyGetSubscription(testNino)(1)
-          verifyClientMatchingRequestAudit()
           verifyClientMatchingSuccessAudit()
         }
       }
@@ -167,7 +161,6 @@ class ConfirmClientControllerSpec extends ControllerBaseSpec
           await(goodRequest)
           verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
           verifyGetSubscription(testNino)(0)
-          verifyClientMatchingRequestAudit()
           verifyClientMatchingFailureAudit()
         }
       }

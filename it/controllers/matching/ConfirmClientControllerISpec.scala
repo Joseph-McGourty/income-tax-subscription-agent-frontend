@@ -16,12 +16,10 @@
 
 package controllers.matching
 
-import audit.models.ClientMatchingAuditing.{ClientMatchingAuditModel, ClientMatchingRequest}
+import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
-import helpers.{ComponentSpecBase, IntegrationTestConstants, IntegrationTestModels}
 import helpers.servicemocks._
 import play.api.http.Status._
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 
 class ConfirmClientControllerISpec extends ComponentSpecBase {

@@ -16,28 +16,23 @@
 
 package audit.models
 
-import audit.{AuditModel, AuditType}
+import audit.AuditModel
 import models.agent.ClientDetailsModel
 
 object ClientMatchingAuditing {
   val clientMatchingTransactionName = "ITSAMatchingRequest"
-  sealed trait ClientMatchingAuditType extends AuditType
+  val clientMatchingAuditType = "ClientMatchingCheckSubmitted"
 
-  case class ClientMatchingAuditModel(auditType: ClientMatchingAuditType, arn: String, clientDetailsModel: ClientDetailsModel) extends AuditModel {
+  case class ClientMatchingAuditModel(arn: String, clientDetailsModel: ClientDetailsModel, isSuccess: Boolean) extends AuditModel {
     override val transactionName: String = clientMatchingTransactionName
     override val detail: Map[String, String] = Map(
       "arn" -> arn,
       "firstName" -> clientDetailsModel.firstName,
       "lastName" -> clientDetailsModel.lastName,
       "nino" -> clientDetailsModel.ninoInBackendFormat,
-      "dateOfBirth" -> clientDetailsModel.dateOfBirth.toOutputDateFormat
+      "dateOfBirth" -> clientDetailsModel.dateOfBirth.toOutputDateFormat,
+      "matchSuccess" -> s"$isSuccess"
     )
+    override val auditType: String = clientMatchingAuditType
   }
-
-  case object ClientMatchingRequest extends ClientMatchingAuditType
-
-  case object ClientMatchingFailure extends ClientMatchingAuditType
-
-  case object ClientMatchingSuccess extends ClientMatchingAuditType
-
 }
