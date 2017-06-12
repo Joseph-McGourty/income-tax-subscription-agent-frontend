@@ -28,5 +28,16 @@ object SubscriptionStub extends WireMockMethods{
       .thenReturn(Status.OK, successfulSubscriptionResponse)
   }
 
+  def stubGetSubscriptionFound(): Unit = {
+    when(method = GET, uri = subscriptionURI(testNino))
+      .thenReturn(Status.OK, successfulSubscriptionResponse)
+  }
+
+  def stubGetNoSubscription(): Unit = {
+    when(method = GET, uri = subscriptionURI(testNino))
+      .thenReturn(Status.OK, successfulNoSubscriptionResponse)
+  }
+
   val successfulSubscriptionResponse = FESuccessResponse(Some(testMTDID))
+  val successfulNoSubscriptionResponse = FESuccessResponse(None)
 }

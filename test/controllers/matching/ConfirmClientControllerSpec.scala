@@ -16,18 +16,23 @@
 
 package controllers.matching
 
+import audit.mocks.MockAuditingService
+import audit.models.ClientMatchingAuditing._
 import auth._
-import controllers.ControllerBaseSpec
+import controllers.{ControllerBaseSpec, ITSASessionKeys}
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, _}
 import services.mocks.{MockClientMatchingService, MockKeystoreService, MockSubscriptionService}
 import utils.{TestConstants, TestModels}
 
+import scala.concurrent.Future
+
 class ConfirmClientControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
   with MockClientMatchingService
-  with MockSubscriptionService {
+  with MockSubscriptionService
+  with MockAuditingService {
 
   override val controllerName: String = "ConfirmClientController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -40,12 +45,15 @@ class ConfirmClientControllerSpec extends ControllerBaseSpec
     messagesApi,
     MockKeystoreService,
     TestClientMatchingService,
-    TestSubscriptionService
+    TestSubscriptionService,
+    mockAuditingService
   )
+
+  lazy val request = authenticatedFakeRequest().withSession(ITSASessionKeys.ArnKey -> TestConstants.testARN)
 
   "Calling the show action of the ConfirmClientController with an authorised user" should {
 
-    def call = TestConfirmClientController.show()(authenticatedFakeRequest())
+    def call = TestConfirmClientController.show()(request)
 
     "when there are no client details store redirect them to client details" in {
       setupMockKeystore(fetchClientDetails = None)
@@ -74,12 +82,22 @@ class ConfirmClientControllerSpec extends ControllerBaseSpec
 
     val testNino = TestConstants.testNino
 
-    def callSubmit() = TestConfirmClientController.submit()(authenticatedFakeRequest())
+    def callSubmit(): Future[Result] = TestConfirmClientController.submit()(request)
+
+    def verifyClientMatchingRequestAudit(): Unit =
+      verifyAudit(ClientMatchingAuditModel(ClientMatchingRequest, TestConstants.testARN, TestModels.testClientDetails))
+
+    def verifyClientMatchingSuccessAudit(): Unit =
+      verifyAudit(ClientMatchingAuditModel(ClientMatchingSuccess, TestConstants.testARN, TestModels.testClientDetails))
+
+    def verifyClientMatchingFailureAudit(): Unit =
+      verifyAudit(ClientMatchingAuditModel(ClientMatchingFailure, TestConstants.testARN, TestModels.testClientDetails))
+
 
     "the client does not already have a subscription" should {
 
       "When a match has been found" should {
-        "return a redirect status (SEE_OTHER)" in {
+        s"return a redirect status (SEE_OTHER) and redirect to '${controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
           setupMatchClient(matchClientMatched)
           setupGetSubscription(testNino)(subscribeNone)
           setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
@@ -87,52 +105,31 @@ class ConfirmClientControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit()
 
           status(goodRequest) must be(Status.SEE_OTHER)
-
-          await(goodRequest)
-          verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
-          verifyGetSubscription(testNino)(1)
-        }
-
-        s"redirect to '${controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
-          setupMatchClient(matchClientMatched)
-          setupGetSubscription(testNino)(subscribeNone)
-          setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
-
-          val goodRequest = callSubmit()
-
           redirectLocation(goodRequest) mustBe Some(controllers.routes.ClientRelationshipController.checkClientRelationship().url)
 
           await(goodRequest)
           verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
           verifyGetSubscription(testNino)(1)
+          verifyClientMatchingRequestAudit()
+          verifyClientMatchingSuccessAudit()
         }
       }
 
       "When no match was been found" should {
-        "return a redirect status (SEE_OTHER)" in {
+        s"return a redirect status (SEE_OTHER) and redirect to '${controllers.matching.routes.ClientDetailsErrorController.show().url}" in {
           setupMatchClient(matchClientNoMatch)
           setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
 
           val goodRequest = callSubmit()
 
           status(goodRequest) must be(Status.SEE_OTHER)
-
-          await(goodRequest)
-          verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
-          verifyGetSubscription(testNino)(0)
-        }
-
-        s"redirect to '${controllers.matching.routes.ClientDetailsErrorController.show().url}" in {
-          setupMatchClient(matchClientNoMatch)
-          setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
-
-          val goodRequest = callSubmit()
-
           redirectLocation(goodRequest) mustBe Some(controllers.matching.routes.ClientDetailsErrorController.show().url)
 
           await(goodRequest)
           verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
           verifyGetSubscription(testNino)(0)
+          verifyClientMatchingRequestAudit()
+          verifyClientMatchingFailureAudit()
         }
       }
     }
@@ -140,7 +137,7 @@ class ConfirmClientControllerSpec extends ControllerBaseSpec
     "the client already has a subscription" should {
 
       "When a match has been found" should {
-        "return a redirect status (SEE_OTHER)" in {
+        s"return a redirect status (SEE_OTHER) and redirect to '${controllers.routes.ClientAlreadySubscribedController.show().url}" in {
           setupMatchClient(matchClientMatched)
           setupGetSubscription(testNino)(subscribeSuccess)
           setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
@@ -148,29 +145,18 @@ class ConfirmClientControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit()
 
           status(goodRequest) must be(Status.SEE_OTHER)
-
-          await(goodRequest)
-          verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
-          verifyGetSubscription(testNino)(1)
-        }
-
-        s"redirect to '${controllers.routes.ClientAlreadySubscribedController.show().url}" in {
-          setupMatchClient(matchClientMatched)
-          setupGetSubscription(testNino)(subscribeSuccess)
-          setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
-
-          val goodRequest = callSubmit()
-
           redirectLocation(goodRequest) mustBe Some(controllers.routes.ClientAlreadySubscribedController.show().url)
 
           await(goodRequest)
           verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
           verifyGetSubscription(testNino)(1)
+          verifyClientMatchingRequestAudit()
+          verifyClientMatchingSuccessAudit()
         }
       }
 
       "When no match was been found" should {
-        "return a redirect status (SEE_OTHER)" in {
+        s"return a redirect status (SEE_OTHER) and redirect to '${controllers.matching.routes.ClientDetailsErrorController.show().url}" in {
           setupMatchClient(matchClientNoMatch)
           setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
 
@@ -181,19 +167,8 @@ class ConfirmClientControllerSpec extends ControllerBaseSpec
           await(goodRequest)
           verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
           verifyGetSubscription(testNino)(0)
-        }
-
-        s"redirect to '${controllers.matching.routes.ClientDetailsErrorController.show().url}" in {
-          setupMatchClient(matchClientNoMatch)
-          setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
-
-          val goodRequest = callSubmit()
-
-          redirectLocation(goodRequest) mustBe Some(controllers.matching.routes.ClientDetailsErrorController.show().url)
-
-          await(goodRequest)
-          verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
-          verifyGetSubscription(testNino)(0)
+          verifyClientMatchingRequestAudit()
+          verifyClientMatchingFailureAudit()
         }
       }
     }

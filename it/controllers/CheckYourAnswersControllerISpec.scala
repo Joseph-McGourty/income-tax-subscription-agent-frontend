@@ -32,7 +32,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
       KeystoreStub.stubPutMtditId()
 
       When("I call POST /check-your-answers")
-      val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers(Map.empty)
+      val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
       Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
       res should have(
