@@ -47,43 +47,7 @@ class AuditingServiceSpec extends MockTrait with BeforeAndAfterEach {
   "audit" when {
     "given a ClientMatchingAuditModel of type ClientMatchingRequest" should {
       "extract the data and pass it into the AuditConnector" in {
-        val testModel = ClientMatchingAuditModel(ClientMatchingRequest, testARN, testClientDetails)
-
-        val expectedData = toDataEvent(testAppName, testModel)
-
-        testAuditingService.audit(testModel)
-
-        verify(mockAuditConnector)
-          .sendEvent(
-            ArgumentMatchers.refEq(expectedData, "eventId", "generatedAt")
-          )(
-            ArgumentMatchers.any[HeaderCarrier],
-            ArgumentMatchers.any[ExecutionContext]
-          )
-      }
-    }
-
-    "given a ClientMatchingAuditModel of type ClientMatchingFailure" should {
-      "extract the data and pass it into the AuditConnector" in {
-        val testModel = ClientMatchingAuditModel(ClientMatchingFailure, testARN, testClientDetails)
-
-        val expectedData = toDataEvent(testAppName, testModel)
-
-        testAuditingService.audit(testModel)
-
-        verify(mockAuditConnector)
-          .sendEvent(
-            ArgumentMatchers.refEq(expectedData, "eventId", "generatedAt")
-          )(
-            ArgumentMatchers.any[HeaderCarrier],
-            ArgumentMatchers.any[ExecutionContext]
-          )
-      }
-    }
-
-    "given a ClientMatchingAuditModel of type ClientMatchingSuccess" should {
-      "extract the data and pass it into the AuditConnector" in {
-        val testModel = ClientMatchingAuditModel(ClientMatchingSuccess, testARN, testClientDetails)
+        val testModel = ClientMatchingAuditModel(testARN, testClientDetails, isSuccess = true)
 
         val expectedData = toDataEvent(testAppName, testModel)
 

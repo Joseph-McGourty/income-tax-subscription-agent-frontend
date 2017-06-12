@@ -19,7 +19,7 @@ package controllers.matching
 import javax.inject.{Inject, Singleton}
 
 import audit.AuditingService
-import audit.models.ClientMatchingAuditing.{ClientMatchingAuditModel, ClientMatchingFailure, ClientMatchingRequest, ClientMatchingSuccess}
+import audit.models.ClientMatchingAuditing.ClientMatchingAuditModel
 import config.BaseControllerConfig
 import connectors.models.subscription.FESuccessResponse
 import controllers.{BaseController, ITSASessionKeys}
@@ -62,16 +62,15 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
 
       keystoreService.fetchClientDetails() flatMap {
         case Some(clientDetails) => {
-          auditingService.audit(ClientMatchingAuditModel(ClientMatchingRequest, arn, clientDetails))
           for {
             matchFound <- clientMatchingService.matchClient(clientDetails)
           } yield matchFound
         }.flatMap {
           case true =>
-            auditingService.audit(ClientMatchingAuditModel(ClientMatchingSuccess, arn, clientDetails))
+            auditingService.audit(ClientMatchingAuditModel(arn, clientDetails, isSuccess = true))
             checkExistingSubscription(clientDetails, Redirect(controllers.routes.ClientRelationshipController.checkClientRelationship()))
           case false =>
-            auditingService.audit(ClientMatchingAuditModel(ClientMatchingFailure, arn, clientDetails))
+            auditingService.audit(ClientMatchingAuditModel(arn, clientDetails, isSuccess = false))
             Redirect(controllers.matching.routes.ClientDetailsErrorController.show())
         }
         // if there are no client details redirect them back to client details
