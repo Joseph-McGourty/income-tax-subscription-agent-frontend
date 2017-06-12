@@ -17,9 +17,9 @@
 package controllers
 
 import helpers.ComponentSpecBase
-import helpers.servicemocks.{AuthStub, EnrolmentsStub, KeystoreStub, SubscriptionStub}
-import play.api.http.Status._
 import helpers.IntegrationTestConstants._
+import helpers.servicemocks._
+import play.api.http.Status._
 
 class CheckYourAnswersControllerISpec extends ComponentSpecBase {
   "POST /check-your-answers" should {

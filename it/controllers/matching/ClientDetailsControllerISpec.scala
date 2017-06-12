@@ -17,7 +17,7 @@
 package controllers.matching
 
 import helpers.ImplicitConversions._
-import helpers.servicemocks.{AuthStub, EnrolmentsStub, KeystoreStub}
+import helpers.servicemocks.{AuditStub, AuthStub, EnrolmentsStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import models.agent.ClientDetailsModel
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
