@@ -213,18 +213,16 @@ object MessageLookup {
 
   object Confirmation {
     val title = "Confirmation page"
-    val heading = "Success"
-    val banner_line1_1 = "Sign up complete."
-    val banner_line1_2 = "Your reference number is:"
+    val heading = "Sign up complete"
+    val banner_line1_1 = "Make a note of your client's reference number:"
     val signOut = "Finish"
 
     object whatHappensNext {
-      val para1 = "Make a note of your reference number. If you forget your Government Gateway login details, we can use it to help you retrieve them."
+      val para1 = "If your client forgets their Government Gateway login details, we can use this reference number to help retrieve them."
       val heading = "What happens next"
-      val para2 = "You must report to HMRC once every quarter from the start of your accounting period."
-      val para3 = "HMRC will calculate an estimate of your Income Tax after you send a report. You can see these estimates from your accounting software after your first report, or through your business tax account from August 2017."
+      val para2 = "You must use accounting software to keep your client's accounts, and send a report to HMRC at least every quarter."
       val linkText = "business tax account"
-      val para4 = s"Activate your $linkText, you can use this to see a summary of your business taxes."
+      val para3 = s"You'll get an estimate of your client's Income Tax in your software when you send a report. From August 2017 your client can view these Income Tax calculations and their report deadlines in their $linkText."
     }
 
   }
