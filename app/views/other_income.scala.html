@@ -36,16 +36,16 @@
             <ul class="bullets">
                 @incomeSource match {
                     case `option_property` => {
-                        <li>@Messages("income-other.bullet1")</li>
+                        <li>@Messages("income-other.bullet1Property")</li>
                     }
                     case _ => {
-                        <li>@Messages("income-other.bullet2")</li>
+                        <li>@Messages("income-other.bullet1Default")</li>
                     }
                 }
+                <li>@Messages("income-other.bullet2")</li>
                 <li>@Messages("income-other.bullet3")</li>
                 <li>@Messages("income-other.bullet4")</li>
                 <li>@Messages("income-other.bullet5")</li>
-                <li>@Messages("income-other.bullet6")</li>
             </ul>
         </div>
 
