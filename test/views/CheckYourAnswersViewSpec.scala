@@ -43,7 +43,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     accountingPeriod = testAccountingPeriod,
     businessName = testBusinessName,
     accountingMethod = testAccountingMethod
-//    terms = testTerms
   )
 
   lazy val postAction: Call = controllers.routes.CheckYourAnswersController.submit()
