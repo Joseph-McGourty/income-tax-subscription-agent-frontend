@@ -14,31 +14,37 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.matching
 
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
 import play.api.http.Status._
 
-class CheckYourAnswersControllerISpec extends ComponentSpecBase {
-  "POST /check-your-answers" should {
-    "call subscription on the back end service" in {
+
+class ConfirmClientControllerISpec extends ComponentSpecBase {
+  import IncomeTaxSubscriptionFrontend._
+
+  "POST /confirm-client" should {
+    "check the client details from keystore and audit" in {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
       EnrolmentsStub.stubAgentEnrolment()
       KeystoreStub.stubFullKeystore()
-      SubscriptionStub.stubSuccessfulSubscription()
-      KeystoreStub.stubPutMtditId()
+      AuthenticatorStub.stubMatchFound()
+      SubscriptionStub.stubGetNoSubscription()
 
-      When("I call POST /check-your-answers")
-      val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+      When("I call POST /confirm-client")
+      val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
 
-      Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+      Then("The result should have a status of SEE_OTHER and redirect to check client relationship")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(confirmationURI)
+        redirectURI(checkClientRelationshipURI)
       )
+
+      Then("The client matching request should have been audited")
+        AuditStub.verifyAudit()
     }
   }
 }

@@ -17,15 +17,17 @@
 package controllers
 
 import helpers.ComponentSpecBase
+import helpers.IntegrationTestConstants._
+import helpers.servicemocks.{AuditStub, AuthStub, EnrolmentsStub}
 import play.api.http.Status._
 import play.api.i18n.Messages
-import helpers.IntegrationTestConstants._
-import helpers.servicemocks.{AuthStub, EnrolmentsStub}
 
 class HomeControllerISpec extends ComponentSpecBase {
   "GET /" when {
     "feature-switch.show-guidance is true" should {
       "return the guidance page" in {
+        Given("I setup the wiremock stubs")
+
         When("I call GET /")
         val res = IncomeTaxSubscriptionFrontend.startPage()
 

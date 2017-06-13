@@ -27,6 +27,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
 import services.mocks.MockKeystoreService
+import uk.gov.hmrc.play.http.HttpResponse
 import utils.TestConstants
 
 
@@ -55,7 +56,7 @@ class ClientDetailsControllerSpec extends ControllerBaseSpec
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
+      verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0, deleteAll = 0)
     }
 
     "return HTML" in {
@@ -73,40 +74,79 @@ class ClientDetailsControllerSpec extends ControllerBaseSpec
 
   for (editMode <- Seq(true, false)) {
 
-    s"editMode=$editMode" when {
+    s"when editMode=$editMode and" when {
 
-      "Calling the submit action of the ClientDetailsController with an authorised user and valid submission" should {
+      "Calling the submit action of the ClientDetailsController with an authorised user and valid submission and" when {
+
+        val testClientDetails =
+          ClientDetailsModel(
+            firstName = "Abc",
+            lastName = "Abc",
+            nino = testNino,
+            dateOfBirth = DateModel("01", "01", "1980")
+          )
 
         def callSubmit(isEditMode: Boolean) =
           TestClientDetailsController.submit(isEditMode = isEditMode)(
             authenticatedFakeRequest()
-              .post(ClientDetailsForm.clientDetailsForm.form, ClientDetailsModel(
-                firstName = "Abc",
-                lastName = "Abc",
-                nino = testNino,
-                dateOfBirth = DateModel("01", "01", "1980")))
+              .post(ClientDetailsForm.clientDetailsForm.form, testClientDetails)
           )
 
-        "return a redirect status (SEE_OTHER - 303)" in {
-          setupMockKeystoreSaveFunctions()
+        "there are no stored data" should {
 
-          val goodResult = callSubmit(isEditMode = editMode)
+          s"redirect to '${controllers.matching.routes.ConfirmClientController.show().url}" in {
+            setupMockKeystore(
+              fetchClientDetails = None,
+              deleteAll = HttpResponse(OK)
+            )
 
-          status(goodResult) must be(Status.SEE_OTHER)
+            val goodResult = callSubmit(isEditMode = editMode)
 
-          await(goodResult)
-          verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
+            status(goodResult) must be(Status.SEE_OTHER)
+            redirectLocation(goodResult) mustBe Some(controllers.matching.routes.ConfirmClientController.show().url)
+
+            await(goodResult)
+            verifyKeystore(fetchClientDetails = 1, saveClientDetails = 1, deleteAll = 0)
+          }
+
         }
 
-        s"redirect to '${controllers.matching.routes.ConfirmClientController.show().url}'" in {
-          setupMockKeystoreSaveFunctions()
+        "stored user details is different to the new user details" should {
 
-          val goodResult = callSubmit(isEditMode = editMode)
+          s"redirect to '${controllers.matching.routes.ConfirmClientController.show().url} and deleted all pre-existing entries in keystore" in {
+            setupMockKeystore(
+              fetchClientDetails = testClientDetails.copy(firstName = testClientDetails.firstName + "NOT"),
+              deleteAll = HttpResponse(OK)
+            )
 
-          redirectLocation(goodResult) mustBe Some(controllers.matching.routes.ConfirmClientController.show().url)
+            val goodResult = callSubmit(isEditMode = editMode)
 
-          await(goodResult)
-          verifyKeystore(fetchClientDetails = 0, saveClientDetails = 1)
+            status(goodResult) must be(Status.SEE_OTHER)
+            redirectLocation(goodResult) mustBe Some(controllers.matching.routes.ConfirmClientController.show().url)
+
+            await(goodResult)
+            verifyKeystore(fetchClientDetails = 1, saveClientDetails = 1, deleteAll = 1)
+          }
+
+        }
+
+        "stored user details is the same as the new user details" should {
+
+          s"redirect to '${controllers.matching.routes.ConfirmClientController.show().url} but do not delete keystore" in {
+            setupMockKeystore(
+              fetchClientDetails = testClientDetails,
+              deleteAll = HttpResponse(OK)
+            )
+
+            val goodResult = callSubmit(isEditMode = editMode)
+
+            status(goodResult) must be(Status.SEE_OTHER)
+            redirectLocation(goodResult) mustBe Some(controllers.matching.routes.ConfirmClientController.show().url)
+
+            await(goodResult)
+            verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0, deleteAll = 0)
+          }
+
         }
       }
 
@@ -130,7 +170,7 @@ class ClientDetailsControllerSpec extends ControllerBaseSpec
           status(badResult) must be(Status.BAD_REQUEST)
 
           await(badResult)
-          verifyKeystore(fetchClientDetails = 0, saveClientDetails = 0)
+          verifyKeystore(fetchClientDetails = 0, saveClientDetails = 0, deleteAll = 0)
         }
 
         "return HTML" in {

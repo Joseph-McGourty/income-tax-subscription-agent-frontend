@@ -90,6 +90,7 @@ trait WireMockMethods {
   private def verifyInternal(method: HTTPMethod, uri: String, bodyString: Option[String]): Unit = method match {
     case GET => WiremockHelper.verifyGet(uri)
     case POST => WiremockHelper.verifyPost(uri, bodyString)
+    case DELETE => WiremockHelper.verifyDelete(uri)
     case _ => ()
   }
 
@@ -105,4 +106,8 @@ trait WireMockMethods {
   case object PUT extends HTTPMethod{
     override val wireMockMapping = put _
   }
+  case object DELETE extends HTTPMethod{
+    override val wireMockMapping = delete _
+  }
+
 }
