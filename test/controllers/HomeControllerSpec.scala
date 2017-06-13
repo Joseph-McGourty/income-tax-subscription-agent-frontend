@@ -25,6 +25,7 @@ import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.mocks.MockThrottlingService
 import assets.MessageLookup.FrontPage
+import utils.TestConstants
 
 
 class HomeControllerSpec extends ControllerBaseSpec
@@ -33,7 +34,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   override val controllerName: String = "HomeControllerSpec"
 
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "index" -> TestHomeController(enableThrottling = false, showGuidance = false).index()
+    "index" -> testHomeController(enableThrottling = false, showGuidance = false).index()
   )
 
   def mockBaseControllerConfig(isThrottled: Boolean, showStartPage: Boolean): BaseControllerConfig = {
@@ -44,18 +45,20 @@ class HomeControllerSpec extends ControllerBaseSpec
     mockBaseControllerConfig(mockConfig)
   }
 
-  def TestHomeController(enableThrottling: Boolean, showGuidance: Boolean) = new HomeController(
+  private def testHomeController(enableThrottling: Boolean, showGuidance: Boolean) = new HomeController(
     mockBaseControllerConfig(enableThrottling, showGuidance),
     messagesApi,
     TestThrottlingService,
     app.injector.instanceOf[Logging]
-  )
+  ){
+    override lazy val enrolmentService = mockEnrolmentService
+  }
 
   "Calling the home action of the Home controller with an authorised user" should {
 
     "If the start page (showGuidance) is enabled" should {
 
-      lazy val result = TestHomeController(enableThrottling = false, showGuidance = true).home()(authenticatedFakeRequest())
+      lazy val result = testHomeController(enableThrottling = false, showGuidance = true).home()(authenticatedFakeRequest())
 
       "Return status OK (200)" in {
         status(result) must be(Status.OK)
@@ -67,7 +70,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     }
 
     "If the start page (showGuidance) is disabled" should {
-      lazy val result = TestHomeController(enableThrottling = false, showGuidance = false).home()(authenticatedFakeRequest())
+      lazy val result = testHomeController(enableThrottling = false, showGuidance = false).home()(authenticatedFakeRequest())
 
       "Return status SEE_OTHER (303) redirect" in {
         status(result) must be(Status.SEE_OTHER)
@@ -80,10 +83,10 @@ class HomeControllerSpec extends ControllerBaseSpec
 
   }
 
-  "Calling the index action of the HomeController with an authorised user" should {
+  "Calling the index action of the HomeController with an authorised user" when {
     // TODO re enable the throttling service tests if and when it's defined
-    "If throttling is enabled when calling the client details" ignore {
-      lazy val result = TestHomeController(enableThrottling = true, showGuidance = false).index()(authenticatedFakeRequest())
+    "throttling is enabled when calling the client details" ignore {
+      lazy val result = testHomeController(enableThrottling = true, showGuidance = false).index()( authenticatedFakeRequest())
 
       "trigger a call to the throttling service" in {
         setupMockCheckAccess(auth.nino)(OK)
@@ -96,17 +99,19 @@ class HomeControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "If throttling is disabled when calling the client details" ignore {
-      lazy val result = TestHomeController(enableThrottling = false, showGuidance = false).index()(authenticatedFakeRequest())
+    "throttling is disabled when calling the client details" should {
+      lazy val request = authenticatedFakeRequest()
+
+      lazy val result = testHomeController(enableThrottling = false, showGuidance = false).index()(request)
 
       "not trigger a call to the throttling service" in {
-        setupMockCheckAccess(auth.nino)(OK)
+        setupMockEnrolmentGetARN(TestConstants.testARN)
 
         status(result) must be(Status.SEE_OTHER)
 
         redirectLocation(result).get mustBe controllers.matching.routes.ClientDetailsController.show().url
 
-        verifyMockCheckAccess(0)
+        await(result).session(request).get(ITSASessionKeys.ArnKey) must contain(TestConstants.testARN)
       }
     }
   }

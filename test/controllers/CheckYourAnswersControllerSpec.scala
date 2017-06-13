@@ -68,7 +68,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "Calling the submit action of the CheckYourAnswersController with an authorised user" should {
 
-    def call = TestCheckYourAnswersController.submit(authenticatedFakeRequest())
+    def call = TestCheckYourAnswersController.submit(authenticatedFakeRequest().withSession(ITSASessionKeys.ArnKey -> testARN))
 
     "When the submission is successful" should {
       lazy val result = call
@@ -83,7 +83,6 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
             )
         )
         setupSubscribe()(subscribeSuccess)
-        setupMockEnrolmentGetARN(testARN)
         setupCreateClientRelationship(testARN, testMTDID)
         status(result) must be(Status.SEE_OTHER)
         await(result)
@@ -106,20 +105,10 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
 
-      "return a failure if the call to enrolment fails" in {
-        setupMockKeystore(fetchAll = TestModels.testCacheMap)
-        setupSubscribe()(subscribeSuccess)
-        setupMockEnrolmentGetARNFailure(new Exception())
-        val ex = intercept[InternalServerException](await(call))
-        ex.message mustBe "Call to enrolment failed"
-        verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
-      }
-
       // TODO re-enable create relationship test once the agent team is ready
       "return a failure if create client relationship fails" ignore {
         setupMockKeystore(fetchAll = TestModels.testCacheMap)
         setupSubscribe()(subscribeSuccess)
-        setupMockEnrolmentGetARN(testARN)
         setupCreateClientRelationshipFailure(testARN, testMTDID)(new Exception())
         val ex = intercept[InternalServerException](await(call))
         ex.message mustBe "Failed to create client relationship"

@@ -68,9 +68,6 @@ class ConfirmationViewSpec extends UnitTestTrait {
         document.select("#confirmation-heading p").text() must include(MessageLookup.Confirmation.banner_line1_1)
       }
 
-      s"has in the banner a paragraph of '${MessageLookup.Confirmation.banner_line1_2}'" in {
-        document.select("#confirmation-heading p").text() must include(MessageLookup.Confirmation.banner_line1_2)
-      }
     }
 
     "have a 'What happens next' section" which {
@@ -89,10 +86,6 @@ class ConfirmationViewSpec extends UnitTestTrait {
 
       s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para3}'" in {
         document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para3)
-      }
-
-      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para4}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para4)
       }
 
       s"has an Agent Services account link '${MessageLookup.Confirmation.whatHappensNext.linkText}'" in {
