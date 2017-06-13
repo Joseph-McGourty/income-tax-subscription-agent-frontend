@@ -1,5 +1,5 @@
 ## Base ##
-base.service_name                                               = Report your income and expenses quarterly
+base.service_name                                               = Sign up your client for quarterly reporting
 base.back                                                       = Back
 base.continue                                                   = Continue
 base.update                                                     = Update
@@ -37,9 +37,8 @@ frontpage.bullet_6                                              = full name
 frontpage.bullet_7                                              = date of birth
 frontpage.bullet_8                                              = National Insurance Number
 frontpage.para_6                                                = To use this service:
-frontpage.bullet_9                                              = your client needs to <a href="{0}">authorise you as their agent</a>
-frontpage.bullet_10                                             = you need to <a href="{0}">create an Agent Services account</a>
-
+frontpage.bullet_9                                              = you need to <a href="{0}">create an Agent Services account</a>
+frontpage.bullet_10                                             = your client needs to <a href="{0}">authorise you as their agent</a>
 
 # Client details page
 client-details-error.title                                      = Client match error
@@ -127,7 +126,7 @@ preferences.returnLinkText                                      = Continue
 ## Timeout page ##
 timeout.title                                                   = Your session has timed out
 timeout.heading                                                 = Your session has timed out
-timeout.returnToHome                                            = To sign up for quarterly reporting, you''ll have to <a href="{0}" rel="external">sign in</a> using your Government Gateway ID.
+timeout.returnToHome                                            = To sign your client up for quarterly reporting, you''ll have to <a href="{0}" rel="external">sign in</a> using your Government Gateway ID.
 
 ## Throttle limit reached page ##
 throttle_limit.title                                            = Service is unavailable due to maintenance
@@ -141,9 +140,9 @@ client-already-subscribed.heading                               = Your client ha
 client-already-subscribed.para1                                 = The details you''ve entered are already in use.
 
 ## No client relationship page ##
-no-client-relationship.title                                 = You can''t use this service yet
-no-client-relationship.heading                               = You can''t use this service yet
-no-client-relationship.para1                                 = To sign your client up for quarterly reporting, they need to <a href="{0}" rel="external">authorise you as their agent.</a>
+no-client-relationship.title                                 = You''re not authorised for this client
+no-client-relationship.heading                               = You''re not authorised for this client
+no-client-relationship.para1                                 = To send quarterly reports, your client must authorise you as their agent.
 
 ## Failure Messages ##
 notAuthorised.title                                             = Not Authorised
@@ -175,7 +174,7 @@ summary.accounting_period                                       = Your client''s
 summary.business_name                                           = What''s the name of your client''s business?
 summary.income_type                                             = What accounting method does your client use?
 summary.income_type.cash                                        = Cash basis
-summary.income_type.accruals                                    = Accruals basis
+summary.income_type.accruals                                    = Traditional accounting
 
 ## Confirmation page ##
 confirmation.title                                              = Confirmation page
@@ -184,7 +183,7 @@ confirmation.banner.line_1                                      = Make a note of
 confirmation.whatHappensNext.para1                              = If your client forgets their Government Gateway login details, we can use this reference number to help retrieve them.
 confirmation.whatHappensNext.heading                            = What happens next
 confirmation.whatHappensNext.para2                              = You must use accounting software to keep your client''s accounts, and send a report to HMRC at least every quarter.
-confirmation.whatHappensNext.para3                              = You''ll get an estimate of your client''s Income Tax in your software when you send a report. From August 2017 your client can view these Income Tax calculations and their report deadlines in their <a href="{0}">business tax account</a>.
+confirmation.whatHappensNext.para3                              = You''ll get an estimate of your client''s Income Tax in your software when you send a report. From August 2017 your client can view these Income Tax calculations and their report deadlines in their business tax account.
 confirmation.sign_out                                           = Finish
 
 ## Errors ##
@@ -269,7 +268,7 @@ main-income-error.para1                                         = At the moment,
 main-income-error.para2                                         = You''ll be able to use this reporting method for your client later in the year.
 main-income-error.bullet1                                       = a sole trader with income from one business
 main-income-error.bullet2                                       = someone who rents out a UK property
-main-income-error.bullet3                                       = a sole trader with income from one business and you rent out a UK property
+main-income-error.bullet3                                       = a sole trader with income from one business and they rent out a UK property
 
 ## Other income error page ##
 other-income-error.title                                        = You can only send quarterly reports on part of your client''s income
@@ -281,10 +280,11 @@ income-other.title                                              = Does your clie
 income-other.heading                                            = Does your client have any other sources of income?
 income-other.para1                                              = This could include:
 income-other.bullet1                                            = employment
-income-other.bullet2                                            = UK pensions or annuities
-income-other.bullet3                                            = taxable state benefits
-income-other.bullet4                                            = employment or investments from outside the UK
-income-other.bullet5                                            = capital gains
+income-other.bullet2                                            = employment that isn''t their sole trader business
+income-other.bullet3                                            = UK pensions or annuities
+income-other.bullet4                                            = taxable state benefits
+income-other.bullet5                                            = employment or investments from outside the UK
+income-other.bullet6                                            = capital gains
 income-other.yes                                                = Yes
 income-other.no                                                 = No
 

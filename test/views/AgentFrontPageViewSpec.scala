@@ -77,16 +77,17 @@ class AgentFrontPageViewSpec extends ViewSpecTrait {
 
   "has a 'To use this service' section" which {
 
-    s"has an Agent authorisation link '${MessageLookup.FrontPage.linkText_1}'" in {
+    s"has an Agent services account link '${MessageLookup.FrontPage.linkText_1}'" in {
       val link1 = document.select("#beforeYouStart a").get(0)
       link1.text() mustBe MessageLookup.FrontPage.linkText_1
-      link1.attr("href") mustBe appConfig.agentAuthUrl
+      link1.attr("href") mustBe appConfig.agentAccountUrl
     }
 
-    s"has an Agent services account link '${MessageLookup.FrontPage.linkText_2}'" in {
+    s"has an Agent authorisation link '${MessageLookup.FrontPage.linkText_2}'" in {
       val link2 = document.select("#beforeYouStart a").get(1)
       link2.text() mustBe MessageLookup.FrontPage.linkText_2
-      link2.attr("href") mustBe appConfig.agentAccountUrl
+      link2.attr("href") mustBe appConfig.agentAuthUrl
     }
+
   }
 }

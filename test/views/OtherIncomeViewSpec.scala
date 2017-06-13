@@ -17,7 +17,7 @@
 package views
 
 import assets.MessageLookup.{OtherIncome => messages}
-import forms.OtherIncomeForm
+import forms.{IncomeSourceForm, OtherIncomeForm}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
@@ -27,8 +27,9 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean) =  views.html.other_income(
+  def page(isEditMode: Boolean, incomeSource: String) =  views.html.other_income(
     otherIncomeForm = OtherIncomeForm.otherIncomeForm,
+    incomeSource = incomeSource,
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
@@ -36,25 +37,25 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
 
   "The Other Income View" should {
 
-    val testPage = TestView(
+    val testPageProperty = TestView(
       name = "Other Income View",
       title = messages.title,
       heading = messages.heading,
-      page = page(isEditMode = false))
+      page = page(isEditMode = false, incomeSource = IncomeSourceForm.option_property))
 
-    testPage.mustHaveBackLinkTo(backUrl)
+    testPageProperty.mustHaveBackLinkTo(backUrl)
 
-    testPage.mustHavePara(messages.para1)
+    testPageProperty.mustHavePara(messages.para1)
 
-    testPage.mustHaveBulletSeq(
-      messages.bullet1,
+    testPageProperty.mustHaveBulletSeq(
+      messages.bullet1Property,
       messages.bullet2,
       messages.bullet3,
       messages.bullet4,
       messages.bullet5
     )
 
-    val form = testPage.getForm("Other Income form")(actionCall = action)
+    val form = testPageProperty.getForm("Other Income form")(actionCall = action)
 
     form.mustHaveRadioSet(
       legend = messages.heading,
@@ -70,7 +71,16 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
       name = "Edit Other Income View",
       title = messages.title,
       heading = messages.heading,
-      page = page(isEditMode = true))
+      page = page(isEditMode = true, incomeSource = IncomeSourceForm.option_business))
+
+    // n.b. bullet1Default test displays for income sources that include a business (property only used bullet1Property
+    editModePage.mustHaveBulletSeq(
+      messages.bullet1Default,
+      messages.bullet2,
+      messages.bullet3,
+      messages.bullet4,
+      messages.bullet5
+    )
 
     editModePage.mustHaveUpdateButton()
   }

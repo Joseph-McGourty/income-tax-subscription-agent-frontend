@@ -46,14 +46,6 @@ class NoClientRelationshipViewSpec extends ViewSpecTrait {
 
     form.mustHaveSubmitButton(common.goBack)
 
-    "has a 'Cannot use this service' section" which {
-
-      s"has an Agent authorisation link '${MessageLookup.NoClientRelationship.linkText}'" in {
-        document.select("#cannotUseService a").text() mustBe MessageLookup.NoClientRelationship.linkText
-        document.select("#cannotUseService a").attr("href") mustBe appConfig.agentAuthUrl
-      }
-
-    }
   }
-}
 
+}

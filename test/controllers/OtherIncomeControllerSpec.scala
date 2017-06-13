@@ -16,80 +16,178 @@
 
 package controllers
 
-import javax.inject.{Inject, Singleton}
-
 import audit.Logging
-import config.BaseControllerConfig
-import forms.{AccountingMethodForm, IncomeSourceForm, OtherIncomeForm}
+import auth._
+import forms.OtherIncomeForm
 import models.OtherIncomeModel
-import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request, Result}
-import play.twirl.api.Html
-import services.KeystoreService
-import utils.Implicits._
+import play.api.http.Status
+import play.api.mvc.{Action, AnyContent}
+import play.api.test.Helpers.{await, _}
+import services.mocks.MockKeystoreService
+import utils.TestModels
 
-import scala.concurrent.Future
 
-@Singleton
-class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
-                                      val messagesApi: MessagesApi,
-                                      val keystoreService: KeystoreService,
-                                      val logging: Logging
-                                     ) extends BaseController {
+class OtherIncomeControllerSpec extends ControllerBaseSpec
+  with MockKeystoreService {
 
-  def view(otherIncomeForm: Form[OtherIncomeModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
-    views.html.other_income(
-      otherIncomeForm = otherIncomeForm,
-      postAction = controllers.routes.OtherIncomeController.submitOtherIncome(editMode = isEditMode),
-      backUrl = backUrl,
-      isEditMode = isEditMode
-    )
+  override val controllerName: String = "OtherIncomeController"
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
+    "showOtherIncome" -> TestOtherIncomeController.showOtherIncome(isEditMode = true),
+    "submitOtherIncome" -> TestOtherIncomeController.submitOtherIncome(isEditMode = true)
+  )
 
-  def showOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
-      for {
-        choice <- keystoreService.fetchOtherIncome()
-      } yield Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl, isEditMode))
+  object TestOtherIncomeController extends OtherIncomeController(
+    MockBaseControllerConfig,
+    messagesApi,
+    MockKeystoreService,
+    app.injector.instanceOf[Logging]
+  )
+
+  "Calling the showOtherIncome action of the OtherIncome controller with an authorised user" should {
+
+    lazy val result = TestOtherIncomeController.showOtherIncome(isEditMode = true)(authenticatedFakeRequest())
+
+    "return ok (200)" in {
+      setupMockKeystore(
+        fetchIncomeSource = TestModels.testIncomeSourceBoth,
+        fetchOtherIncome = None
+      )
+
+      status(result) must be(Status.OK)
+
+      await(result)
+      verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 0)
+    }
   }
 
-  def defaultRedirections(otherIncomeModel: OtherIncomeModel)(implicit request: Request[_]): Future[Result] =
-    otherIncomeModel.choice match {
-      case OtherIncomeForm.option_yes =>
-        Redirect(controllers.routes.OtherIncomeErrorController.showOtherIncomeError())
-      case OtherIncomeForm.option_no =>
-        keystoreService.fetchIncomeSource() map {
-          case Some(incomeSource) => incomeSource.source match {
-            case IncomeSourceForm.option_business =>
-              Redirect(controllers.business.routes.BusinessAccountingPeriodPriorController.show())
-            case IncomeSourceForm.option_property =>
-              Redirect(controllers.routes.TermsController.showTerms())
-            case IncomeSourceForm.option_both =>
-              Redirect(controllers.business.routes.BusinessAccountingPeriodPriorController.show())
-          }
-          case _ =>
-            logging.info("Tried to submit other income when no data found in Keystore for income source")
-            InternalServerError
-        }
+  "Calling the submitOtherIncome action of the OtherIncome controller with an authorised user and saying yes to other income" should {
+
+    def callSubmit = TestOtherIncomeController.submitOtherIncome(isEditMode = true)(authenticatedFakeRequest()
+      .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_yes)))
+
+    "return a redirect status (SEE_OTHER - 303)" in {
+      setupMockKeystore(
+        fetchIncomeSource = TestModels.testIncomeSourceBoth,
+        fetchOtherIncome = None
+      )
+
+      val goodRequest = callSubmit
+
+      status(goodRequest) must be(Status.SEE_OTHER)
+
+      await(goodRequest)
+      verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 1)
     }
 
-  def submitOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
-      OtherIncomeForm.otherIncomeForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl, isEditMode = isEditMode)),
-        choice =>
-          keystoreService.fetchOtherIncome().flatMap {
-            previousOtherIncome =>
-              keystoreService.saveOtherIncome(choice).flatMap { _ =>
-                // if it's in update mode and the previous answer is the same as current then return to check your answers page
-                if (isEditMode && previousOtherIncome.fold(false)(old => old.equals(choice)))
-                  Redirect(controllers.routes.CheckYourAnswersController.show())
-                else defaultRedirections(choice)
-              }
-          }
+    s"redirect to '${controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
+      setupMockKeystore(
+        fetchIncomeSource = TestModels.testIncomeSourceBoth,
+        fetchOtherIncome = None
       )
+
+      val goodRequest = callSubmit
+
+      redirectLocation(goodRequest) mustBe Some(controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url)
+
+      await(goodRequest)
+      verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 1)
+    }
+
+
   }
 
-  lazy val backUrl: String = controllers.routes.IncomeSourceController.showIncomeSource().url
+  "Calling the submitOtherIncome action of the OtherIncome controller with an authorised user and saying no to other income" should {
 
+    def callSubmit = TestOtherIncomeController.submitOtherIncome(isEditMode = true)(authenticatedFakeRequest()
+      .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_no)))
+
+    "return a redirect status (SEE_OTHER - 303)" in {
+
+      setupMockKeystore(
+        fetchIncomeSource = TestModels.testIncomeSourceBusiness,
+        fetchOtherIncome = None
+      )
+
+      val goodRequest = callSubmit
+
+      status(goodRequest) must be(Status.SEE_OTHER)
+
+      await(goodRequest)
+      verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
+    }
+
+    s"redirect to '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the business journey" in {
+
+      setupMockKeystore(
+        fetchIncomeSource = TestModels.testIncomeSourceBusiness,
+        fetchOtherIncome = None
+      )
+
+      val goodRequest = callSubmit
+
+      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
+
+      await(goodRequest)
+      verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
+    }
+
+    s"redirect to '${controllers.routes.TermsController.showTerms().url}' on the property journey" in {
+
+      setupMockKeystore(
+        fetchIncomeSource = TestModels.testIncomeSourceProperty,
+        fetchOtherIncome = None
+      )
+
+      val goodRequest = callSubmit
+
+      redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
+
+      await(goodRequest)
+      verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
+    }
+
+    s"redirect to '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the both journey" in {
+
+      setupMockKeystore(
+        fetchIncomeSource = TestModels.testIncomeSourceBoth,
+        fetchOtherIncome = None
+      )
+
+      val goodRequest = callSubmit
+
+      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
+
+      await(goodRequest)
+      verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
+    }
+
+    "Calling the submitOtherIncome action of the OtherIncome controller with an authorised user and with an invalid choice" should {
+
+      val dummy = "Invalid"
+
+      def badrequest = TestOtherIncomeController.submitOtherIncome(isEditMode = true)(authenticatedFakeRequest()
+        .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(dummy)))
+
+      "return a bad request status (400)" in {
+        setupMockKeystore(
+          fetchIncomeSource = TestModels.testIncomeSourceBoth,
+          fetchOtherIncome = None
+        )
+
+        status(badrequest) must be(Status.BAD_REQUEST)
+
+        await(badrequest)
+        verifyKeystore(fetchOtherIncome = 0, saveOtherIncome = 0)
+      }
+
+    }
+  }
+
+  "The back url" should {
+    s"point to ${controllers.routes.IncomeSourceController.showIncomeSource().url} on other income page" in {
+      TestOtherIncomeController.backUrl mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+    }
+  }
+
+  authorisationTests()
 }

@@ -20,7 +20,9 @@
 @import config.AppConfig
 
 @import forms.OtherIncomeForm
-@(otherIncomeForm: Form[OtherIncomeModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@import forms.IncomeSourceForm.option_property
+
+@(otherIncomeForm: Form[OtherIncomeModel], incomeSource:String, postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
     @views.html.templates.main_template(title = Messages("income-other.title"), bodyClasses = None) {
         @back_link(backUrl)
@@ -32,11 +34,18 @@
         <div class="form-group">
             <p>@Messages("income-other.para1")</p>
             <ul class="bullets">
-                <li>@Messages("income-other.bullet1")</li>
-                <li>@Messages("income-other.bullet2")</li>
+                @incomeSource match {
+                    case `option_property` => {
+                        <li>@Messages("income-other.bullet1")</li>
+                    }
+                    case _ => {
+                        <li>@Messages("income-other.bullet2")</li>
+                    }
+                }
                 <li>@Messages("income-other.bullet3")</li>
                 <li>@Messages("income-other.bullet4")</li>
                 <li>@Messages("income-other.bullet5")</li>
+                <li>@Messages("income-other.bullet6")</li>
             </ul>
         </div>
 

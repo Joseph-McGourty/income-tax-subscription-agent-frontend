@@ -46,8 +46,8 @@ object MessageLookup {
     val subHeading_1 = "Sign up using Government Gateway"
     val subHeading_2 = "Before you start"
 
-    val linkText_1 = "authorise you as their agent"
-    val linkText_2 = "create an Agent Services account"
+    val linkText_1 = "create an Agent Services account"
+    val linkText_2 = "authorise you as their agent"
 
     val bullet_1 = "using your accounting software to record your client's income and expenses"
     val bullet_2 = "sending details to us regularly from July 2017"
@@ -57,8 +57,8 @@ object MessageLookup {
     val bullet_6 = "full name"
     val bullet_7 = "date of birth"
     val bullet_8 = "National Insurance Number"
-    val bullet_9 = s"your client needs to $linkText_1"
-    val bullet_10 = s"you need to $linkText_2"
+    val bullet_9 = s"you need to $linkText_1"
+    val bullet_10 = s"your client needs to $linkText_2"
 
     val para_1 = "By signing up to HM Revenue and Customs secure service, you're helping to test a new way of working out your client's tax. You'll do this by:"
     val para_2 = "You can sign up your client if their current accounting period starts after 5 April 2017 and they're one of the following:"
@@ -183,7 +183,7 @@ object MessageLookup {
 
     object AccountingMethod {
       val cash = "Cash basis"
-      val accruals = "Accruals basis"
+      val accruals = "Traditional accounting"
     }
 
     val contact_email = "Do you want to receive electronic communications from HMRC?"
@@ -195,7 +195,7 @@ object MessageLookup {
   object Timeout {
     val title = "Your session has timed out"
     val heading = "Your session has timed out"
-    val returnToHome = """To sign up for quarterly reporting, you'll have to sign in using your Government Gateway ID."""
+    val returnToHome = """To sign your client up for quarterly reporting, you'll have to sign in using your Government Gateway ID."""
   }
 
   object ClientAlreadySubscribed {
@@ -205,10 +205,9 @@ object MessageLookup {
   }
 
   object NoClientRelationship {
-    val title = "You can't use this service yet"
-    val heading = "You can't use this service yet"
-    val linkText = "authorise you as their agent."
-    val para1 = s"To sign your client up for quarterly reporting, they need to $linkText"
+    val title = "You're not authorised for this client"
+    val heading = "You're not authorised for this client"
+    val para1 = "To send quarterly reports, your client must authorise you as their agent."
   }
 
   object Confirmation {
@@ -221,8 +220,7 @@ object MessageLookup {
       val para1 = "If your client forgets their Government Gateway login details, we can use this reference number to help retrieve them."
       val heading = "What happens next"
       val para2 = "You must use accounting software to keep your client's accounts, and send a report to HMRC at least every quarter."
-      val linkText = "business tax account"
-      val para3 = s"You'll get an estimate of your client's Income Tax in your software when you send a report. From August 2017 your client can view these Income Tax calculations and their report deadlines in their $linkText."
+      val para3 = "You'll get an estimate of your client's Income Tax in your software when you send a report. From August 2017 your client can view these Income Tax calculations and their report deadlines in their business tax account."
     }
 
   }
@@ -361,7 +359,7 @@ object MessageLookup {
     val para2 = "You'll be able to use this reporting method for your client later in the year."
     val bullet1 = "a sole trader with income from one business"
     val bullet2 = "someone who rents out a UK property"
-    val bullet3 = "a sole trader with income from one business and you rent out a UK property"
+    val bullet3 = "a sole trader with income from one business and they rent out a UK property"
   }
 
   object OtherIncomeError {
@@ -374,7 +372,8 @@ object MessageLookup {
     val title = "Does your client have any other sources of income?"
     val heading = "Does your client have any other sources of income?"
     val para1 = "This could include:"
-    val bullet1 = "employment"
+    val bullet1Default = "employment that isn't their sole trader business"
+    val bullet1Property = "employment"
     val bullet2 = "UK pensions or annuities"
     val bullet3 = "taxable state benefits"
     val bullet4 = "employment or investments from outside the UK"
@@ -388,7 +387,7 @@ object MessageLookup {
     val title = "You can't sign up your clients yet"
     val heading = title
     val linkText = "create an Agent Services account"
-    val para1 = s"To sign up for quarterly reporting, you must $linkText"
+    val para1 = s"To sign up for quarterly reporting, you must $linkText."
   }
 
   object ClientDetailsError {

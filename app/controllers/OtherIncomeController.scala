@@ -38,9 +38,10 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
                                       val logging: Logging
                                      ) extends BaseController {
 
-  def view(otherIncomeForm: Form[OtherIncomeModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
+  def view(otherIncomeForm: Form[OtherIncomeModel], incomeSource: String, backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.other_income(
       otherIncomeForm = otherIncomeForm,
+      incomeSource = incomeSource,
       postAction = controllers.routes.OtherIncomeController.submitOtherIncome(editMode = isEditMode),
       backUrl = backUrl,
       isEditMode = isEditMode
@@ -49,8 +50,10 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
   def showOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       for {
+        incomeSource <- keystoreService.fetchIncomeSource()
+          .collect { case Some(incomeSource) => incomeSource.source }
         choice <- keystoreService.fetchOtherIncome()
-      } yield Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl, isEditMode))
+      } yield Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), incomeSource, backUrl, isEditMode))
   }
 
   def defaultRedirections(otherIncomeModel: OtherIncomeModel)(implicit request: Request[_]): Future[Result] =
@@ -76,7 +79,11 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
   def submitOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       OtherIncomeForm.otherIncomeForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl, isEditMode = isEditMode)),
+        formWithErrors =>
+          for {
+            incomeSource <- keystoreService.fetchIncomeSource()
+              .collect { case Some(incomeSource)=>incomeSource.source }
+          } yield BadRequest(view(otherIncomeForm = formWithErrors, incomeSource = incomeSource, backUrl = backUrl, isEditMode = isEditMode)),
         choice =>
           keystoreService.fetchOtherIncome().flatMap {
             previousOtherIncome =>
